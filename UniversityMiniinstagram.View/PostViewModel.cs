@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using UniversityMiniinstagram.Database;
+
+namespace UniversityMiniinstagram.View
+{
+    public class PostViewModel:ImageViewModel
+    {
+        public string Description { get; set; }
+    }
+}
