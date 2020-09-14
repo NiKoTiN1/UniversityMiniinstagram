@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -49,8 +50,8 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if(ModelState.IsValid && vm != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == "UserId");
-                if(userIdClaim != null)
+                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
                 {
                     var result = await _postServices.AddPost(vm, _appEnvironment.WebRootPath, userIdClaim.Value);
                     if (result != null)
@@ -66,7 +67,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && vm != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == "UserId");
+                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
                     var result = _postServices.AddComment(vm, userIdClaim.Value);
@@ -83,7 +84,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == "UserId");
+                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
                     var result = _postServices.AddLike(postId, userIdClaim.Value);

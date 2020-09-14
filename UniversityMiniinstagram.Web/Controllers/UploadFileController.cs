@@ -38,7 +38,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("add")]
         public async Task<IActionResult> AddFile([FromForm] ImageViewModel vm)
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == "UserId");
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized();

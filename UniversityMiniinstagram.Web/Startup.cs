@@ -12,12 +12,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UniversityMiniinstagram.Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using UniversityMiniinstagram.Web;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace UniversityMiniinstagram
 {
@@ -39,28 +39,16 @@ namespace UniversityMiniinstagram
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = AuthOptions.ISSUER,
-                        ValidAudience = AuthOptions.AUDIENCE,
-                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-                    };
-                });
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/api/account/login");
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
 
             services.AddScoped<PostServices>();
             services.AddScoped<ImageServices>();
 
             services.AddRazorPages();
-            services.AddControllers();
+            services.AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -83,7 +71,6 @@ namespace UniversityMiniinstagram
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.UseEndpoints(endpoints =>
             {

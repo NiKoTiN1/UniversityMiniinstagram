@@ -10,7 +10,7 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200913104336_Init")]
+    [Migration("20200914164512_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

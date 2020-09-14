@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityMiniinstagram.Web", "UniversityMiniinstagram\UniversityMiniinstagram.Web.csproj", "{CC9C0E42-69F6-4BAE-AD03-DC0D775DC093}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Database", "UniversityMiniinstagram.Database\UniversityMiniinstagram.Database.csproj", "{CCF71379-8CE0-47A9-843F-31872E1B31B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityMiniinstagram.Database", "UniversityMiniinstagram.Database\UniversityMiniinstagram.Database.csproj", "{CCF71379-8CE0-47A9-843F-31872E1B31B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Services", "UniversityMiniinstagram.Services\UniversityMiniinstagram.Services.csproj", "{1BC1F8BE-D75B-4EDD-B299-D2B71468B533}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityMiniinstagram.Services", "UniversityMiniinstagram.Services\UniversityMiniinstagram.Services.csproj", "{1BC1F8BE-D75B-4EDD-B299-D2B71468B533}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.View", "UniversityMiniinstagram.View\UniversityMiniinstagram.View.csproj", "{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityMiniinstagram.View", "UniversityMiniinstagram.View\UniversityMiniinstagram.View.csproj", "{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Web", "UniversityMiniinstagram.Web\UniversityMiniinstagram.Web.csproj", "{AAF21CA5-A516-4A28-869E-CF10D6C95A92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CC9C0E42-69F6-4BAE-AD03-DC0D775DC093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC9C0E42-69F6-4BAE-AD03-DC0D775DC093}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC9C0E42-69F6-4BAE-AD03-DC0D775DC093}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC9C0E42-69F6-4BAE-AD03-DC0D775DC093}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCF71379-8CE0-47A9-843F-31872E1B31B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCF71379-8CE0-47A9-843F-31872E1B31B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCF71379-8CE0-47A9-843F-31872E1B31B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAF21CA5-A516-4A28-869E-CF10D6C95A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAF21CA5-A516-4A28-869E-CF10D6C95A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAF21CA5-A516-4A28-869E-CF10D6C95A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAF21CA5-A516-4A28-869E-CF10D6C95A92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

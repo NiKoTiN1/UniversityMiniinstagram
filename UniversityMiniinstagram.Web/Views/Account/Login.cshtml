@@ -1,0 +1,16 @@
+﻿@model UniversityMiniinstagram.View.LoginViewModel;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Login";
+}
+
+
+<form method="post">
+    <label>Login:</label><br />
+    <input type="text" name="Email" placeholder="Email" /><br /><br />
+    <label>Пароль:</label><br />
+    <input type="text" name="Password" placeholder="Password" /><br /><br />
+    <input type="submit" value="Login" />
+    <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
+</form>

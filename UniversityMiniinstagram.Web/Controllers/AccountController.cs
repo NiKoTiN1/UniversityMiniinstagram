@@ -11,6 +11,9 @@ using System.Text;
 using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.View;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using IdentityServer4.Extensions;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -28,16 +31,18 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         [Authorize]
         [Route("profile")]
-        public async Task<IActionResult> Profile()
+        public async Task<ViewResult> Profile()
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == "UserId");
+            var result = HttpContext.User.IsAuthenticated();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+
             if (userIdClaim != null)
             {
                 var userInfo = await UserInfo(userIdClaim.Value);
                 if (userInfo != null)
-                    return Ok(userInfo);
+                    return View(userInfo);
             }
-            return Unauthorized();
+            return View();
         }
 
         [HttpPost]
@@ -59,6 +64,14 @@ namespace UniversityMiniinstagram.Web.Controllers
             return BadRequest("Some Error");
         }
 
+        [HttpGet]
+        [Route("login")]
+        public IActionResult Login(string ReturnUrl = null)
+        {
+            ViewBag.ReturnUrlParameter = ReturnUrl;
+            return View();
+        }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginViewModel vm)
@@ -68,15 +81,23 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var user = await ValidateUser(vm);
                 if (user != null)
                 {
-                    return Ok(new { Token = GenerateToken(user), Message = "Success" });
+                    if (vm.returnUrl != null)
+                    {
+                        return Redirect("https://localhost:5001" + vm.returnUrl);
+                    }
+                    return View(user);
                 }
             }
-            return BadRequest(new { Message = "Login faild" });
+            return BadRequest();
         }
 
-        public IActionResult Logout()
+        [HttpGet]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
         {
-            return Ok();
+            await HttpContext.SignOutAsync();
+            HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+            return Ok("logged Out!!!!");
         }
 
         private async Task<ApplicationUser> ValidateUser(LoginViewModel vm)
@@ -87,29 +108,11 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, vm.Password);
                 if (result != PasswordVerificationResult.Failed)
                 {
+                    await _signInManager.SignInAsync(user, false);
                     return user;
                 }
             }
             return null;
-        }
-
-        private string GenerateToken(ApplicationUser user)
-        {
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.UserData, user.UserName),
-                    new Claim("UserId", user.Id)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(AuthOptions.LIFETIME),
-                SigningCredentials = new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256Signature),
-                Audience = AuthOptions.AUDIENCE,
-                Issuer = AuthOptions.ISSUER,
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
 
         private async Task<ApplicationUser> UserInfo(string userId)
