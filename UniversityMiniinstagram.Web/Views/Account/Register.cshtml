@@ -1,3 +1,37 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<!--<form asp-controller="Account" asp-action="Register" method="post">
+    <label>Email:</label><br />
+    <input type="text" name="Email" placeholder="Email" /><br /><br />
+    <label>Username:</label><br />
+    <input type="text" name="Username" placeholder="Username" /><br /><br />
+    <label>Description:</label><br />
+    <input type="text" name="Description" placeholder="Description" /><br /><br />-->
+    @*<label>Avatar:</label><br />
+        <input type="text" name="Email" placeholder="Email" /><br /><br />*@
+    <!--<label>Пароль:</label><br />
+    <input type="text" name="Password" placeholder="Password" /><br /><br />
+    <button type="submit">Register</button>
+    <a asp-controller="Account" asp-action="register" method="post" class="btn btn-primary">Register</a>
+    <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
+</form>-->
+
+
+<div>
+    <form class="form-signin text-center" asp-controller="Account" asp-action="Register" method="post">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
+        <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="Email">
+
+        <input type="text" name="Username" id="Username" class="form-control mb-2" placeholder="Username">
+
+        <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
+
+        <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
+        <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
+
+        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Sign in</button>
+        <a class="text-center" asp-controller="Account" asp-action="Login">Back to login</a>
+    </form>
+</div>

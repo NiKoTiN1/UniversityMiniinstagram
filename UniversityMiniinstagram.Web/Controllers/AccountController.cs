@@ -72,6 +72,13 @@ namespace UniversityMiniinstagram.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("register")]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginViewModel vm)
@@ -85,7 +92,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     {
                         return Redirect("https://localhost:5001" + vm.returnUrl);
                     }
-                    return View(user);
+                    return Redirect("https://localhost:5001/api/account/profile");
                 }
             }
             return BadRequest();
@@ -97,7 +104,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-            return Ok("logged Out!!!!");
+            return Redirect("https://localhost:5001/api/Account/login");
         }
 
         private async Task<ApplicationUser> ValidateUser(LoginViewModel vm)
