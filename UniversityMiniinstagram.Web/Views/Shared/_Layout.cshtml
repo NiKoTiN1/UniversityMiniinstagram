@@ -24,22 +24,33 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
-                <form class="form-inline mt-2 mt-md-0">
-                    @if (User.Identity.IsAuthenticated)
-                    {
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" asp-controller="News" asp-action="AddPost">Add Post <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+                <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
+                    <form class="form-inline mt-2 mt-md-0">
                         <div>
                             <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success my-2 my-sm-0">Logout</a>
                         </div>
-                    }
-                    else
-                    {
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
+                    <form class="form-inline mt-2 mt-md-0">
                         <div>
                             <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0">Login</a>
                         </div>
-                    }
-                </form>
-            </div>
+                    </form>
+                </div>
+            }
+
         </nav>
 
     </div>

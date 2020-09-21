@@ -16,7 +16,7 @@ namespace UniversityMiniinstagram.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class NewsController : ControllerBase
+    public class NewsController : Controller
     {
         public NewsController(DatabaseContext context, PostServices postServices, IWebHostEnvironment appEnvironment)
         {
@@ -42,6 +42,13 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (post == null)
                 return BadRequest();
             return Ok(post);
+        }
+
+        [HttpGet]
+        [Route("addPost")]
+        public IActionResult AddPost()
+        {
+            return View();
         }
 
         [HttpPost]

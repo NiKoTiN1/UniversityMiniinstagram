@@ -1,3 +1,27 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="flex-lg-row" style="height:100%; max-width:100%">
+    <div class="flex-lg-grow-1">
+        <div class="card rounded-lg border-0 shadow-lg mb-6 lift">
+            <label class="text-center">
+                <img src="~/Images/AddImage.png" alt="" class="rounded-top mb-1 mx-auto" style="
+                    position: cover;
+                        left: 0;
+                        top: 0;
+                        width: auto;
+                        height: 100px;
+                        ;">
+                <input type="file" hidden="hidden" />
+            </label>
+            <div class="card-body">
+                <input type="text" name="Category" id="Category" class="form-control mb-2" placeholder="Category">
+
+                <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
+
+                <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Add post</button>
+
+            </div>
+        </div>
+    </div>
+</div>
