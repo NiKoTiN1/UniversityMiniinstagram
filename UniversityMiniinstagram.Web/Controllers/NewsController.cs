@@ -15,7 +15,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class NewsController : Controller
     {
         public NewsController(DatabaseContext context, PostServices postServices, IWebHostEnvironment appEnvironment)
@@ -30,10 +30,17 @@ namespace UniversityMiniinstagram.Web.Controllers
         IWebHostEnvironment _appEnvironment;
 
         [HttpGet]
-        public ICollection<Post> GetAllPosts()
+        [Route("all")]
+        public IActionResult GetAllPosts()
         {
             ICollection<Post> posts = _context.Posts.ToList();
-            return posts;
+            foreach(var post in posts)
+            {
+                var imageId = post.ImageId;
+                var image = _context.Images.FirstOrDefault(a => a.Id == imageId);
+                post.Image = image;
+            }
+            return View(posts);
         }
         [HttpGet]
         public IActionResult GetPost(string postId)

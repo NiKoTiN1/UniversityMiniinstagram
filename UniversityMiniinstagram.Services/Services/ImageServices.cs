@@ -27,7 +27,8 @@ namespace UniversityMiniinstagram.Services
             if (vm.File != null)
             {
                 Guid imageGuid = Guid.NewGuid();
-                string path = "/Images/" + vm.File.FileName + '_' + vm.Category + '_' + imageGuid;
+                var ext = vm.File.FileName.Split(".").Last();
+                string path = "/Images/" + imageGuid + '.' + ext;
 
                 using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
                 {

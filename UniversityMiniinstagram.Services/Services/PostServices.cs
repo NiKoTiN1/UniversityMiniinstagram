@@ -22,7 +22,7 @@ namespace UniversityMiniinstagram.Services.Services
         ImageServices _imageServices;
         public async Task<Post> AddPost(PostViewModel vm, string rootPath, string userId)
         {
-            var image = await _imageServices.Add(new ImageViewMode() { File = vm.File, Category = vm.Category }, rootPath);
+            var image = await _imageServices.Add(new ImageViewModel() { File = vm.File, Category = vm.Category }, rootPath);
             if(image != null)
             {
                 Post newPost = new Post()

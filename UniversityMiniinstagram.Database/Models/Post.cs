@@ -12,6 +12,8 @@ namespace UniversityMiniinstagram.Database
         public Guid Id { get; set; }
         [Required]
         public Image Image { get; set; }
+        public Guid ImageId { get; set; }
+
         [Required]
         public DateTime UploadDate { get; set; }
 

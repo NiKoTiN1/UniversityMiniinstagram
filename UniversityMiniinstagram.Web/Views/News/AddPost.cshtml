@@ -1,27 +1,62 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="flex-lg-row" style="height:100%; max-width:100%">
-    <div class="flex-lg-grow-1">
-        <div class="card rounded-lg border-0 shadow-lg mb-6 lift">
-            <label class="text-center">
-                <img src="~/Images/AddImage.png" alt="" class="rounded-top mb-1 mx-auto" style="
-                    position: cover;
+
+<div class="centered" style="margin-top: 40px;">
+    <form asp-controller="News" asp-action="AddPost" method="post" enctype="multipart/form-data">
+        <div class="flex-lg-row" style="height:100%; max-width:100%">
+            <div class="flex-lg-grow-1">
+                <div class="card rounded-lg border-0 shadow-lg mb-6 lift" style="
+                width: 500px;
+                height: auto;">
+                    <label id="imageButton" class="text-center">
+                        <img src="~/Images/AddImage.png" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
+                        object-fit: cover;
                         left: 0;
                         top: 0;
-                        width: auto;
-                        height: 100px;
-                        ;">
-                <input type="file" hidden="hidden" />
-            </label>
-            <div class="card-body">
-                <input type="text" name="Category" id="Category" class="form-control mb-2" placeholder="Category">
+                        width: 100%;
+                        height: 100%;
+                        max-height: 400px;
+                        cursor:pointer;">
+                        <input type="file" id="File" name="File" hidden="hidden" />
+                    </label>
+                    <div class="card-body">
+                        <select class="form-control mb-2" name="Category">
+                            @foreach (var category in Enum.GetValues(typeof(Category)))
+                            {
+                                <option>@category</option>
+                            }
+                        </select>
 
-                <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
+                        <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
 
-                <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Add post</button>
+                        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit" id="addPost">Add post</button>
 
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#File').change(function () {
+            var input = this;
+            var url = $(this).val();
+            var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+            $('#Image').attr('src', url);
+
+            if (input.files && input.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+                var reader = new FileReader();
+                reader.onload = function (e) {                        
+                    $('#Image').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                console.log("Err!!!");
+            }
+        });
+    </script>
+}
