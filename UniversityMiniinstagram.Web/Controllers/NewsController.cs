@@ -15,7 +15,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class NewsController : Controller
     {
         public NewsController(DatabaseContext context, PostServices postServices, IWebHostEnvironment appEnvironment)
@@ -37,7 +37,9 @@ namespace UniversityMiniinstagram.Web.Controllers
             foreach(var post in posts)
             {
                 var imageId = post.ImageId;
+                ICollection<Like> Likes = _context.Likes.Where(like => like.PostId == post.Id).ToList();
                 var image = _context.Images.FirstOrDefault(a => a.Id == imageId);
+                post.Likes = Likes;
                 post.Image = image;
             }
             return View(posts);
@@ -104,6 +106,22 @@ namespace UniversityMiniinstagram.Web.Controllers
                     var result = _postServices.AddLike(postId, userIdClaim.Value);
                     if (result != null)
                         return Ok(result);
+                }
+            }
+            return Unauthorized();
+        }
+        [HttpDelete]
+        [Route("removeLike")]
+
+        public IActionResult RemoveLike([FromForm] Guid postId)
+        {
+            if (ModelState.IsValid && postId != null)
+            {
+                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    _postServices.RemoveLike(postId, userIdClaim.Value);
+                    return Ok();
                 }
             }
             return Unauthorized();

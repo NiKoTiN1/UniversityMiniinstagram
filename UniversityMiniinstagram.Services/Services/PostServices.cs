@@ -66,5 +66,11 @@ namespace UniversityMiniinstagram.Services.Services
             _context.SaveChanges();
             return newLike;
         }
+        public void RemoveLike(Guid postId, string userId)
+        {
+            var like = _context.Likes.FirstOrDefault(li => li.PostId == postId);
+            _context.Likes.Remove(like);
+            _context.SaveChanges();
+        }
     }
 }

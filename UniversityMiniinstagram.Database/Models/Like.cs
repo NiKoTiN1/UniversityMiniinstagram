@@ -9,7 +9,7 @@ namespace UniversityMiniinstagram.Database
     {
         [Required]
         public Guid Id { get; set; }
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public Post Post { get; set; }
         public Guid PostId { get; set; }
