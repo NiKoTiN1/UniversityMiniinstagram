@@ -33,16 +33,28 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("all")]
         public IActionResult GetAllPosts()
         {
-            ICollection<Post> posts = _context.Posts.ToList();
-            foreach(var post in posts)
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if(userIdClaim != null)
             {
-                var imageId = post.ImageId;
-                ICollection<Like> Likes = _context.Likes.Where(like => like.PostId == post.Id).ToList();
-                var image = _context.Images.FirstOrDefault(a => a.Id == imageId);
-                post.Likes = Likes;
-                post.Image = image;
+                ViewBag.UserId = userIdClaim.Value;
+                ICollection<Post> posts = _context.Posts.OrderBy(post=> post.UploadDate).ToList();
+                foreach (var post in posts)
+                {
+                    var imageId = post.ImageId;
+                    ICollection<Like> likes = _context.Likes.Where(like => like.PostId == post.Id).ToList();
+                    ICollection<Comment> coments = _context.Comments.Where(comment => comment.PostId == post.Id).ToList();
+                    foreach(var comment in coments)
+                    {
+                        comment.User = _context.Users.FirstOrDefault(user => user.Id == userIdClaim.Value);
+                    }
+                    var image = _context.Images.FirstOrDefault(a => a.Id == imageId);
+                    post.Likes = likes;
+                    post.Image = image;
+                    post.Comments = coments;
+                }
+                return View(posts);
             }
-            return View(posts);
+            return Unauthorized();
         }
         [HttpGet]
         public IActionResult GetPost(string postId)
@@ -87,8 +99,21 @@ namespace UniversityMiniinstagram.Web.Controllers
                 if (userIdClaim != null)
                 {
                     var result = _postServices.AddComment(vm, userIdClaim.Value);
+                    var username = _context.Users.FirstOrDefault(user => user.Id == userIdClaim.Value);
                     if (result != null)
-                        return Ok(result);
+                    {
+                        string block = "<div class=\"media chat-item\">" +
+                        "<div class=\"media-body\">" +
+                            "<div class=\"chat-item-title\">" +
+                                "<span class=\"font-weight-bold\" data-filter-by=\"text\">" + username + "</span>" +
+                            "</div>" +
+                            "<div class=\"chat-item-body DIV-filter-by-text\" data-filter-by=\"text\">" +
+                                "<p>" + result.Text + "</p>" +
+                            "</div>" +
+                        "</div>" +
+                        "</div>";
+                        return Ok(block);
+                    }
                 }
             }
             return Unauthorized();

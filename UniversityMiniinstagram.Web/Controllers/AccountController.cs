@@ -55,7 +55,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
-                    return Ok(model);
+                    return Redirect("https://localhost:5001/api/account/login");
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);

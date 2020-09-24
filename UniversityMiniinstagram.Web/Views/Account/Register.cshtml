@@ -2,7 +2,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div>
+<div class="centered">
     <form class="form-signin text-center" asp-controller="Account" asp-action="Register" method="post">
         <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
         <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="Email">
@@ -14,7 +14,7 @@
         <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
         <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
 
-        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Register</button>
         <a class="text-center" asp-controller="Account" asp-action="Login">Back to login</a>
     </form>
 </div>
