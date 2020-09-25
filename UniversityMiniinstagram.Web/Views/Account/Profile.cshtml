@@ -6,4 +6,12 @@
 <div class="centered">
     <h1>@Model.Id</h1>
     <h2>@Model.Email</h2>
+    @if (ViewBag.isAdmin)
+    {
+        <p>I'm Admin</p>
+    }
+    else
+    {
+        <p>I'm User</p>
+    }
 </div>

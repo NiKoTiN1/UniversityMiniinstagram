@@ -10,7 +10,7 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200914164512_Init")]
+    [Migration("20200925095115_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,9 +177,6 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("LikeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -216,8 +213,6 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
-
-                    b.HasIndex("LikeId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -286,11 +281,13 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Likes");
                 });
@@ -378,10 +375,6 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.HasOne("UniversityMiniinstagram.Database.Image", "Avatar")
                         .WithMany()
                         .HasForeignKey("AvatarId");
-
-                    b.HasOne("UniversityMiniinstagram.Database.Like", null)
-                        .WithMany("Users")
-                        .HasForeignKey("LikeId");
                 });
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Comment", b =>
@@ -404,6 +397,10 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("UniversityMiniinstagram.Database.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Post", b =>

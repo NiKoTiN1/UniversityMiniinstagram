@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using IdentityServer4.Extensions;
+using System.Security.Principal;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -22,11 +23,14 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+
         }
         [HttpGet]
         [Authorize]
@@ -40,7 +44,10 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 var userInfo = await UserInfo(userIdClaim.Value);
                 if (userInfo != null)
+                {
+                    ViewBag.isAdmin = await _userManager.IsInRoleAsync(userInfo, "Admin");
                     return View(userInfo);
+                }
             }
             return View();
         }
@@ -52,8 +59,8 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (ModelState.IsValid)
             {
                 ApplicationUser user = new ApplicationUser {Email=model.Email, Avatar = model.Avatar, Description = model.Description, UserName=model.Username};
-
                 var result = await _userManager.CreateAsync(user, model.Password);
+                await _userManager.AddToRoleAsync(user, model.Role);
                 if (result.Succeeded)
                     return Redirect("https://localhost:5001/api/account/login");
                 foreach (var error in result.Errors)
@@ -95,7 +102,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     return Redirect("https://localhost:5001/api/account/profile");
                 }
             }
-            return BadRequest();
+            return Redirect("https://localhost:5001/api/account/login");
         }
 
         [HttpGet]
@@ -105,6 +112,28 @@ namespace UniversityMiniinstagram.Web.Controllers
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
             return Redirect("https://localhost:5001/api/Account/login");
+        }
+
+
+        [HttpPost]
+        [Route("addrole")]
+        public async Task<IActionResult> Create()
+        {
+                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            IdentityResult result1 = await _roleManager.CreateAsync(new IdentityRole("User"));
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                foreach (var error in result1.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return BadRequest(result1);
         }
 
         private async Task<ApplicationUser> ValidateUser(LoginViewModel vm)

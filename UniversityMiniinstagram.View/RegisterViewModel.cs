@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -12,6 +13,9 @@ namespace UniversityMiniinstagram.View
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string Role { get; set; }
 
         public string Username { get; set; }
 
