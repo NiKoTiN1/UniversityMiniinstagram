@@ -13,9 +13,9 @@ using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [Route("news")]
     public class NewsController : Controller
     {
         public NewsController(DatabaseContext context, PostServices postServices, IWebHostEnvironment appEnvironment)
@@ -55,14 +55,6 @@ namespace UniversityMiniinstagram.Web.Controllers
                 return View(posts);
             }
             return Unauthorized();
-        }
-        [HttpGet]
-        public IActionResult GetPost(string postId)
-        {
-            var post = _context.Posts.FirstOrDefault(a => a.Id == new Guid(postId));
-            if (post == null)
-                return BadRequest();
-            return Ok(post);
         }
 
         [HttpGet]

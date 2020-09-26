@@ -18,6 +18,9 @@ using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Constraints;
+using UniversityMiniinstagram.Web.Contraints;
 
 namespace UniversityMiniinstagram
 {
@@ -39,13 +42,14 @@ namespace UniversityMiniinstagram
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/api/account/login");
+            services.ConfigureApplicationCookie(options => options.LoginPath = "/account/login");
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 
             services.AddScoped<PostServices>();
             services.AddScoped<ImageServices>();
+            services.AddMvc(option => option.EnableEndpointRouting = false) ;
 
             services.AddRazorPages();
             services.AddControllersWithViews();
@@ -72,9 +76,20 @@ namespace UniversityMiniinstagram
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseMvc(routing =>
             {
-                endpoints.MapControllers();
+                routing.MapRoute("1", "account/login", new { controller = "Account", action = "Login"});
+                routing.MapRoute("2", "account/logined", new { controller = "Account", action = "LoginPost" });
+
+                routing.MapRoute("3", "account/profile", new { controller = "Account", action = "Profile" });
+                routing.MapRoute("4", "account/profile/{numb?}", new { controller = "Account", action = "ProfileNumb" },
+    new { numb = new CustomRouteConstraint() });
+                routing.MapRoute("5", "account/register", new { controller = "Account", action = "Register" });
+                routing.MapRoute("6", "account/registed", new { controller = "Account", action = "RegisterPost" });
+                routing.MapRoute("7", "account/logout", new { controller = "Account", action = "Logout" });
+
+                routing.MapRoute("8", "news/all", new { controller = "News", action = "GetAllPosts" });
+                routing.MapRoute("9", "news/addPost", new { controller = "News", action = "AddPost" });
             });
         }
     }

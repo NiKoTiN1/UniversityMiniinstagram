@@ -18,7 +18,6 @@ using System.Security.Principal;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
-    [Route("api/[controller]")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,9 +31,9 @@ namespace UniversityMiniinstagram.Web.Controllers
             _roleManager = roleManager;
 
         }
+
         [HttpGet]
         [Authorize]
-        [Route("profile")]
         public async Task<ViewResult> Profile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -52,9 +51,36 @@ namespace UniversityMiniinstagram.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult ProfileNumb(int numb)
+        {
+            return Ok(numb);
+        }
+
+        [HttpGet]
+        public IActionResult Login(string ReturnUrl = null)
+        {
+            ViewBag.ReturnUrlParameter = ReturnUrl;
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+            return RedirectToAction("Login");
+        }
+
         [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> RegisterPost(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +88,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 await _userManager.AddToRoleAsync(user, model.Role);
                 if (result.Succeeded)
-                    return Redirect("https://localhost:5001/api/account/login");
+                    return RedirectToAction("Login");
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -71,24 +97,8 @@ namespace UniversityMiniinstagram.Web.Controllers
             return BadRequest("Some Error");
         }
 
-        [HttpGet]
-        [Route("login")]
-        public IActionResult Login(string ReturnUrl = null)
-        {
-            ViewBag.ReturnUrlParameter = ReturnUrl;
-            return View();
-        }
-
-        [HttpGet]
-        [Route("register")]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
         [HttpPost]
-        [Route("login")]
-        public async Task<IActionResult> Login(LoginViewModel vm)
+        public async Task<IActionResult> LoginPost(LoginViewModel vm)
         {
             if (ModelState.IsValid && vm != null)
             {
@@ -99,25 +109,16 @@ namespace UniversityMiniinstagram.Web.Controllers
                     {
                         return Redirect("https://localhost:5001" + vm.returnUrl);
                     }
-                    return Redirect("https://localhost:5001/api/account/profile");
+                    return RedirectToAction("Profile");
                 }
             }
-            return Redirect("https://localhost:5001/api/account/login");
-        }
-
-        [HttpGet]
-        [Route("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-            return Redirect("https://localhost:5001/api/Account/login");
+            return RedirectToAction("Login");
         }
 
 
         [HttpPost]
         [Route("addrole")]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateRolePost()
         {
                 IdentityResult result = await _roleManager.CreateAsync(new IdentityRole("Admin"));
 
