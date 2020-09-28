@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Localization
+@inject IViewLocalizer VLocalizer
+
 @model ApplicationUser
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,18 +12,21 @@
         <h2>@Model.Email</h2>
     </div>
     <div class="col">
+        <img src="@VLocalizer["Flag"]" />
+    </div>
+    <div class="col">
         @if (ViewBag.isAdmin)
         {
-            <p>I'm Admin</p>
+            <p>@VLocalizer["Admin"]</p>
         }
         else
         {
-            <p>I'm User</p>
+            <p>@VLocalizer["User"]</p>
         }
     </div>
     <form method="get" asp-controller="Account" asp-action="ProfileNumb" class="col">
         <input type="text" name="numb" placeholder="1" />
-        <button type="submit">CLick</button>
+        <button type="submit">@VLocalizer["Btn"]</button>
     </form>
     <div class="col">
         @{
