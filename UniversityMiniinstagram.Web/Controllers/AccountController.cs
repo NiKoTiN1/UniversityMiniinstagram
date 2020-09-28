@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using IdentityServer4.Extensions;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Http;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -55,7 +57,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize]
         public IActionResult ProfileNumb(int numb)
         {
-            return Ok(numb);
+            return View(numb);
         }
 
         [HttpGet]
@@ -77,6 +79,18 @@ namespace UniversityMiniinstagram.Web.Controllers
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public IActionResult SetLanguage(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddMinutes(5) }
+            );
+
+            return Ok();
         }
 
         [HttpPost]

@@ -1,4 +1,6 @@
 ﻿@model ICollection<Post>
+@inject IViewLocalizer VLocalizer
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -91,7 +93,7 @@
                                         var textId = post.Id.ToString() + "text";
                                         ViewBag.textId = textId;
                                     }
-                                    <textarea id="@ViewBag.textId" class="form-control col ml-2" placeholder="Comment..." rows="1" style="resize: none;"></textarea>
+                                    <textarea id="@ViewBag.textId" class="form-control col ml-2" placeholder="@VLocalizer["Comment"]" rows="1" style="resize: none;"></textarea>
                                     <label class="col-0 mx-2" style="cursor: pointer;">
                                         <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cursor-fill mt-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z" />
@@ -132,7 +134,7 @@
                 });
             }
             else {
-                    $.ajax({
+                $.ajax({
                     type: 'POST',
                     url: 'addLike',
                     data: { 'postId': postId },
@@ -172,14 +174,14 @@
             $.ajax({
                 type: 'POST',
                 url: 'addComment',
-                data: { 'postId': postId, 'text': text},
+                data: { 'postId': postId, 'text': text },
                 success: function (data) {
                     var commAreaId = '#' + postId + 'content';
                     $(commAreaId).append(data);
-                    $(textId).val("");   
+                    $(textId).val("");
                     countComment.text(parseInt(countComment.text()) + 1);
                 }
             });
-        }); 
+        });
     </script>
 }

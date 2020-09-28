@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IViewLocalizer VLocalizer
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -46,13 +48,13 @@
             {
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" asp-controller="News" asp-action="AddPost">Add Post <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
                 <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
                     <form class="form-inline mt-2 mt-md-0">
                         <div>
-                            <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success my-2 my-sm-0">Logout</a>
+                            <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-success my-2 my-sm-0">@VLocalizer["LogoutBtn"]</a>
                         </div>
                     </form>
                 </div>
@@ -62,7 +64,7 @@
                 <div class="navbar-collapse collapse justify-content-end" id="navbarCollapse">
                     <form class="form-inline mt-2 mt-md-0">
                         <div>
-                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0">Login</a>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success my-2 my-sm-0">@VLocalizer["LoginBtn"]</a>
                         </div>
                     </form>
                 </div>

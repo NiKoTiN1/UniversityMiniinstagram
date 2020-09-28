@@ -1,25 +1,27 @@
-﻿@{
+﻿@inject IViewLocalizer VLocalizer
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="centered">
     <form class="form-signin text-center" asp-controller="Account" asp-action="RegisterPost" method="post">
-        <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
-        <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="Email">
+        <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["RegisterLbl"]</h1>
+        <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="@VLocalizer["Email"]">
 
-        <input type="text" name="Username" id="Username" class="form-control mb-2" placeholder="Username">
+        <input type="text" name="Username" id="Username" class="form-control mb-2" placeholder="@VLocalizer["Username"]">
 
         <select class="form-control mb-2" id="Role" name="Role">
             <option>Admin</option>
             <option>User</option>
         </select>
 
-        <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="Description"></textarea>
+        <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="@VLocalizer["Description"]"></textarea>
 
-        <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
+        <input type="password" name="Password" id="Password" class="form-control" placeholder="@VLocalizer["Password"]">
         <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
 
-        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">Register</button>
-        <a class="text-center" asp-controller="Account" asp-action="Login">Back to login</a>
+        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["RegisterBtn"]</button>
+        <a class="text-center" asp-controller="Account" asp-action="Login">@VLocalizer["LoginRedir"]</a>
     </form>
 </div>

@@ -21,6 +21,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Constraints;
 using UniversityMiniinstagram.Web.Contraints;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 namespace UniversityMiniinstagram
 {
@@ -47,12 +51,32 @@ namespace UniversityMiniinstagram
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 
-            services.AddScoped<PostServices>();
-            services.AddScoped<ImageServices>();
-            services.AddMvc(option => option.EnableEndpointRouting = false) ;
+            services.AddTransient<PostServices>();
+            services.AddTransient<ImageServices>();
+
+            services.AddMvc(option => option.EnableEndpointRouting = false);
+
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddRazorPages();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddDataAnnotationsLocalization()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("de"),
+                    new CultureInfo("ru")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("ru");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -68,6 +92,12 @@ namespace UniversityMiniinstagram
                 app.UseHsts();
             }
 
+            var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(locOptions.Value);
+
+            app.UseRequestLocalization();
+            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -82,14 +112,16 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("2", "account/logined", new { controller = "Account", action = "LoginPost" });
 
                 routing.MapRoute("3", "account/profile", new { controller = "Account", action = "Profile" });
-                routing.MapRoute("4", "account/profile/{numb?}", new { controller = "Account", action = "ProfileNumb" },
-    new { numb = new CustomRouteConstraint() });
+                routing.MapRoute("4", "account/profile/{numb}", new { controller = "Account", action = "ProfileNumb" },
+                    new { numb = new CustomRouteConstraint() });
+
                 routing.MapRoute("5", "account/register", new { controller = "Account", action = "Register" });
                 routing.MapRoute("6", "account/registed", new { controller = "Account", action = "RegisterPost" });
                 routing.MapRoute("7", "account/logout", new { controller = "Account", action = "Logout" });
 
                 routing.MapRoute("8", "news/all", new { controller = "News", action = "GetAllPosts" });
                 routing.MapRoute("9", "news/addPost", new { controller = "News", action = "AddPost" });
+                routing.MapRoute("10", "account/setlanguage", new { controller = "Account", action = "SetLanguage" });
             });
         }
     }

@@ -1,20 +1,100 @@
-﻿@model ApplicationUser
+﻿@using Microsoft.AspNetCore.Localization
+@model ApplicationUser
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = Model.UserName;
 }
-<div class="centered col">
-    <h1>@Model.Id</h1>
-    <h2>@Model.Email</h2>
-    @if (ViewBag.isAdmin)
-    {
-        <p>I'm Admin</p>
-    }
-    else
-    {
-        <p>I'm User</p>
-    }
-    <input type="text" name="numb" placeholder="1" />
-    <button type="button" asp-controller="Account" asp-action="ProfileNumb">CLick</button>
+<div style="margin-top:100px;">
+    <div class="col">
+        <h1>@Model.Id</h1>
+        <h2>@Model.Email</h2>
+    </div>
+    <div class="col">
+        @if (ViewBag.isAdmin)
+        {
+            <p>I'm Admin</p>
+        }
+        else
+        {
+            <p>I'm User</p>
+        }
+    </div>
+    <form method="get" asp-controller="Account" asp-action="ProfileNumb" class="col">
+        <input type="text" name="numb" placeholder="1" />
+        <button type="submit">CLick</button>
+    </form>
+    <div class="col">
+        @{
+            var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+            var curCulture = requestCulture.RequestCulture.Culture.Name;
+        }
+        @switch (curCulture)
+        {
+            case "en":
+                {
+                    <select class="form-control mr-2 col-2" id="Language" name="Language">
+                        <option>Русский</option>
+                        <option selected>English</option>
+                        <option>Deutsche</option>
+                    </select>
+                    break;
+                }
+            case "ru":
+                {
+                    <select class="form-control mr-2 col-2" id="Language" name="Language">
+                        <option selected>Русский</option>
+                        <option>English</option>
+                        <option>Deutsche</option>
+                    </select>
+                    break;
+                }
+            case "de":
+                {
+                    <select class="form-control mr-2 col-2" id="Language" name="Language">
+                        <option>Русский</option>
+                        <option>English</option>
+                        <option selected>Deutsche</option>
+                    </select>
+                    break;
+                }
+        }
+
+    </div>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#Language').change(function () {
+            var cultureVal = $(this);
+            var url = $(location).attr("href");
+            var culture = "";
+            switch (cultureVal.val()) {
+                case "Русский":
+                    {
+                        culture = "ru";
+                        break;
+                    }
+                case "English":
+                    {
+                        culture = "en";
+                        break;
+                    }
+                case "Deutsche":
+                    {
+                        culture = "de";
+                        break;
+                    }
+            }
+            var a = "";
+            $.ajax({
+                type: 'POST',
+                url: 'setlanguage',
+                data: { 'culture': culture, 'returnUrl': url },
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+}
 
