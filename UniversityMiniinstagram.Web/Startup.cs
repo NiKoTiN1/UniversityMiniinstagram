@@ -25,6 +25,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using UniversityMiniinstagram.Web.Hubs;
+using UniversityMiniinstagram.Web.Controllers;
 
 namespace UniversityMiniinstagram
 {
@@ -53,6 +56,20 @@ namespace UniversityMiniinstagram
 
             services.AddTransient<PostServices>();
             services.AddTransient<ImageServices>();
+            services.AddScoped<NewsController>();
+
+            services.AddSignalR();
+
+            services.AddCors(Options =>
+            {
+                Options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                    });
+            });
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
@@ -76,9 +93,10 @@ namespace UniversityMiniinstagram
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-
+            services.AddSignalR();
         }
 
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -106,6 +124,8 @@ namespace UniversityMiniinstagram
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSignalR(routes => { routes.MapHub<CommentaryHub>("/comment"); });
+
             app.UseMvc(routing =>
             {
                 routing.MapRoute("1", "account/login", new { controller = "Account", action = "Login"});
@@ -126,3 +146,4 @@ namespace UniversityMiniinstagram
         }
     }
 }
+    

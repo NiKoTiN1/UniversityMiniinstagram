@@ -75,40 +75,10 @@ namespace UniversityMiniinstagram.Web.Controllers
                 {
                     var result = await _postServices.AddPost(vm, _appEnvironment.WebRootPath, userIdClaim.Value);
                     if (result != null)
-                        return Ok(result);
+                        return RedirectToAction("GetAllPosts");
                 }
             }
-            return Unauthorized();
-        }
-
-        [HttpPost]
-        [Route("addComment")]
-        public ActionResult CommentPost([FromForm] CommentViewModel vm)
-        {
-            if (ModelState.IsValid && vm != null)
-            {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    var result = _postServices.AddComment(vm, userIdClaim.Value);
-                    var username = _context.Users.FirstOrDefault(user => user.Id == userIdClaim.Value);
-                    if (result != null)
-                    {
-                        string block = "<div class=\"media chat-item\">" +
-                        "<div class=\"media-body\">" +
-                            "<div class=\"chat-item-title\">" +
-                                "<span class=\"font-weight-bold\" data-filter-by=\"text\">" + username + "</span>" +
-                            "</div>" +
-                            "<div class=\"chat-item-body DIV-filter-by-text\" data-filter-by=\"text\">" +
-                                "<p>" + result.Text + "</p>" +
-                            "</div>" +
-                        "</div>" +
-                        "</div>";
-                        return Ok(block);
-                    }
-                }
-            }
-            return Unauthorized();
+            return RedirectToAction("AddPost");
         }
 
         [HttpPost]
