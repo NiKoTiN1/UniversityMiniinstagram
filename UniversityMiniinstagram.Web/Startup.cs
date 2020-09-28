@@ -56,7 +56,6 @@ namespace UniversityMiniinstagram
 
             services.AddTransient<PostServices>();
             services.AddTransient<ImageServices>();
-            services.AddScoped<NewsController>();
 
             services.AddSignalR();
 

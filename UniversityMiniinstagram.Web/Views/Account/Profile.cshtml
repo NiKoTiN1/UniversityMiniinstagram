@@ -15,6 +15,13 @@
         <timer></timer>
     </div>
     <div class="col">
+        @await Component.InvokeAsync("Date");
+    </div>
+    <div class="col">
+        @await Component.InvokeAsync("User");
+    </div>
+
+    <div class="col">
         <img src="@VLocalizer["Flag"]" />
     </div>
     <div class="col">
