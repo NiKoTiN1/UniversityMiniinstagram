@@ -25,6 +25,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Reposetries;
 
 namespace UniversityMiniinstagram
 {
@@ -51,8 +53,14 @@ namespace UniversityMiniinstagram
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 
-            services.AddTransient<PostServices>();
+            services.AddTransient<IPostService, PostService>();
+            services.AddTransient<IPostReposetry, PostReposetry>();
+
             services.AddTransient<ImageServices>();
+
+            services.AddTransient<IAccountReposetry, AccountReposetry>();
+            services.AddTransient<IAccountService, AccountService>();
+
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
@@ -122,6 +130,8 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("8", "news/all", new { controller = "News", action = "GetAllPosts" });
                 routing.MapRoute("9", "news/addPost", new { controller = "News", action = "AddPost" });
                 routing.MapRoute("10", "account/setlanguage", new { controller = "Account", action = "SetLanguage" });
+                routing.MapRoute("11", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+
             });
         }
     }

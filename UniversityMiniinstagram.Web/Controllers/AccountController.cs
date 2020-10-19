@@ -17,22 +17,18 @@ using IdentityServer4.Extensions;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using UniversityMiniinstagram.Services.Interfaces;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        RoleManager<IdentityRole> _roleManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(IAccountService accountService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _roleManager = roleManager;
-
+            _accountService = accountService;
         }
+
+        IAccountService _accountService;
 
         [HttpGet]
         [Authorize]
@@ -43,12 +39,9 @@ namespace UniversityMiniinstagram.Web.Controllers
 
             if (userIdClaim != null)
             {
-                var userInfo = await UserInfo(userIdClaim.Value);
-                if (userInfo != null)
-                {
-                    ViewBag.isAdmin = await _userManager.IsInRoleAsync(userInfo, "Admin");
-                    return View(userInfo);
-                }
+                var user = await _accountService.GetUser(userIdClaim.Value);
+                ViewBag.isAdmin = true;
+                return View(user);
             }
             return View();
         }
@@ -98,26 +91,22 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser user = new ApplicationUser {Email=model.Email, Avatar = model.Avatar, Description = model.Description, UserName=model.Username};
-                var result = await _userManager.CreateAsync(user, model.Password);
-                await _userManager.AddToRoleAsync(user, model.Role);
-                if (result.Succeeded)
-                    return RedirectToAction("Login");
-                foreach (var error in result.Errors)
+                var result = await _accountService.Register(model);
+                if(result)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    return RedirectToAction("Login");
                 }
             }
-            return BadRequest("Some Error");
+            return RedirectToAction("Register");
         }
 
         [HttpPost]
         public async Task<IActionResult> LoginPost(LoginViewModel vm)
         {
-            if (ModelState.IsValid && vm != null)
+            if (ModelState.IsValid && vm.Email != null && vm.Password != null)
             {
-                var user = await ValidateUser(vm);
-                if (user != null)
+                var result = await _accountService.Login(vm);
+                if (result)
                 {
                     if (vm.returnUrl != null)
                     {
@@ -130,46 +119,18 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
 
-        [HttpPost]
-        [Route("addrole")]
+        [HttpGet]
         public async Task<IActionResult> CreateRolePost()
         {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            var result = await _accountService.AddRole("Admin");
 
-            IdentityResult result1 = await _roleManager.CreateAsync(new IdentityRole("User"));
-            if (result.Succeeded)
+            var result1 = await _accountService.AddRole("User");
+            if (result && result1)
             {
                 return Ok();
-            }
-            else
-            {
-                foreach (var error in result1.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
             }
             return BadRequest(result1);
         }
 
-        private async Task<ApplicationUser> ValidateUser(LoginViewModel vm)
-        {
-            var user = await _userManager.FindByEmailAsync(vm.Email);
-            if (user != null)
-            {
-                var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, vm.Password);
-                if (result != PasswordVerificationResult.Failed)
-                {
-                    await _signInManager.SignInAsync(user, false);
-                    return user;
-                }
-            }
-            return null;
-        }
-
-        private async Task<ApplicationUser> UserInfo(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            return user;
-        }
     }
 }
