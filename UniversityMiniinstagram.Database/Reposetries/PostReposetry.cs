@@ -63,5 +63,11 @@ namespace UniversityMiniinstagram.Database.Reposetries
             _context.Likes.Remove(like);
             _context.SaveChanges();
         }
+
+        public ICollection<Post> GetUserPosts(string userId)
+        {
+            var userPosts = _context.Posts.Where(post => post.UserId == userId).OrderBy(post => post.UploadDate).ToList();
+            return userPosts;
+        }
     }
 }

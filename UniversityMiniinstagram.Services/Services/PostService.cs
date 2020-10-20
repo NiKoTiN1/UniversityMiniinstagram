@@ -84,7 +84,7 @@ namespace UniversityMiniinstagram.Services.Services
             _postReposetry.RemoveLike(postId, userId);
         }
 
-        public async Task<ICollection<Post>> GetAllPosts(string userId)
+        public async Task<ICollection<Post>> GetAllPosts()
         {
             var posts = _postReposetry.GetAllPosts();
             foreach (var post in posts)
@@ -93,13 +93,23 @@ namespace UniversityMiniinstagram.Services.Services
                 ICollection<Comment> coments = _postReposetry.GetComments(post.Id);
                 foreach (var comment in coments)
                 {
-                    comment.User = await _accountReposetry.GetUser(userId);
+                    comment.User = await _accountReposetry.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
                 post.Image = _postReposetry.GetImage(post.ImageId);
                 post.Comments = coments;
             }
             return posts.ToList();
+        }
+
+        public ICollection<Post> GetUserPosts(string userId)
+        {
+            var userPosts = _postReposetry.GetUserPosts(userId);
+            foreach(var post in userPosts)
+            {
+                post.Image = _postReposetry.GetImage(post.ImageId);
+            }
+            return userPosts;
         }
     }
 }

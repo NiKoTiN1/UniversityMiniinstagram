@@ -13,6 +13,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<string> AddComment(CommentViewModel vm, string userId);
         public Like AddLike(Guid postId, string userId);
         public void RemoveLike(Guid postId, string userId);
-        public Task<ICollection<Post>> GetAllPosts(string userId);
+        public Task<ICollection<Post>> GetAllPosts();
+        public ICollection<Post> GetUserPosts(string userId);
     }
 }

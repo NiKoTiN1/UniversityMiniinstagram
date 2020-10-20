@@ -5,101 +5,53 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = Model.UserName;
-}
-<div style="margin-top:100px;">
-    <div class="col">
-        <h1>@Model.Id</h1>
-        <h2>@Model.Email</h2>
-    </div>
-    <div class="col">
-        <img src="@VLocalizer["Flag"]" />
-    </div>
-    <div class="col">
-        @if (ViewBag.isAdmin)
+    List<List<Post>> a = new List<List<Post>>();
+    List<Post> b = new List<Post>();
+    foreach(var post in Model.Posts)
+    {
+        if (b.Count % 3 == 0 && b.Count != 0)
         {
-            <p>@VLocalizer["Admin"]</p>
+            a.Add(b);
+            b = new List<Post>();
         }
-        else
-        {
-            <p>@VLocalizer["User"]</p>
-        }
-    </div>
-    <form method="get" asp-controller="Account" asp-action="ProfileNumb" class="col">
-        <input type="text" name="numb" placeholder="1" />
-        <button type="submit">@VLocalizer["Btn"]</button>
-    </form>
-    <div class="col">
-        @{
-            var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-            var curCulture = requestCulture.RequestCulture.Culture.Name;
-        }
-        @switch (curCulture)
-        {
-            case "en":
-                {
-                    <select class="form-control mr-2 col-2" id="Language" name="Language">
-                        <option>Русский</option>
-                        <option selected>English</option>
-                        <option>Deutsche</option>
-                    </select>
-                    break;
-                }
-            case "ru":
-                {
-                    <select class="form-control mr-2 col-2" id="Language" name="Language">
-                        <option selected>Русский</option>
-                        <option>English</option>
-                        <option>Deutsche</option>
-                    </select>
-                    break;
-                }
-            case "de":
-                {
-                    <select class="form-control mr-2 col-2" id="Language" name="Language">
-                        <option>Русский</option>
-                        <option>English</option>
-                        <option selected>Deutsche</option>
-                    </select>
-                    break;
-                }
-        }
+        b.Add(post);
 
+    }
+    a.Add(b);
+}
+<div >
+    <div class="container centeredSt" style="
+                margin-top:100px;">
+        <div class="row mb-5">
+            <img src="/Images/noPhoto.png" class="img-fluid rounded-circle mb-2 border border-dark" style="
+        border-width: 3px !important;
+        width: 100%;
+        height: 100%;
+        max-height: 200px;
+        max-width: 200px;
+    ">
+            <div class="col-0 align-items-center pt-5 pl-4">
+                <h1>@Model.UserName</h1>
+                <h3>@Model.Description</h3>
+            </div>
+        </div>
+        @foreach (var line in a)
+        {
+            <div class="row mb-4 text-center">
+                @foreach (var col in line)
+                {
+                    <div class="col">
+                        <img src=@col.Image.Path style="
+                        object-fit: cover;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        max-height: 400px;
+                        max-width: 400px;" />
+                    </div>
+                }
+            </div>
+        }
     </div>
 </div>
-
-@section Scripts{
-    <script type="text/javascript">
-        $('#Language').change(function () {
-            var cultureVal = $(this);
-            var url = $(location).attr("href");
-            var culture = "";
-            switch (cultureVal.val()) {
-                case "Русский":
-                    {
-                        culture = "ru";
-                        break;
-                    }
-                case "English":
-                    {
-                        culture = "en";
-                        break;
-                    }
-                case "Deutsche":
-                    {
-                        culture = "de";
-                        break;
-                    }
-            }
-            var a = "";
-            $.ajax({
-                type: 'POST',
-                url: 'setlanguage',
-                data: { 'culture': culture, 'returnUrl': url },
-                success: function (data) {
-                    location.reload();
-                }
-            });
-        });
-    </script>
-}
-

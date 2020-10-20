@@ -7,7 +7,7 @@
 <div class="centeredSt">
     @foreach (var post in Model)
     {
-        <div class="row my-4">
+        <div class="customRow my-4">
             <div class="flex-lg-grow-1">
                 <div class="card rounded-lg border-0 shadow-lg mb-6 lift" style="
                 width: 500px;
@@ -88,7 +88,7 @@
                             </div>
 
                             <div class="chat-module-bottom">
-                                <form class="row">
+                                <form class="customRow row">
                                     @{
                                         var textId = post.Id.ToString() + "text";
                                         ViewBag.textId = textId;

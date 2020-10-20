@@ -36,7 +36,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             if(userIdClaim != null)
             {
                 ViewBag.UserId = userIdClaim.Value;
-                var posts = await _postServices.GetAllPosts(userIdClaim.Value);
+                var posts = await _postServices.GetAllPosts();
                 return View(posts);
             }
             return Unauthorized();

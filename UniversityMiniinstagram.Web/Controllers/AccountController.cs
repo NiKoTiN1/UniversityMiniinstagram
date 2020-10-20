@@ -23,12 +23,14 @@ namespace UniversityMiniinstagram.Web.Controllers
 {
     public class AccountController : Controller
     {
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IPostService postService)
         {
             _accountService = accountService;
+            _postService = postService;
         }
 
         IAccountService _accountService;
+        IPostService _postService;
 
         [HttpGet]
         [Authorize]
@@ -40,6 +42,8 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (userIdClaim != null)
             {
                 var user = await _accountService.GetUser(userIdClaim.Value);
+                var posts = _postService.GetUserPosts(user.Id);
+                user.Posts = posts;
                 ViewBag.isAdmin = true;
                 return View(user);
             }
