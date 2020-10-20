@@ -126,4 +126,13 @@
   <data name="LogoutBtn" xml:space="preserve">
     <value>Выход</value>
   </data>
+  <data name="ProfileBtn" xml:space="preserve">
+    <value>Профиль</value>
+  </data>
+  <data name="RegisterBtn" xml:space="preserve">
+    <value>Регистрация</value>
+  </data>
+  <data name="SettingsBtn" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
 </root>

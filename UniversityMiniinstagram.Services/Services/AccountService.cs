@@ -11,12 +11,15 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class AccountService : IAccountService
     {
-        public AccountService(IAccountReposetry accountReposetry)
+        public AccountService(IAccountReposetry accountReposetry, IImageReposetry imageReposetry)
         {
             _accountReposetry = accountReposetry;
+            _imageReposetry = imageReposetry;
+            
         }
 
         IAccountReposetry _accountReposetry;
+        IImageReposetry _imageReposetry;
         public async Task<bool> Register(RegisterViewModel vm)
         {
             var isExist = await _accountReposetry.IsExist(vm.Email);
@@ -46,6 +49,16 @@ namespace UniversityMiniinstagram.Services.Services
         public async Task<ApplicationUser> GetUser(string userId)
         {
             var user = await _accountReposetry.GetUser(userId);
+            if(user.AvatarId != null)
+            {
+                var image = _imageReposetry.GetImage(user.AvatarId.Value);
+                if (image != null)
+                {
+                    user.Avatar = image;
+                    return user;
+                }
+            }
+            user.Avatar = new Image() { Path = "/Images/noPhoto.png" };
             return user;
         }
 

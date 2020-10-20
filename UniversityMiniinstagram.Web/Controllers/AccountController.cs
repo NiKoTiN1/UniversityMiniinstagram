@@ -52,6 +52,21 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize]
+        public async Task<ViewResult> EditProfile()
+        {
+            var result = HttpContext.User.IsAuthenticated();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+
+            if (userIdClaim != null)
+            {
+                var user = await _accountService.GetUser(userIdClaim.Value);
+                return View(user);
+            }
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize]
         public IActionResult ProfileNumb(int numb)
         {
             return View(numb);

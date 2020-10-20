@@ -20,9 +20,9 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         DatabaseContext _context;
         IWebHostEnvironment _appEnvironment;
-        ImageServices _imageService;
+        ImageService _imageService;
 
-        public UploadFileController(DatabaseContext context, IWebHostEnvironment appEnvironment, ImageServices imageService)
+        public UploadFileController(DatabaseContext context, IWebHostEnvironment appEnvironment, ImageService imageService)
         {
             _context = context;
             _appEnvironment = appEnvironment;

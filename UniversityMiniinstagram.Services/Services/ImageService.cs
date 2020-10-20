@@ -8,19 +8,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UniversityMiniinstagram.Database;
+using UniversityMiniinstagram.Database.Interfases;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Services
 {
-    public class ImageServices : IImageService
+    public class ImageService : IImageService
     {
-        public ImageServices(DatabaseContext context)
+        public ImageService(IImageReposetry imageReposetry)
         {
-            _context = context;
+            _imageReposetry = imageReposetry;
         }
 
-        DatabaseContext _context;
+        IImageReposetry _imageReposetry;
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)
         {
@@ -41,8 +42,7 @@ namespace UniversityMiniinstagram.Services
                     category = vm.Category,
                     UploadDate = DateTime.Now,
                 };
-                _context.Images.Add(image);
-                _context.SaveChanges();
+                _imageReposetry.AddImage(image);
                 return image;
             }
             else

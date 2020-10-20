@@ -121,9 +121,18 @@
     <value>Add post</value>
   </data>
   <data name="LoginBtn" xml:space="preserve">
-    <value>Login</value>
+    <value>Sign in</value>
   </data>
   <data name="LogoutBtn" xml:space="preserve">
     <value>Logout</value>
+  </data>
+  <data name="ProfileBtn" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="RegisterBtn" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="SettingsBtn" xml:space="preserve">
+    <value>Settings</value>
   </data>
 </root>

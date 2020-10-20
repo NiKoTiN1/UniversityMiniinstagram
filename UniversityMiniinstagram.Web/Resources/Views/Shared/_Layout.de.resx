@@ -126,4 +126,13 @@
   <data name="LogoutBtn" xml:space="preserve">
     <value>Ausloggen</value>
   </data>
+  <data name="ProfileBtn" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="RegisterBtn" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="SettingsBtn" xml:space="preserve">
+    <value>die Einstellungen</value>
+  </data>
 </root>

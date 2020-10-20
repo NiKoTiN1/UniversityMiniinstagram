@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database;
+using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Services.Interfaces
 {
     public interface IImageService
     {
+        public Task<Image> Add(ImageViewModel vm, string rootPath);
     }
 }

@@ -9,6 +9,7 @@ namespace UniversityMiniinstagram.Database
     {
         public string Description { get; set; }
         public Image Avatar { get; set; }
+        public Guid? AvatarId { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }

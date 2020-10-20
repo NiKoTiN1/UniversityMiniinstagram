@@ -13,7 +13,7 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(DatabaseContext context, ImageServices imageServices, IPostReposetry postReposetry, IAccountReposetry accountReposetry)
+        public PostService(DatabaseContext context, IImageService imageServices, IPostReposetry postReposetry, IAccountReposetry accountReposetry)
         {
             _context = context;
             _imageServices = imageServices;
@@ -22,7 +22,7 @@ namespace UniversityMiniinstagram.Services.Services
         }
         
         DatabaseContext _context;
-        ImageServices _imageServices;
+        IImageService _imageServices;
         IPostReposetry _postReposetry;
         IAccountReposetry _accountReposetry;
         public async Task<Post> AddPost(PostViewModel vm, string rootPath, string userId)

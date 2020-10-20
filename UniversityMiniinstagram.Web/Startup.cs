@@ -53,10 +53,11 @@ namespace UniversityMiniinstagram
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 
-            services.AddTransient<IPostService, PostService>();
             services.AddTransient<IPostReposetry, PostReposetry>();
+            services.AddTransient<IPostService, PostService>();
 
-            services.AddTransient<ImageServices>();
+            services.AddTransient<IImageReposetry, ImageReposetry>();
+            services.AddTransient<IImageService, ImageService>();
 
             services.AddTransient<IAccountReposetry, AccountReposetry>();
             services.AddTransient<IAccountService, AccountService>();
@@ -130,7 +131,8 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("8", "news/all", new { controller = "News", action = "GetAllPosts" });
                 routing.MapRoute("9", "news/addPost", new { controller = "News", action = "AddPost" });
                 routing.MapRoute("10", "account/setlanguage", new { controller = "Account", action = "SetLanguage" });
-                routing.MapRoute("11", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+                routing.MapRoute("11", "account/profile/edit", new { controller = "Account", action = "EditProfile" });
+                routing.MapRoute("12", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
 
             });
         }
