@@ -67,6 +67,19 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Route("getPost")]
+        public async Task<IActionResult> GetPost([FromForm] Guid postId)
+        {
+            if (ModelState.IsValid && postId != null)
+            {
+                var post = await _postServices.GetPost(postId);
+
+                return PartialView("_PostViewCompanent", post);
+            }
+            return Unauthorized();
+        }
+
+        [HttpPost]
         [Route("addComment")]
         public async Task<ActionResult> CommentPost([FromForm] CommentViewModel vm)
         {

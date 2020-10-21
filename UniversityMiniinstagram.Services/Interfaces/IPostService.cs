@@ -15,5 +15,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public void RemoveLike(Guid postId, string userId);
         public Task<ICollection<Post>> GetAllPosts();
         public ICollection<Post> GetUserPosts(string userId);
+        public Task<Post> GetPost(Guid postId);
     }
 }

@@ -21,12 +21,6 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return posts;
         }
 
-        public Image GetImage(Guid imageId)
-        {
-            var image = _context.Images.FirstOrDefault(a => a.Id == imageId);
-            return image;
-        }
-
         public ICollection<Like> GetLikes(Guid postId)
         {
             ICollection<Like> likes = _context.Likes.Where(like => like.PostId == postId).ToList();
@@ -68,6 +62,12 @@ namespace UniversityMiniinstagram.Database.Reposetries
         {
             var userPosts = _context.Posts.Where(post => post.UserId == userId).OrderBy(post => post.UploadDate).ToList();
             return userPosts;
+        }
+
+        public Post GetPost(Guid postId)
+        {
+            var post = _context.Posts.FirstOrDefault(post => post.Id == postId);
+            return post;
         }
     }
 }

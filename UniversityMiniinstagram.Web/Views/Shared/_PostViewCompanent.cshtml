@@ -1,0 +1,26 @@
+﻿@model Post
+@*<h1>@Model.Id.ToString()</h1>*@
+
+<div class="row">
+    <div class="col-9" style="margin-left:0px; padding:0px; width:100%;">
+        <img src="@Model.Image.Path" style="max-height:600px; width:inherit; max-width:75%; border-radius: .3rem 0 0 .3rem;"/>
+    </div>
+    <div class="col">
+        <div id="@ViewBag.contentId">
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="media chat-item">
+                    <div class="media-body">
+                        <div class="chat-item-title">
+                            <span class="font-weight-bold" data-filter-by="text">@comment.User.UserName</span>
+                        </div>
+                        <div class="chat-item-body DIV-filter-by-text" data-filter-by="text">
+                            <p>@comment.Text</p>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

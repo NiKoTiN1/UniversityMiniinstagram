@@ -97,7 +97,7 @@ namespace UniversityMiniinstagram.Services.Services
                     comment.User = await _accountReposetry.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
-                post.Image = _postReposetry.GetImage(post.ImageId);
+                post.Image = _imageServices.GetImage(post.ImageId);
                 post.Comments = coments;
             }
             return posts.ToList();
@@ -108,9 +108,31 @@ namespace UniversityMiniinstagram.Services.Services
             var userPosts = _postReposetry.GetUserPosts(userId);
             foreach(var post in userPosts)
             {
-                post.Image = _postReposetry.GetImage(post.ImageId);
+                post.Image = _imageServices.GetImage(post.ImageId);
             }
             return userPosts;
+        }
+
+        public async Task<Post> GetPost(Guid postId)
+        {
+            var post = _postReposetry.GetPost(postId);
+            if(post != null)
+            {
+                var image = _imageServices.GetImage(post.ImageId);
+                if(image != null)
+                {
+                    post.Image = image;
+                }
+                var likes = _postReposetry.GetLikes(postId);
+                var comments = _postReposetry.GetComments(postId);
+                foreach(var comment in comments)
+                {
+                    comment.User = await _accountReposetry.GetUser(comment.UserId);
+                }
+                post.Likes = likes;
+                post.Comments = comments;
+            }
+            return post;
         }
     }
 }
