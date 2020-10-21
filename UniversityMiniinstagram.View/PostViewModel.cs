@@ -9,5 +9,6 @@ namespace UniversityMiniinstagram.View
     public class PostViewModel:ImageViewModel
     {
         public string Description { get; set; }
+        public Category category { get; set; }
     }
 }

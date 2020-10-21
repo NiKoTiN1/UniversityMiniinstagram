@@ -11,15 +11,14 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class AccountService : IAccountService
     {
-        public AccountService(IAccountReposetry accountReposetry, IImageReposetry imageReposetry)
+        public AccountService(IAccountReposetry accountReposetry, IImageService imageService)
         {
             _accountReposetry = accountReposetry;
-            _imageReposetry = imageReposetry;
-            
+            _imageService = imageService;
         }
 
         IAccountReposetry _accountReposetry;
-        IImageReposetry _imageReposetry;
+        IImageService _imageService;
         public async Task<bool> Register(RegisterViewModel vm)
         {
             var isExist = await _accountReposetry.IsExist(vm.Email);
@@ -51,7 +50,7 @@ namespace UniversityMiniinstagram.Services.Services
             var user = await _accountReposetry.GetUser(userId);
             if(user.AvatarId != null)
             {
-                var image = _imageReposetry.GetImage(user.AvatarId.Value);
+                var image = _imageService.GetImage(user.AvatarId.Value);
                 if (image != null)
                 {
                     user.Avatar = image;
@@ -65,6 +64,23 @@ namespace UniversityMiniinstagram.Services.Services
         public async Task<bool> AddRole(string name)
         {
             var result = await _accountReposetry.AddRole(name);
+            return result;
+        }
+        public async Task<bool> EditProfile(EditProfileViewModel vm)
+        {
+            Image image = null;
+            if(vm.File != null)
+            {
+                image = await _imageService.Add(vm, vm.WebRootPath);
+            }
+            ApplicationUser user = new ApplicationUser()
+            {
+                Id = vm.Userid,
+                Avatar = image,
+                Description = vm.Description,
+                UserName = vm.Username
+            };
+            var result = await _accountReposetry.UpdateUser(user);
             return result;
         }
     }

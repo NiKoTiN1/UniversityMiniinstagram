@@ -12,6 +12,5 @@ namespace UniversityMiniinstagram.View
     public class ImageViewModel
     { 
         public IFormFile File { get; set; }
-        public Category Category { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> Register(RegisterViewModel vm);
         public Task<bool> Login(LoginViewModel vm);
         public Task<ApplicationUser> GetUser(string userId);
+        public Task<bool> EditProfile(EditProfileViewModel vm);
         public Task<bool> AddRole(string name);
     }
 }

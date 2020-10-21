@@ -18,19 +18,22 @@ using System.Security.Principal;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using UniversityMiniinstagram.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
     public class AccountController : Controller
     {
-        public AccountController(IAccountService accountService, IPostService postService)
+        public AccountController(IAccountService accountService, IPostService postService, IWebHostEnvironment appEnvironment)
         {
             _accountService = accountService;
             _postService = postService;
+            _appEnvironment = appEnvironment;
         }
 
         IAccountService _accountService;
         IPostService _postService;
+        IWebHostEnvironment _appEnvironment;
 
         [HttpGet]
         [Authorize]
@@ -135,6 +138,27 @@ namespace UniversityMiniinstagram.Web.Controllers
                 }
             }
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
+        {
+            vm.WebRootPath = _appEnvironment.WebRootPath;
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if(userIdClaim.Value == null)
+            {
+                return Unauthorized();
+            }
+            vm.Userid = userIdClaim.Value;
+            if (ModelState.IsValid && vm.Username != null)
+            {
+                var result = await _accountService.EditProfile(vm);
+                if(result)
+                {
+                    return RedirectToAction("Profile");
+                }    
+            }
+            return RedirectToAction("EditProfilePost");
         }
 
 

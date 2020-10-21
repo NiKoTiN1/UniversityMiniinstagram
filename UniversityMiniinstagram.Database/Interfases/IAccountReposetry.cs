@@ -21,5 +21,6 @@ namespace UniversityMiniinstagram.Database.Interfases
 
         public Task<bool> AddRole(string name);
 
+        public Task<bool> UpdateUser(ApplicationUser user);
     }
 }

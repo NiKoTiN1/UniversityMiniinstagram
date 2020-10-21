@@ -12,6 +12,5 @@ namespace UniversityMiniinstagram.Database
         [Required]
         public string Path { get; set; }
         public DateTime UploadDate { get; set; }
-        public Category category { get; set; }
     }
 }

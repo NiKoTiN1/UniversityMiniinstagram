@@ -39,7 +39,6 @@ namespace UniversityMiniinstagram.Services
                 {
                     Id = imageGuid,
                     Path = path,
-                    category = vm.Category,
                     UploadDate = DateTime.Now,
                 };
                 _imageReposetry.AddImage(image);
@@ -48,5 +47,12 @@ namespace UniversityMiniinstagram.Services
             else
                 return null ;
         }
+
+        public Image GetImage(Guid imageId)
+        {
+            var image = _imageReposetry.GetImage(imageId);
+            return image;
+        }
+
     }
 }

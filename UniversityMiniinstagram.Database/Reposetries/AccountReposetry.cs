@@ -66,10 +66,21 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return result.Succeeded;
         }
 
+        public async Task<bool> UpdateUser(ApplicationUser user)
+        {
+            var baseUser = await _userManager.FindByIdAsync(user.Id);
+            baseUser.Avatar = user.Avatar;
+            baseUser.UserName = user.UserName;
+            baseUser.Description = user.Description;
+            var result = await _userManager.UpdateAsync(baseUser);
+            return result.Succeeded;
+        }
+
         public async Task<bool> IsExist(string mail)
         {
             var result = await _userManager.FindByEmailAsync(mail);
             return (result == null);
         }
+
     }
 }

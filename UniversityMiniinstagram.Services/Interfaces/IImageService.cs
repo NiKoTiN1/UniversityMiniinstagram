@@ -10,5 +10,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
     public interface IImageService
     {
         public Task<Image> Add(ImageViewModel vm, string rootPath);
+        public Image GetImage(Guid imageId);
     }
 }

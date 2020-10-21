@@ -27,7 +27,7 @@ namespace UniversityMiniinstagram.Services.Services
         IAccountReposetry _accountReposetry;
         public async Task<Post> AddPost(PostViewModel vm, string rootPath, string userId)
         {
-            var image = await _imageServices.Add(new ImageViewModel() { File = vm.File, Category = vm.Category }, rootPath);
+            var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
             if(image != null)
             {
                 Post newPost = new Post()
@@ -36,7 +36,8 @@ namespace UniversityMiniinstagram.Services.Services
                     Description = vm.Description,
                     Image = image,
                     UploadDate = DateTime.Now,
-                    UserId = userId
+                    UserId = userId,
+                    category = vm.category
                 };
                 _postReposetry.AddPost(newPost);
                 return newPost;
