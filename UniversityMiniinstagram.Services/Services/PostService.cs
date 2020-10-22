@@ -13,18 +13,18 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(DatabaseContext context, IImageService imageServices, IPostReposetry postReposetry, IAccountReposetry accountReposetry)
+        public PostService(DatabaseContext context, IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
         {
             _context = context;
             _imageServices = imageServices;
             _postReposetry = postReposetry;
-            _accountReposetry = accountReposetry;
+            _accountService = accountService;
         }
         
         DatabaseContext _context;
         IImageService _imageServices;
         IPostReposetry _postReposetry;
-        IAccountReposetry _accountReposetry;
+        IAccountService _accountService;
         public async Task<Post> AddPost(PostViewModel vm, string rootPath, string userId)
         {
             var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
@@ -47,7 +47,7 @@ namespace UniversityMiniinstagram.Services.Services
 
         public async Task<string> AddComment(CommentViewModel vm, string userId)
         {
-            var user = await _accountReposetry.GetUser(userId);
+            var user = await _accountService.GetUser(userId);
             Comment newComment = new Comment()
             {
                 Id = Guid.NewGuid(),
@@ -94,7 +94,7 @@ namespace UniversityMiniinstagram.Services.Services
                 ICollection<Comment> coments = _postReposetry.GetComments(post.Id);
                 foreach (var comment in coments)
                 {
-                    comment.User = await _accountReposetry.GetUser(comment.UserId);
+                    comment.User = await _accountService.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
                 post.Image = _imageServices.GetImage(post.ImageId);
@@ -127,8 +127,10 @@ namespace UniversityMiniinstagram.Services.Services
                 var comments = _postReposetry.GetComments(postId);
                 foreach(var comment in comments)
                 {
-                    comment.User = await _accountReposetry.GetUser(comment.UserId);
+                    comment.User = await _accountService.GetUser(comment.UserId);
                 }
+                var user = await _accountService.GetUser(post.UserId);
+                post.User = user;
                 post.Likes = likes;
                 post.Comments = comments;
             }
