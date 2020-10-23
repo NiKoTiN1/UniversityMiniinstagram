@@ -79,8 +79,6 @@
     </div>
 </div>
 
-
-
 <script type="text/javascript">
     $('.Post').click(function () {
         var postId = $(this).attr("value");
@@ -99,6 +97,7 @@
     });
 
     $('#ModalParrent').on('hide.bs.modal', function (event) {
-        $('#ModalBody').children().eq(0).remove();
+        $('#ModalBody').children().remove();
     })
+
 </script>

@@ -6,9 +6,9 @@
         padding-right: 0px;
         width:100%;">
         <img src="@Model.Image.Path" style="
-            max-height:600px; 
+            max-height:600px;
             width:inherit;
-            border-radius: .3rem 0 0 .3rem;"/>
+            border-radius: .3rem 0 0 .3rem;" />
     </div>
 
     <div class="col-3">
@@ -32,7 +32,7 @@
         <div class="row" style=" margin: 0 auto;">
             <hr style="width:95%;text-align:left;margin-left:0; color:black;border-top: 1px solid rgba(0,0,0);">
         </div>
-        <div id="@ViewBag.contentId" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
+        <div id="CommentArea" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
             @foreach (var comment in Model.Comments)
             {
                 <div class="media chat-item">
@@ -80,7 +80,7 @@
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">
             <form class="row" style="margin-left: auto; margin-right: auto; width: inherit;">
-                <textarea id="@ViewBag.textId" class="form-control col ml-2" rows="1" style="resize: none; margin-left: 0px !important;"></textarea>
+                <textarea id="TextArea" class="form-control col ml-2" rows="1" style="resize: none; margin-left: 0px !important;"></textarea>
                 <label class="col-0" style="cursor: pointer; padding-left: 10px; padding-right: 40px;">
                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cursor-fill mt-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z" />
@@ -91,3 +91,55 @@
         </div>
     </div>
 </div>
+<script>
+    $('.Like').click(function () {
+        console.log("msklmscsdl");
+        var label = $(this).parent();
+        var postId = $(this).attr("value");
+        var svg = label.children().eq(0);
+        var svgL = label.children().eq(1);
+        var likesCount = label.children().eq(3);
+        var isLiked = label.children().eq(2).attr("value");
+        if (isLiked == "1") {
+            $.ajax({
+                type: 'DELETE',
+                url: '@Url.Content("~/news/removeLike")',
+                data: { 'postId': postId },
+                success: function (data) {
+                    svgL.hide();
+                    svg.show();
+                    label.children().eq(2).attr("value", "0");
+                    likesCount.text(parseInt(likesCount.text()) - 1);
+                }
+            });
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/news/addLike")',
+                data: { 'postId': postId },
+                success: function (data) {
+                    svg.hide();
+                    svgL.show();
+                    label.children().eq(2).attr("value", "1");
+                    likesCount.text(parseInt(likesCount.text()) + 1);
+                }
+            });
+
+        }
+    });
+
+    $('.SendComment').click(function () {
+        var postId = $(this).attr("value");
+        var text = $('#TextArea').val();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Content("~/news/addComment")',
+            data: { 'postId': postId, 'text': text },
+            success: function (data) {
+                $('#CommentArea').append(data);
+                $('#TextArea').val("")
+            }
+        });
+    });
+</script>

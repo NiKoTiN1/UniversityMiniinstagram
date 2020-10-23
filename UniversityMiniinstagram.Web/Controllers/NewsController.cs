@@ -73,7 +73,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (ModelState.IsValid && postId != null)
             {
                 var post = await _postServices.GetPost(postId);
-
+                ViewBag.UserId = post.User.Id;
                 return PartialView("_PostViewCompanent", post);
             }
             return Unauthorized();
