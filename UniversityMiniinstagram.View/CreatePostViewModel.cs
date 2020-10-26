@@ -6,7 +6,7 @@ using UniversityMiniinstagram.Database;
 
 namespace UniversityMiniinstagram.View
 {
-    public class PostViewModel:ImageViewModel
+    public class CreatePostViewModel:ImageViewModel
     {
         public string Description { get; set; }
         public Category category { get; set; }

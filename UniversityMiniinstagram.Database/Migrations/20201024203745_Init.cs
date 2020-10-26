@@ -27,8 +27,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Path = table.Column<string>(nullable: false),
-                    UploadDate = table.Column<DateTime>(nullable: false),
-                    category = table.Column<int>(nullable: false)
+                    UploadDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,6 +180,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     ImageId = table.Column<Guid>(nullable: false),
                     UploadDate = table.Column<DateTime>(nullable: false),
+                    category = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -195,6 +195,31 @@ namespace UniversityMiniinstagram.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Posts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RolesBeforeBan",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    RoleId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolesBeforeBan", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolesBeforeBan_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RolesBeforeBan_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -246,6 +271,39 @@ namespace UniversityMiniinstagram.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Likes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reports",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    CommentId = table.Column<Guid>(nullable: false),
+                    PostId = table.Column<Guid>(nullable: false),
+                    IsPostReport = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reports", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reports_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reports_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reports_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -325,6 +383,32 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "IX_Posts_UserId",
                 table: "Posts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_CommentId",
+                table: "Reports",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_PostId",
+                table: "Reports",
+                column: "PostId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reports_UserId",
+                table: "Reports",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolesBeforeBan_RoleId",
+                table: "RolesBeforeBan",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolesBeforeBan_UserId",
+                table: "RolesBeforeBan",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -345,10 +429,16 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Likes");
 
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "Reports");
+
+            migrationBuilder.DropTable(
+                name: "RolesBeforeBan");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

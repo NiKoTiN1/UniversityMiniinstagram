@@ -8,6 +8,7 @@ namespace UniversityMiniinstagram.Database.Interfases
     public interface IAccountReposetry
     {
         public Task<bool> IsExist(string mail);
+        public Task<bool> IsInRole(ApplicationUser user, string role);
 
         public Task<bool> CreateUser(ApplicationUser user, string password);
 

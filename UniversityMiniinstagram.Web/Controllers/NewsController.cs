@@ -35,15 +35,34 @@ namespace UniversityMiniinstagram.Web.Controllers
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             if(userIdClaim != null)
             {
+                List<PostsViewModel> postsViewModels = new List<PostsViewModel>();
                 ViewBag.UserId = userIdClaim.Value;
                 var posts = await _postServices.GetAllPosts();
-                return View(posts);
+                foreach(var post in posts)
+                {
+                    PostsViewModel postVm = new PostsViewModel()
+                    {
+                        Post = post,
+                        vm = new List<CommentViewModel>()
+                    };
+                    foreach (var comment in post.Comments)
+                    {
+                        CommentViewModel commVm = new CommentViewModel();
+                        commVm.Comment = comment;
+                        commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
+                        commVm.IsReportRelated = _postServices.isReportRelated(comment.UserId, userIdClaim.Value);
+                        postVm.vm.Add(commVm);
+                    }
+                    postsViewModels.Add(postVm);
+                }
+                return View(postsViewModels);
             }
             return Unauthorized();
         }
 
         [HttpGet]
         [Route("addPost")]
+
         public IActionResult AddPost()
         {
             return View();
@@ -51,7 +70,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addPost")]
-        public async Task<IActionResult> AddPost([FromForm] PostViewModel vm)
+        public async Task<IActionResult> AddPost([FromForm] CreatePostViewModel vm)
         {
             if(ModelState.IsValid && vm != null)
             {
@@ -72,16 +91,35 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var post = await _postServices.GetPost(postId);
-                ViewBag.UserId = post.User.Id;
-                return PartialView("_PostViewCompanent", post);
+                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim != null)
+                {
+                    var post = await _postServices.GetPost(postId);
+                    ViewBag.UserId = post.User.Id;
+                    PostsViewModel postVm = new PostsViewModel()
+                    {
+                        Post = post,
+                        vm = new List<CommentViewModel>()
+                    };
+                    foreach (var comment in post.Comments)
+                    {
+                        CommentViewModel commVm = new CommentViewModel()
+                        {
+                            Comment = comment,
+                            IsDeleteRelated = await _postServices.isDeleteRelated(post.User, userIdClaim.Value),
+                            IsReportRelated = _postServices.isReportRelated(post.UserId, userIdClaim.Value)
+                        };
+                        postVm.vm.Add(commVm);
+                    }
+                    return PartialView("_ProfilePost", postVm);
+                }
             }
             return Unauthorized();
         }
 
         [HttpPost]
         [Route("addComment")]
-        public async Task<ActionResult> CommentPost([FromForm] CommentViewModel vm)
+        public async Task<ActionResult> CommentPost([FromForm] SendCommentViewModel vm)
         {
             if (ModelState.IsValid && vm.Text != null && vm.PostId != null)
             {
@@ -89,10 +127,28 @@ namespace UniversityMiniinstagram.Web.Controllers
                 if (userIdClaim != null)
                 {
                     var result = await _postServices.AddComment(vm, userIdClaim.Value);
-                    if (result != null)
+                    CommentViewModel commentViewModel = new CommentViewModel()
                     {
-                        return Ok(result);
-                    }
+                        Comment = result,
+                        IsDeleteRelated = await _postServices.isDeleteRelated(result.User, userIdClaim.Value),
+                        IsReportRelated = _postServices.isReportRelated(result.UserId, userIdClaim.Value)
+                    };
+                    return PartialView("_CommentBlock", commentViewModel);
+                }
+            }
+            return Unauthorized();
+        }
+
+        [HttpDelete]
+        [Route("removedComment")]
+        public ActionResult RemoveCommentPost([FromForm] Guid commentId)
+        {
+            if (ModelState.IsValid && commentId != null)
+            {
+                var postId = _postServices.RemoveComment(commentId);
+                if(postId != new Guid())
+                {
+                    return Ok(postId);
                 }
             }
             return Unauthorized();

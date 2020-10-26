@@ -82,5 +82,9 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return (result == null);
         }
 
+        public async Task<bool> IsInRole(ApplicationUser user, string role)
+        {
+            return await _userManager.IsInRoleAsync(user, role);
+        }
     }
 }

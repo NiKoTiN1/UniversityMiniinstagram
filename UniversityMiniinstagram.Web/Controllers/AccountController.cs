@@ -54,7 +54,6 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ViewResult> EditProfile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -168,11 +167,33 @@ namespace UniversityMiniinstagram.Web.Controllers
             var result = await _accountService.AddRole("Admin");
 
             var result1 = await _accountService.AddRole("User");
+            var result2 = await _accountService.AddRole("Modarator");
+            var result3 = await _accountService.AddRole("Banned");
+
             if (result && result1)
             {
                 return Ok();
             }
             return BadRequest(result1);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> AccessDenied()
+        {
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            var user = await _accountService.GetUser(userIdClaim.Value);
+            IsInRoleViewModel vm = new IsInRoleViewModel()
+            { 
+                user = user,
+                roleName = "User"
+            };
+            var isBanned = !await _accountService.IsInRole(vm);
+            if (isBanned)
+            {
+                return RedirectToAction("GetAllPosts", "News");
+            }
+            return BadRequest();
         }
 
     }

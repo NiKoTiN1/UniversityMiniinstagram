@@ -13,19 +13,17 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(DatabaseContext context, IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
+        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
         {
-            _context = context;
             _imageServices = imageServices;
             _postReposetry = postReposetry;
             _accountService = accountService;
         }
         
-        DatabaseContext _context;
         IImageService _imageServices;
         IPostReposetry _postReposetry;
         IAccountService _accountService;
-        public async Task<Post> AddPost(PostViewModel vm, string rootPath, string userId)
+        public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
             if(image != null)
@@ -45,7 +43,7 @@ namespace UniversityMiniinstagram.Services.Services
             return null;
         }
 
-        public async Task<string> AddComment(CommentViewModel vm, string userId)
+        public async Task<Comment> AddComment(SendCommentViewModel vm, string userId)
         {
             var user = await _accountService.GetUser(userId);
             Comment newComment = new Comment()
@@ -54,19 +52,10 @@ namespace UniversityMiniinstagram.Services.Services
                 Text = vm.Text,
                 UserId = userId,
                 PostId = vm.PostId,
+                User = user
             };
             _postReposetry.AddComment(newComment);
-            string block = "<div class=\"media chat-item\">" +
-                "<div class=\"media-body\">" +
-                    "<div class=\"chat-item-title\">" +
-                        "<span class=\"font-weight-bold\" data-filter-by=\"text\">" + user.UserName + "</span>" +
-                    "</div>" +
-                    "<div class=\"chat-item-body DIV-filter-by-text\" data-filter-by=\"text\">" +
-                        "<p>" + vm.Text + "</p>" +
-                    "</div>" +
-                "</div>" +
-                "</div>";
-            return block;
+            return newComment;
         }
 
         public Like AddLike(Guid postId, string userId)
@@ -136,5 +125,43 @@ namespace UniversityMiniinstagram.Services.Services
             }
             return post;
         }
+
+        public Guid RemoveComment(Guid commentId)
+        {
+            var comment = _postReposetry.GetComment(commentId);
+            var postId = comment.PostId;
+            if(comment != null)
+            {
+                _postReposetry.RemoveComment(comment);
+                return postId;
+            }
+            return new Guid();
+        }
+        public async Task<bool> isDeleteRelated(ApplicationUser postHolder, string guestId)
+        {
+            if(postHolder.Id == guestId)
+            {
+                return true;
+            }
+            var guest = await _accountService.GetUser(guestId);
+            if(await _accountService.IsInRole(new IsInRoleViewModel() { user = guest, roleName = "Admin" }))
+            {
+                return true;
+            }
+            if (await _accountService.IsInRole(new IsInRoleViewModel() { user = guest, roleName = "Moderator" }))
+            {
+                if(!await _accountService.IsInRole(new IsInRoleViewModel() { user = guest, roleName = "Admin" }))
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+        public bool isReportRelated(string postHolderId, string guestId)
+        {
+            return postHolderId != guestId;
+        }
+
     }
 }

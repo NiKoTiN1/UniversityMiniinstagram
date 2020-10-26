@@ -1,11 +1,11 @@
-﻿@model Post
+﻿@model PostsViewModel
 
 <div class="row">
     <div class="col-9" style="
         margin-left:0px;
         padding-right: 0px;
         width:100%;">
-        <img src="@Model.Image.Path" style="
+        <img src="@Model.Post.Image.Path" style="
             max-height:600px;
             width:inherit;
             border-radius: .3rem 0 0 .3rem;" />
@@ -14,7 +14,7 @@
     <div class="col-3">
         <div class="row" style="height: 56px;">
             <div class="col" style="max-width: fit-content;">
-                <img src="@Model.User.Avatar.Path" class="img-fluid rounded-circle mb-2 border border-dark" style="
+                <img src="@Model.Post.User.Avatar.Path" class="img-fluid rounded-circle mb-2 border border-dark" style="
                     border-width: 3px !important;
                     width: 100%;
                     height: 100%;
@@ -26,33 +26,23 @@
                 padding-left: 0px;
                 display: flex;
                 align-items: center;">
-                <h5>@Model.User.UserName</h5>
+                <h5>@Model.Post.User.UserName</h5>
             </div>
         </div>
         <div class="row" style=" margin: 0 auto;">
             <hr style="width:95%;text-align:left;margin-left:0; color:black;border-top: 1px solid rgba(0,0,0);">
         </div>
         <div id="CommentArea" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
-            @foreach (var comment in Model.Comments)
+            @foreach (var commentVm in Model.vm)
             {
-                <div class="media chat-item">
-                    <div class="media-body">
-                        <div class="chat-item-title">
-                            <span class="font-weight-bold" data-filter-by="text">@comment.User.UserName</span>
-                        </div>
-                        <div class="chat-item-body DIV-filter-by-text" data-filter-by="text">
-                            <p>@comment.Text</p>
-                        </div>
-
-                    </div>
-                </div>
+                @await Component.InvokeAsync("Comment", new { vm = commentVm })
             }
         </div>
         <div class="row" style=" position: absolute; bottom: 45px; margin-left: auto; width: 90%;">
             <hr style="width:95%;text-align:left;margin-left:0; color:black;border-top: 1px solid rgba(0,0,0);">
             <label style="cursor: pointer;">
                 @{
-                    var count = Model.Likes.Where(userLike => userLike.UserId == ViewBag.UserId).Count();
+                    var count = Model.Post.Likes.Where(userLike => userLike.UserId == ViewBag.UserId).Count();
                     if (count != 0)
                     {
                         <svg style="display:none;" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-heart " fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -65,17 +55,17 @@
                     }
                     else
                     {
-                        <svg id="@Model.Id svg" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-heart" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="@Model.Post.Id svg" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-heart" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
                         </svg>
-                        <svg id="@Model.Id svgL" style="display:none;" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="@Model.Post.Id svgL" style="display:none;" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
                         </svg>
                         <a value="0" hidden></a>
                     }
-                    <a class="mr-2">@Model.Likes.Count</a>
+                    <a class="mr-2">@Model.Post.Likes.Count</a>
                 }
-                <input type="button" value="@Model.Id" hidden="hidden" class="Like">
+                <input type="button" value="@Model.Post.Id" hidden="hidden" class="Like">
             </label>
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">
@@ -85,7 +75,7 @@
                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cursor-fill mt-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z" />
                     </svg>
-                    <input type="button" value="@Model.Id" hidden="hidden" class="SendComment">
+                    <input type="button" value="@Model.Post.Id" hidden="hidden" class="SendComment">
                 </label>
             </form>
         </div>
@@ -93,7 +83,6 @@
 </div>
 <script>
     $('.Like').click(function () {
-        console.log("msklmscsdl");
         var label = $(this).parent();
         var postId = $(this).attr("value");
         var svg = label.children().eq(0);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using UniversityMiniinstagram.Database;
 
@@ -8,9 +7,9 @@ namespace UniversityMiniinstagram.View
 {
     public class CommentViewModel
     {
-        [Required]
-        public Guid PostId { get; set; }
-        [Required]
-        public string Text { get; set; }
+        public Comment Comment { get; set; }
+        public bool IsDeleteRelated { get; set; }
+        public bool IsReportRelated { get; set; }
+
     }
 }

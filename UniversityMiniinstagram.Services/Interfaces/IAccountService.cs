@@ -14,5 +14,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ApplicationUser> GetUser(string userId);
         public Task<bool> EditProfile(EditProfileViewModel vm);
         public Task<bool> AddRole(string name);
+        public Task<bool> IsInRole(IsInRoleViewModel vm);
     }
 }

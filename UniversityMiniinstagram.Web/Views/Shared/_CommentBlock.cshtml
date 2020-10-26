@@ -1,0 +1,65 @@
+﻿@model CommentViewModel
+@{
+    var contentId = Model.Comment.Id.ToString() + "content";
+}
+<div id="@contentId">
+    <div class="media chat-item">
+        <div class="media-body">
+            <div class="row justify-content-between" style=" max-height: 27px;">
+                <span class="col-9 font-weight-bold" data-filter-by="text">@Model.Comment.User.UserName</span>
+                <div class="dropleft col">
+                    @{ 
+                        var buttonId = Model.Comment.Id + "Button";
+                    }
+                    <button class="btn" type="button" id="@buttonId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="box-shadow: none;">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="@buttonId">
+                        @{
+                            var deleteId = Model.Comment.Id + "Delete";
+                            var reportId = Model.Comment.Id + "Report";
+                        }
+                        @if (Model.IsDeleteRelated)
+                        {
+                            <a class="dropdown-item dropdownEl" id="@deleteId">Delete</a>
+                        }
+                        @if (Model.IsReportRelated)
+                        {
+                            <a class="dropdown-item dropdownEl" id="@reportId">Report</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="chat-item-body DIV-filter-by-text" data-filter-by="text">
+                <p>@Model.Comment.Text</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#@deleteId').click(function () {
+        var label = $(this).attr("id");
+        label = label.replace('Delete', '');
+        var comment = $('#' + label + 'content');
+        console.log(label);
+        $.ajax({
+            type: 'DELETE',
+            url: '@Url.Content("~/news/removedComment")',
+            data: { 'commentId': label },
+            success: function (data) {
+                var countComment = $('#' + data + 'count');
+                countComment.text(parseInt(countComment.text()) - 1);
+                comment.remove();
+                }
+            });
+    });
+
+    $('#@reportId').click(function () {
+        var label = $(this).attr("id");
+        label = label.replace('Report', '');
+        console.log(label);
+    });
+</script>

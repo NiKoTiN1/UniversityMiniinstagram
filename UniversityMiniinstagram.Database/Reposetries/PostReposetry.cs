@@ -32,6 +32,11 @@ namespace UniversityMiniinstagram.Database.Reposetries
             ICollection<Comment> comments = _context.Comments.Where(comment => comment.PostId == postId).ToList();
             return comments;
         }
+        public Comment GetComment(Guid commentId)
+        {
+            var comment = _context.Comments.FirstOrDefault(comment => comment.Id == commentId);
+            return comment;
+        }
 
         public void AddPost(Post post)
         {
@@ -68,6 +73,12 @@ namespace UniversityMiniinstagram.Database.Reposetries
         {
             var post = _context.Posts.FirstOrDefault(post => post.Id == postId);
             return post;
+        }
+
+        public void RemoveComment(Comment comment)
+        {
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
         }
     }
 }

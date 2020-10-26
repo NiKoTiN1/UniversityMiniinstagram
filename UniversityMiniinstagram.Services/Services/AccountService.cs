@@ -39,6 +39,12 @@ namespace UniversityMiniinstagram.Services.Services
             return false;
         }
 
+        public async Task<bool> IsInRole(IsInRoleViewModel vm)
+        {
+            var isInRole = await _accountReposetry.IsInRole(vm.user, vm.roleName);
+            return isInRole;
+        }
+
         public async Task<bool> Login (LoginViewModel vm)
         {
             var result = await _accountReposetry.Login(vm.Email, vm.Password);
