@@ -12,6 +12,6 @@ namespace UniversityMiniinstagram.Database.Models
         public Comment Comment { get; set; }
         public Guid? CommentId { get; set; }
         public Post Post { get; set; }
-        public Guid PostId { get; set; }
+        public Guid? PostId { get; set; }
     }
 }

@@ -108,8 +108,8 @@ namespace UniversityMiniinstagram.Web.Controllers
                         CommentViewModel commVm = new CommentViewModel()
                         {
                             Comment = comment,
-                            IsDeleteRelated = await _postServices.isDeleteRelated(post.User, userIdClaim.Value),
-                            IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, commentId:comment.Id)
+                            IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value),
+                            IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId:comment.Id)
                         };
                         postVm.vm.Add(commVm);
                     }

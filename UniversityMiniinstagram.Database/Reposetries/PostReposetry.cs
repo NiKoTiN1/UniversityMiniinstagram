@@ -77,6 +77,11 @@ namespace UniversityMiniinstagram.Database.Reposetries
 
         public void RemoveComment(Comment comment)
         {
+            var reports = _context.Reports.Where(report => report.CommentId == comment.Id);
+            foreach(var report in reports)
+            {
+                _context.Reports.Remove(report);
+            }
             _context.Comments.Remove(comment);
             _context.SaveChanges();
         }

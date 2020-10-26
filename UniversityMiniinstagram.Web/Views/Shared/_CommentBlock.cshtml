@@ -1,4 +1,4 @@
-﻿@model CommentViewModel
+﻿    @model CommentViewModel
 @{
     var contentId = Model.Comment.Id.ToString() + "content";
 }
@@ -61,8 +61,17 @@
     });
 
     $('#@reportId').click(function () {
-        var label = $(this).attr("id");
+        var elem = $(this);
+        var label = elem.attr("id");
         label = label.replace('Report', '');
         console.log(label);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Content("~/report/send")',
+            data: { 'CommentId': label  },
+            success: function (data) {
+                elem.remove();
+            }
+        });
     });
 </script>

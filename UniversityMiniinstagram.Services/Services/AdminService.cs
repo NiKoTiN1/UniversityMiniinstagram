@@ -19,7 +19,7 @@ namespace UniversityMiniinstagram.Services.Services
 
         public void ReportComment(SendReportViewModel vm)
         {
-            _adminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, CommentId = vm.CommentId, UserId = vm.UserId });
+            _adminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
         }
 
         public void ReportPost(SendReportViewModel vm)
