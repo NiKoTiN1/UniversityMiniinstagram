@@ -9,5 +9,6 @@ namespace UniversityMiniinstagram.View
     {
         public Post Post { get; set; }
         public ICollection<CommentViewModel> vm { get; set; }
+        public bool IsReportRelated { get; set; }
     }
 }

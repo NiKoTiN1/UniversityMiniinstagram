@@ -13,16 +13,18 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
+        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService, IAdminService adminService)
         {
             _imageServices = imageServices;
             _postReposetry = postReposetry;
             _accountService = accountService;
+            _adminService = adminService;
         }
         
         IImageService _imageServices;
         IPostReposetry _postReposetry;
         IAccountService _accountService;
+        IAdminService _adminService;
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
@@ -158,9 +160,37 @@ namespace UniversityMiniinstagram.Services.Services
             }
             return false;
         }
-        public bool isReportRelated(string postHolderId, string guestId)
+        public async Task<bool> isReportRelated(string postHolderId, string guestId, Guid postId=new Guid(), Guid commentId = new Guid())
         {
-            return postHolderId != guestId;
+            if (postHolderId == guestId)
+            {
+                return false;
+            }
+            if(postId != new Guid())
+            {
+                if (_adminService.IsPostReported(postId, guestId))
+                {
+                    return false;
+                }
+            }
+            if (commentId != new Guid())
+            {
+                if (_adminService.IsCommentReported(commentId, guestId))
+                {
+                    return false;
+                }
+            }
+            var postHolderUser = await _accountService.GetUser(postHolderId);
+            IsInRoleViewModel isInRolePostHolderVM = new IsInRoleViewModel()
+            {
+                user = postHolderUser,
+                roleName = "Admin"
+            };
+            if(await _accountService.IsInRole(isInRolePostHolderVM))
+            {
+                return false;
+            }
+            return true;
         }
 
     }

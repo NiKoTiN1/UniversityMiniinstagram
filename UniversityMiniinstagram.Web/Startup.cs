@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using UniversityMiniinstagram.Database.Interfases;
 using UniversityMiniinstagram.Database.Reposetries;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram
 {
@@ -62,6 +64,8 @@ namespace UniversityMiniinstagram
             services.AddTransient<IAccountReposetry, AccountReposetry>();
             services.AddTransient<IAccountService, AccountService>();
 
+            services.AddTransient<IAdminReposetry, AdminReposetry>();
+            services.AddTransient<IAdminService, AdminService>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
@@ -135,10 +139,10 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("12", "account/profile/edited", new { controller = "Account", action = "EditProfilePost" });
                 routing.MapRoute("13", "news/getPost", new { controller = "News", action = "GetPost" });
                 routing.MapRoute("14", "Account/AccessDenied", new { controller = "Account", action = "AccessDenied" });
-
                 routing.MapRoute("15", "news/removedComment", new { controller = "News", action = "RemoveCommentPost" });
+                routing.MapRoute("16", "report/send", new { controller = "Admin", action = "SendReport" });
 
-                routing.MapRoute("16", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+                routing.MapRoute("17", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
 
             });
         }

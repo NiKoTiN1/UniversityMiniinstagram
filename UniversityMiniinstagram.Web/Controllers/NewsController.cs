@@ -43,6 +43,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     PostsViewModel postVm = new PostsViewModel()
                     {
                         Post = post,
+                        IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId:post.Id),
                         vm = new List<CommentViewModel>()
                     };
                     foreach (var comment in post.Comments)
@@ -50,7 +51,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                         CommentViewModel commVm = new CommentViewModel();
                         commVm.Comment = comment;
                         commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
-                        commVm.IsReportRelated = _postServices.isReportRelated(comment.UserId, userIdClaim.Value);
+                        commVm.IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId:comment.Id);
                         postVm.vm.Add(commVm);
                     }
                     postsViewModels.Add(postVm);
@@ -99,6 +100,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     PostsViewModel postVm = new PostsViewModel()
                     {
                         Post = post,
+                        IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId:postId),
                         vm = new List<CommentViewModel>()
                     };
                     foreach (var comment in post.Comments)
@@ -107,7 +109,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                         {
                             Comment = comment,
                             IsDeleteRelated = await _postServices.isDeleteRelated(post.User, userIdClaim.Value),
-                            IsReportRelated = _postServices.isReportRelated(post.UserId, userIdClaim.Value)
+                            IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, commentId:comment.Id)
                         };
                         postVm.vm.Add(commVm);
                     }
@@ -131,7 +133,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     {
                         Comment = result,
                         IsDeleteRelated = await _postServices.isDeleteRelated(result.User, userIdClaim.Value),
-                        IsReportRelated = _postServices.isReportRelated(result.UserId, userIdClaim.Value)
+                        IsReportRelated = await _postServices.isReportRelated(result.UserId, userIdClaim.Value, commentId:result.Id)
                     };
                     return PartialView("_CommentBlock", commentViewModel);
                 }

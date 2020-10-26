@@ -60,9 +60,14 @@
                                 <a value="0" hidden></a>
                                 @{
                                     var countComm = post.Post.Id.ToString() + "count";
+                                    var postReportId = post.Post.Id.ToString() + "PostReport";
                                     <a id="@countComm" class="mr-2">@post.Post.Comments.Count</a>
                                 }
                             </label>
+                            @if (post.IsReportRelated)
+                            {
+                                <a id="@postReportId" class="PostReportBtn" style="float: right; cursor: pointer;">Report</a>
+                            }
                         </div>
 
                         <div id="@post.Post.Id" style="display:none;">
@@ -170,6 +175,21 @@
                     $(commAreaId).append(data);
                     $(textId).val("");
                     countComment.text(parseInt(countComment.text()) + 1);
+                }
+            });
+        });
+
+        $('.PostReportBtn').click(function () {
+            var thiselem = $(this);
+            var postId = thiselem.attr("id");
+            postId = postId.replace('PostReport', '');
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/report/send")',
+                data: { 'PostId': postId,  },
+                success: function (data) {
+                    thiselem.remove();
                 }
             });
         });
