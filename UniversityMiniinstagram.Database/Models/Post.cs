@@ -24,5 +24,6 @@ namespace UniversityMiniinstagram.Database
         public string UserId { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
+        public bool IsShow { get; set; }
     }
 }

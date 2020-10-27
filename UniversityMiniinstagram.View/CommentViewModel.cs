@@ -10,6 +10,7 @@ namespace UniversityMiniinstagram.View
         public Comment Comment { get; set; }
         public bool IsDeleteRelated { get; set; }
         public bool IsReportRelated { get; set; }
+        public bool ShowReportColor { get; set; }
 
     }
 }

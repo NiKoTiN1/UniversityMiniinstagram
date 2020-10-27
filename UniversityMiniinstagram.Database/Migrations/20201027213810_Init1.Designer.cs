@@ -10,8 +10,8 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201026190807_PostId_in_Report_nullable")]
-    partial class PostId_in_Report_nullable
+    [Migration("20201027213810_Init1")]
+    partial class Init1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -231,6 +231,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
@@ -308,9 +311,7 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("PostId")
-                        .IsUnique()
-                        .HasFilter("[PostId] IS NOT NULL");
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -349,6 +350,9 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.Property<Guid>("ImageId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");

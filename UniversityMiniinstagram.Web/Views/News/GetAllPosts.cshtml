@@ -7,8 +7,7 @@
 <div class="centeredSt">
     @foreach (var post in Model)
     {
-
-        <div class="my-4">
+        <div class="my-4" id="@post.Post.Id">
             <div class="flex-lg-grow-1">
                 <div class="card rounded-lg border-0 shadow-lg mb-6 lift" style="
                 width: 700px;
@@ -64,24 +63,48 @@
                                     <a id="@countComm" class="mr-2">@post.Post.Comments.Count</a>
                                 }
                             </label>
-                            @if (post.IsReportRelated)
-                            {
-                                <a id="@postReportId" class="PostReportBtn" style="float: right; cursor: pointer;">Report</a>
+                            @{
+                                var btnId = post.Post.Id.ToString() + "PostBtn";
                             }
+                            @if (post.IsDeleteRelated || post.IsReportRelated)
+                            {
+                                <button class="btn" type="button" id="@btnId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="box-shadow: none; float: right; cursor: pointer;">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                    </svg>
+                                </button>
+                            }
+                            <div class="dropdown-menu" aria-labelledby="@btnId">
+                                @{
+                                    var deleteId = post.Post.Id + "DeletePostBtn";
+                                    var reportId = post.Post.Id + "ReportPostBtn";
+                                }
+                                @if (post.IsDeleteRelated)
+                                {
+                                    <a class="dropdown-item dropdownDelPostEl" id="@deleteId">Delete</a>
+                                }
+                                @if (post.IsReportRelated)
+                                {
+                                    <a class="dropdown-item dropdownRepPostEl" id="@reportId">Report</a>
+                                }
+                            </div>
                         </div>
-
-                        <div id="@post.Post.Id" style="display:none;">
-                            <hr align="center" width="auto"  color="#E2E2E2" class="mt-0"/>
+                        
+                        @{ 
+                            var commArea = post.Post.Id.ToString() + "commAreaa";
+                        }
+                        <div id="@commArea" style="display:none;">
+                            <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                             @{
                                 var contentId = post.Post.Id.ToString() + "content";
                                 ViewBag.contentId = contentId;
                             }
-                        <div id="@ViewBag.contentId">
-                            @foreach (var commentVm in post.vm)
-                            {
-                                @await Component.InvokeAsync("Comment", new { vm = commentVm })
-                            }
-                        </div>
+                            <div id="@ViewBag.contentId">
+                                @foreach (var commentVm in post.vm)
+                                {
+                                    @await Component.InvokeAsync("Comment", new { vm = commentVm })
+                                }
+                            </div>
 
                             <div class="chat-module-bottom">
                                 <form class="customRow row">
@@ -102,8 +125,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        </div>}
 </div>
 
 @section Scripts{
@@ -147,7 +169,7 @@
         $('.Comment').click(function () {
             var label = $(this).parent();
             var postId = $(this).attr("value");
-            var ComId = '#' + postId;
+            var ComId = '#' + postId + 'commAreaa';
             var isCommntOpen = label.children().eq(2).attr("value");
             if (isCommntOpen == "1") {
                 $(ComId).hide();
@@ -179,10 +201,12 @@
             });
         });
 
-        $('.PostReportBtn').click(function () {
+        $('.dropdownRepPostEl').click(function () {
             var thiselem = $(this);
             var postId = thiselem.attr("id");
-            postId = postId.replace('PostReport', '');
+            postId = postId.replace('ReportPostBtn', '');
+            var div = $(this).parent();
+            var commentBtnId = '#' + postId + 'PostBtn';
 
             $.ajax({
                 type: 'POST',
@@ -190,6 +214,25 @@
                 data: { 'PostId': postId,  },
                 success: function (data) {
                     thiselem.remove();
+                    if (div.children().length == 0) {
+                        $(commentBtnId).remove();
+                    }
+                }
+            });
+        });
+
+        $('.dropdownDelPostEl').click(function () {
+            var thiselem = $(this);
+            var postId = thiselem.attr("id");
+            postId = postId.replace('DeletePostBtn', '');
+            var postDiv = $('#' + postId);
+            $.ajax({
+                type: 'DELETE',
+                url: '@Url.Content("~/news/removedPost")',
+                data: { 'PostId': postId, },
+                success: function () {
+                    console.log('papapapa')
+                    postDiv.remove();
                 }
             });
         });

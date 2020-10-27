@@ -1,8 +1,17 @@
 ﻿    @model CommentViewModel
 @{
     var contentId = Model.Comment.Id.ToString() + "content";
+    string color;
 }
-<div id="@contentId">
+@if(Model.ShowReportColor)
+{
+    color = "background-color: rgba(255, 0, 0, 0.4);";
+}
+else
+{
+    color = "background-color:none;";
+}
+<div id="@contentId" style="@color">
     <div class="media chat-item">
         <div class="media-body">
             <div class="row justify-content-between" style=" max-height: 27px;">
@@ -47,7 +56,6 @@
         var label = $(this).attr("id");
         label = label.replace('Delete', '');
         var comment = $('#' + label + 'content');
-        console.log(label);
         $.ajax({
             type: 'DELETE',
             url: '@Url.Content("~/news/removedComment")',
@@ -64,13 +72,17 @@
         var elem = $(this);
         var label = elem.attr("id");
         label = label.replace('Report', '');
-        console.log(label);
+        var div = $(this).parent();
+        var commentBtnId = '#' + label + 'Button';
         $.ajax({
             type: 'POST',
             url: '@Url.Content("~/report/send")',
             data: { 'CommentId': label  },
             success: function (data) {
                 elem.remove();
+                if (div.children().length == 0) {
+                    $(commentBtnId).remove();
+                }
             }
         });
     });

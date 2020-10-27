@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +14,20 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService, IAdminService adminService)
+        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService, IAdminService adminService, IServiceScopeFactory serviceScopeFactory)
         {
             _imageServices = imageServices;
             _postReposetry = postReposetry;
             _accountService = accountService;
             _adminService = adminService;
+            _serviceScopeFactory = serviceScopeFactory;
         }
         
         IImageService _imageServices;
         IPostReposetry _postReposetry;
         IAccountService _accountService;
         IAdminService _adminService;
+        IServiceScopeFactory _serviceScopeFactory;
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
@@ -71,9 +74,9 @@ namespace UniversityMiniinstagram.Services.Services
             _postReposetry.AddLike(newLike);
             return newLike;
         }
-        public void RemoveLike(Guid postId, string userId)
+        public void RemoveLike(Guid postId, string userId, DatabaseContext db=null)
         {
-            _postReposetry.RemoveLike(postId, userId);
+            _postReposetry.RemoveLike(postId, userId, db);
         }
 
         public async Task<ICollection<Post>> GetAllPosts()
@@ -90,8 +93,29 @@ namespace UniversityMiniinstagram.Services.Services
                 post.Likes = likes;
                 post.Image = _imageServices.GetImage(post.ImageId);
                 post.Comments = coments;
+                post.User = await _accountService.GetUser(post.UserId);
             }
             return posts.ToList();
+        }
+
+        public void DeletePost(Post post)
+        {
+            for (int i = post.Comments.Count - 1; i >= 0; i--) 
+            {
+                _postReposetry.RemoveComment(post.Comments.ElementAt(i));
+            }
+
+            for (int i = post.Likes.Count - 1; i >= 0; i--)
+            {
+                var like = post.Likes.ElementAt(i);
+                _postReposetry.RemoveLike(like.PostId, like.UserId);
+            }
+            _imageServices.RemoveImage(post.Image);
+            var ppost = _postReposetry.GetPost(post.Id);
+            if(ppost != null)
+            {
+                _postReposetry.DeletePost(ppost);
+            }
         }
 
         public ICollection<Post> GetUserPosts(string userId)

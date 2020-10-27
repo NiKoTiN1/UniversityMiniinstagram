@@ -34,7 +34,9 @@ namespace UniversityMiniinstagram.Database
                 .Entity<Report>()
                 .HasOne<Post>(e => e.Post)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Report>().HasIndex(e => e.PostId).IsUnique(false);
+            modelBuilder.Entity<Report>().HasIndex(e => e.CommentId).IsUnique(false);
         }
     }
 }

@@ -10,8 +10,8 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201026113849_kmdklmx")]
-    partial class kmdklmx
+    [Migration("20201027215532_Init4")]
+    partial class Init4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -231,6 +231,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
@@ -295,10 +298,10 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CommentId")
+                    b.Property<Guid?>("CommentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PostId")
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
@@ -308,8 +311,7 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.HasIndex("CommentId");
 
-                    b.HasIndex("PostId")
-                        .IsUnique();
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -348,6 +350,9 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.Property<Guid>("ImageId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
@@ -455,15 +460,12 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Comment", "Comment")
                         .WithMany()
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CommentId");
 
                     b.HasOne("UniversityMiniinstagram.Database.Post", "Post")
                         .WithOne()
                         .HasForeignKey("UniversityMiniinstagram.Database.Models.Report", "PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UniversityMiniinstagram.Database.ApplicationUser", "User")
                         .WithMany()

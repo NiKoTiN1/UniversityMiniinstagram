@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,12 +41,14 @@ namespace UniversityMiniinstagram.Database.Reposetries
 
         public void AddPost(Post post)
         {
+            post.IsShow = true;
             _context.Posts.Add(post);
             _context.SaveChanges();
         }
 
         public void AddComment(Comment comment)
         {
+            comment.IsShow = true;
             _context.Comments.Add(comment);
             _context.SaveChanges();
         }
@@ -56,8 +59,15 @@ namespace UniversityMiniinstagram.Database.Reposetries
             _context.SaveChanges();
         }
 
-        public void RemoveLike(Guid postId, string userId)
+        public void RemoveLike(Guid postId, string userId, DatabaseContext db = null)
         {
+            if(db != null)
+            {
+                var likee = db.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
+                db.Likes.Remove(likee);
+                db.SaveChanges();
+                return;
+            }
             var like = _context.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
             _context.Likes.Remove(like);
             _context.SaveChanges();
@@ -84,6 +94,18 @@ namespace UniversityMiniinstagram.Database.Reposetries
             }
             _context.Comments.Remove(comment);
             _context.SaveChanges();
+        }
+
+        public void DeletePost(Post post)
+        {
+            var reports = _context.Reports.Where(report => report.PostId == post.Id);
+            foreach (var report in reports)
+            {
+                _context.Reports.Remove(report);
+            }
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+            return;
         }
     }
 }

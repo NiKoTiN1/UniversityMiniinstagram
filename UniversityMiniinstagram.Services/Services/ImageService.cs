@@ -54,5 +54,13 @@ namespace UniversityMiniinstagram.Services
             return image;
         }
 
+        public void RemoveImage(Image image, DatabaseContext db=null)
+        {
+            if (File.Exists("wwwroot/" + image.Path))
+            {
+                File.Delete("wwwroot/" + image.Path);
+            }
+            _imageReposetry.RemoveImage(image, db);
+        }
     }
 }

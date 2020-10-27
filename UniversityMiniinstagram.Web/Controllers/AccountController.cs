@@ -170,11 +170,20 @@ namespace UniversityMiniinstagram.Web.Controllers
             var result2 = await _accountService.AddRole("Modarator");
             var result3 = await _accountService.AddRole("Banned");
 
-            if (result && result1)
+            RegisterViewModel vm = new RegisterViewModel()
             {
-                return Ok();
+                Email = "Admin@mail.ru",
+                Description = "AdminAcc",
+                Password = "Admin_1",
+                Username = "Admin",
+                Role = "Admin"
+            };
+            var adminUser = await _accountService.Register(vm);
+            if (adminUser)
+            {
+                return RedirectToAction("Profile");
             }
-            return BadRequest(result1);
+            return BadRequest();
         }
 
 

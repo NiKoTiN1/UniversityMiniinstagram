@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using Index = Microsoft.EntityFrameworkCore.Metadata.Internal.Index;
 
 namespace UniversityMiniinstagram.Database.Models
 {

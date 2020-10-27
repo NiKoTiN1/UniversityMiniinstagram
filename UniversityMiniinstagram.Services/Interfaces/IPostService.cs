@@ -11,8 +11,9 @@ namespace UniversityMiniinstagram.Services.Interfaces
     {
         public Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId);
         public Task<Comment> AddComment(SendCommentViewModel vm, string userId);
+        public void DeletePost(Post post);
         public Like AddLike(Guid postId, string userId);
-        public void RemoveLike(Guid postId, string userId);
+        public void RemoveLike(Guid postId, string userId, DatabaseContext db = null);
         public Task<ICollection<Post>> GetAllPosts();
         public ICollection<Post> GetUserPosts(string userId);
         public Task<Post> GetPost(Guid postId);

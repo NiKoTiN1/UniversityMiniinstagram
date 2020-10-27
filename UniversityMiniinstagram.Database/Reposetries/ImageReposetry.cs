@@ -25,5 +25,17 @@ namespace UniversityMiniinstagram.Database.Reposetries
             var image = _context.Images.FirstOrDefault(image => image.Id == imageId);
             return image;
         }
+
+        public void RemoveImage(Image image, DatabaseContext db=null)
+        {
+            if(db != null)
+            {
+                db.Remove(image);
+                db.SaveChanges();
+                return;
+            }
+            _context.Remove(image);
+            _context.SaveChanges();
+        }
     }
 }

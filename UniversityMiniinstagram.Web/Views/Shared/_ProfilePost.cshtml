@@ -140,19 +140,19 @@
     });
 
     $('.PostReportBtn').click(function () {
+        var elem = $(this);
         var label = $(this).attr("id");
         label = label.replace('PostReport', '');
-        console.log(label);
-        //$.ajax({
-        //    type: 'POST',
-        //    url: 'addComment',
-        //    data: { 'postId': postId, 'text': text },
-        //    success: function (data) {
-        //        var commAreaId = '#' + postId + 'content';
-        //        $(commAreaId).append(data);
-        //        $(textId).val("");
-        //        countComment.text(parseInt(countComment.text()) + 1);
-        //    }
-        //});
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Content("~/report/send")',
+            data: { 'CommentId': label  },
+            success: function (data) {
+                elem.remove();
+                if (div.children().length == 0) {
+                    $(commentBtnId).remove();
+                }
+            }
+        });
     });
 </script>

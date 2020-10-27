@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniversityMiniinstagram.Database;
 
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20201027215428_Init3")]
+    partial class Init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -461,9 +463,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .HasForeignKey("CommentId");
 
                     b.HasOne("UniversityMiniinstagram.Database.Post", "Post")
-                        .WithOne()
-                        .HasForeignKey("UniversityMiniinstagram.Database.Models.Report", "PostId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany()
+                        .HasForeignKey("PostId");
 
                     b.HasOne("UniversityMiniinstagram.Database.ApplicationUser", "User")
                         .WithMany()

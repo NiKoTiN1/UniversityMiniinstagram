@@ -23,7 +23,6 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && vm != null)
             {
-                //check if report was creted
                 var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {

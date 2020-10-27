@@ -8,6 +8,6 @@ namespace UniversityMiniinstagram.Database.Interfases
     {
         public void AddImage(Image image);
         public Image GetImage(Guid imageId);
-
+        public void RemoveImage(Image image, DatabaseContext db = null);
     }
 }

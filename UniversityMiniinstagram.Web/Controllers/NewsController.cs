@@ -40,21 +40,29 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var posts = await _postServices.GetAllPosts();
                 foreach(var post in posts)
                 {
-                    PostsViewModel postVm = new PostsViewModel()
+                    if(post.IsShow)
                     {
-                        Post = post,
-                        IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId:post.Id),
-                        vm = new List<CommentViewModel>()
-                    };
-                    foreach (var comment in post.Comments)
-                    {
-                        CommentViewModel commVm = new CommentViewModel();
-                        commVm.Comment = comment;
-                        commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
-                        commVm.IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId:comment.Id);
-                        postVm.vm.Add(commVm);
+                        PostsViewModel postVm = new PostsViewModel()
+                        {
+                            Post = post,
+                            IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId: post.Id),
+                            IsDeleteRelated = await _postServices.isDeleteRelated(post.User, userIdClaim.Value),
+                            vm = new List<CommentViewModel>()
+                        };
+                        foreach (var comment in post.Comments)
+                        {
+                            if (comment.IsShow)
+                            {
+                                CommentViewModel commVm = new CommentViewModel();
+                                commVm.Comment = comment;
+                                commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
+                                commVm.IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id);
+                                commVm.ShowReportColor = false;
+                                postVm.vm.Add(commVm);
+                            }
+                        }
+                        postsViewModels.Add(postVm);
                     }
-                    postsViewModels.Add(postVm);
                 }
                 return View(postsViewModels);
             }
@@ -105,13 +113,17 @@ namespace UniversityMiniinstagram.Web.Controllers
                     };
                     foreach (var comment in post.Comments)
                     {
-                        CommentViewModel commVm = new CommentViewModel()
+                        if (comment.IsShow)
                         {
-                            Comment = comment,
-                            IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value),
-                            IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId:comment.Id)
-                        };
-                        postVm.vm.Add(commVm);
+                            CommentViewModel commVm = new CommentViewModel()
+                            {
+                                Comment = comment,
+                                IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value),
+                                IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
+                                ShowReportColor = false
+                            };
+                            postVm.vm.Add(commVm);
+                        }
                     }
                     return PartialView("_ProfilePost", postVm);
                 }
@@ -133,7 +145,8 @@ namespace UniversityMiniinstagram.Web.Controllers
                     {
                         Comment = result,
                         IsDeleteRelated = await _postServices.isDeleteRelated(result.User, userIdClaim.Value),
-                        IsReportRelated = await _postServices.isReportRelated(result.UserId, userIdClaim.Value, commentId:result.Id)
+                        IsReportRelated = await _postServices.isReportRelated(result.UserId, userIdClaim.Value, commentId:result.Id),
+                        ShowReportColor = false
                     };
                     return PartialView("_CommentBlock", commentViewModel);
                 }
@@ -185,6 +198,19 @@ namespace UniversityMiniinstagram.Web.Controllers
                     _postServices.RemoveLike(postId, userIdClaim.Value);
                     return Ok();
                 }
+            }
+            return Unauthorized();
+        }
+        [HttpDelete]
+        [Route("removedPost")]
+
+        public async Task<IActionResult> RemovePost([FromForm] Guid postId)
+        {
+            if (ModelState.IsValid && postId != null)
+            {
+                var post = await _postServices.GetPost(postId);
+                _postServices.DeletePost(post);
+                return Ok();
             }
             return Unauthorized();
         }

@@ -182,7 +182,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                     UploadDate = table.Column<DateTime>(nullable: false),
                     category = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    IsShow = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,7 +234,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     Text = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: false)
+                    PostId = table.Column<Guid>(nullable: false),
+                    IsShow = table.Column<bool>(nullable: false),
+                    IsReported = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,9 +286,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    CommentId = table.Column<Guid>(nullable: false),
-                    PostId = table.Column<Guid>(nullable: false),
-                    IsPostReport = table.Column<bool>(nullable: false)
+                    CommentId = table.Column<Guid>(nullable: true),
+                    PostId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -295,13 +297,12 @@ namespace UniversityMiniinstagram.Database.Migrations
                         column: x => x.CommentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Reports_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -392,8 +393,7 @@ namespace UniversityMiniinstagram.Database.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_PostId",
                 table: "Reports",
-                column: "PostId",
-                unique: true);
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_UserId",

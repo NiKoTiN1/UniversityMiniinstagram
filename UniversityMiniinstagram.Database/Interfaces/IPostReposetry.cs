@@ -14,9 +14,10 @@ namespace UniversityMiniinstagram.Database.Interfases
         public void AddComment(Comment comment);
         public Comment GetComment(Guid commentId);
         public void AddLike(Like like);
-        public void RemoveLike(Guid postId, string userId);
+        public void RemoveLike(Guid postId, string userId, DatabaseContext db = null);
         public ICollection<Post> GetUserPosts(string userId);
         public Post GetPost(Guid postId);
         public void RemoveComment(Comment comment);
+        public void DeletePost(Post post);
     }
 }
