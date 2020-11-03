@@ -72,10 +72,37 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetCommentReports()
+        public async Task<ActionResult> GetCommentReports()
         {
-            return View();
+            List<AdminPostReportsVeiwModel> vmList = new List<AdminPostReportsVeiwModel>();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            ViewBag.UserId = userIdClaim.Value;
+            var reports = _adminService.GetCommentReports();
+            foreach (var report in reports)
+            {
+                AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
+                vm.Report = report;
+                vm.CommentViewModel = new List<CommentViewModel>();
+                report.Post = await _postService.GetPost(report.Comment.PostId);
+                foreach (var comment in report.Post.Comments)
+                {
+                    CommentViewModel commVm = new CommentViewModel()
+                    {
+                        Comment = comment,
+                        IsDeleteRelated = false,
+                        IsReportRelated = false,
+                    };
+                    if(report.CommentId == comment.Id)
+                    {
+                        commVm.ShowReportColor = true;
+                    }
+                    vm.CommentViewModel.Add(commVm);
+                }
+                vmList.Add(vm);
+            }
+            return View(vmList);
         }
+
         [HttpGet]
         public ActionResult SetDeleteRoles()
         {
@@ -103,6 +130,17 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             var result = await _adminService.PostReportDecision(vm);
             if(result)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
+        {
+            var result = await _adminService.CommentReportDecision(vm);
+            if (result)
             {
                 return Ok();
             }

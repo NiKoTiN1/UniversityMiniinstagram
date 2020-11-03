@@ -28,6 +28,12 @@ namespace UniversityMiniinstagram.Database.Models
             return result;
         }
 
+        public ICollection<Report> GetCommentReports()
+        {
+            var result = _context.Reports.Where(report => report.CommentId != null).OrderBy(report => report.Date).ToList();
+            return result;
+        }
+
         public Report GetReport(Guid reportId)
         {
             var report = _context.Reports.FirstOrDefault(report => report.Id == reportId);

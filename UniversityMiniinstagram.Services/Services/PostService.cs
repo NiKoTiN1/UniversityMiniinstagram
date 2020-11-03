@@ -94,6 +94,12 @@ namespace UniversityMiniinstagram.Services.Services
             return posts.ToList();
         }
 
+        public Comment GetComment(Guid commentId)
+        {
+            var comment = _postReposetry.GetComment(commentId);
+            return comment;
+        }
+
         public void DeletePost(Post post)
         {
             for (int i = post.Comments.Count - 1; i >= 0; i--) 
@@ -222,6 +228,18 @@ namespace UniversityMiniinstagram.Services.Services
             }
             post.IsShow = false;
             _postReposetry.UpdatePost(post);
+            return true;
+        }
+
+        public bool HideComment(Guid commId)
+        {
+            var comment = _postReposetry.GetComment(commId);
+            if (comment == null)
+            {
+                return false;
+            }
+            comment.IsShow = false;
+            _postReposetry.UpdateComment(comment);
             return true;
         }
     }

@@ -60,7 +60,7 @@
                                 @{
                                     var countComm = post.Post.Id.ToString() + "count";
                                     var postReportId = post.Post.Id.ToString() + "PostReport";
-                                    <a id="@countComm" class="mr-2">@post.Post.Comments.Count</a>
+                                    <a id="@countComm" class="mr-2">@post.vm.Count</a>
                                 }
                             </label>
                             @{

@@ -17,6 +17,8 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ICollection<Post>> GetAllPosts();
         public ICollection<Post> GetUserPosts(string userId);
         public Task<Post> GetPost(Guid postId);
+        public Comment GetComment(Guid commentId);
+        public bool HideComment(Guid commId);
         public Guid RemoveComment(Guid commentId);
         public Task<bool> isDeleteRelated(ApplicationUser postHolder, string guestId);
         public Task<bool> isReportRelated(string postHolderId, string guestId, Guid postId = new Guid(), Guid commentId = new Guid());

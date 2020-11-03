@@ -9,6 +9,7 @@ namespace UniversityMiniinstagram.Database.Interfaces
     {
         public void AddReport(Report report);
         public ICollection<Report> GetPostReports();
+        public ICollection<Report> GetCommentReports();
         public Report GetReport(Guid reportId);
         public void RemoveReport(Report report);
     }

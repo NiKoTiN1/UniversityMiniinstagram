@@ -38,6 +38,16 @@ namespace UniversityMiniinstagram.Services.Services
             return result;
         }
 
+        public ICollection<Report> GetCommentReports()
+        {
+            var result = _adminReposetry.GetCommentReports();
+            foreach(var report in result)
+            {
+                report.Comment = _postService.GetComment(report.CommentId.Value);
+            }
+            return result;
+        }
+
         public bool RemoveReport(Guid reportId)
         {
             var report = _adminReposetry.GetReport(reportId);
@@ -69,18 +79,72 @@ namespace UniversityMiniinstagram.Services.Services
                     return false;
                 }
             }
+            if (vm.IsBanUser)
+            {
+                var user = await _accountService.GetUser(report.UserId);
+                var result = await _accountService.SetBanRole(user);
+                if (!result)
+                {
+                    return false;
+                }
+            }
             if (vm.IsDeletePost)
             {
                 _postService.DeletePost(post);
             }
-            if(vm.IsBanUser)
+            return true;
+        }
+
+
+        public async Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
+        {
+            var report = _adminReposetry.GetReport(vm.ReportId);
+            if (report == null)
             {
-                var user = await _accountService.GetUser(report.UserId);
-                var result = await _accountService.SetBanRole(user);
-                if(!result)
+                return false;
+            }
+            var comment = _postService.GetComment(report.CommentId.Value);
+            if(comment == null)
+            {
+                return false;
+            }
+            var post = await _postService.GetPost(comment.PostId);
+            if (post == null)
+            {
+                return false;
+            }
+            if (vm.IsHidePost)
+            {
+                var result = _postService.HidePost(post.Id);
+                if (!result)
                 {
                     return false;
                 }
+            }
+            if(vm.IsHideComment)
+            {
+                var result = _postService.HideComment(report.CommentId.Value);
+                if (!result)
+                {
+                    return false;
+                }
+            }
+            if (vm.IsBanUser)
+            {
+                var user = await _accountService.GetUser(report.UserId);
+                var result = await _accountService.SetBanRole(user);
+                if (!result)
+                {
+                    return false;
+                }
+            }
+            if (vm.IsDeleteComment)
+            {
+                _postService.RemoveComment(report.CommentId.Value);
+            }
+            if (vm.IsDeletePost)
+            {
+                _postService.DeletePost(post);
             }
             return true;
         }

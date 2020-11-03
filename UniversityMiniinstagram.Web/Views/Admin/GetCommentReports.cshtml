@@ -7,21 +7,21 @@
     <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column" style="background-color:white;">
             <li class="nav-item">
-                <a class="nav-link active" style="color:black;"  asp-controller="Admin" asp-action="GetPostReports">
+                <a class="nav-link active" style="color:black;" asp-controller="Admin" asp-action="GetPostReports">
                     Post reports <span class="sr-only">(current)</span>
                 </a>
             </li>
-            <li class="nav-item" style="background-color:#343a40;" >
+            <li class="nav-item" style="background-color:#343a40;">
                 <a class="nav-link" style="color: white;" asp-controller="Admin" asp-action="GetCommentReports">
                     Comment reports
                 </a>
             </li>
-            <li class="nav-item" style="background-color:white;" >
+            <li class="nav-item" style="background-color:white;">
                 <a class="nav-link" style="color: black; " asp-controller="Admin" asp-action="SetDeleteRoles">
                     Roles
                 </a>
             </li>
-            <li class="nav-item" style="background-color:white;" >
+            <li class="nav-item" style="background-color:white;">
                 <a class="nav-link" style="color: black;" asp-controller="Admin" asp-action="Appeals">
                     Appeals
                 </a>
@@ -30,3 +30,190 @@
         </ul>
     </div>
 </nav>
+<div class="centeredSt" style="padding-left: 200px; min-width: 90%;">
+    <div id="accordion">
+        @foreach (var elem in Model)
+        {
+            var reportId = "Main" + elem.Report.Id.ToString();
+            <div id="@reportId" class="card">
+                @{
+                    var heading = elem.Report.Id.ToString() + "Heading";
+                    var postIddd = "PostCollapse" + elem.Report.Id.ToString();
+
+                }
+                <div class="card-header" id="@heading">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#@postIddd" aria-expanded="true" aria-controls="@postIddd">
+                            REPORT: @elem.Report.Id
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="@postIddd" class="collapse" aria-labelledby="@heading" data-parent="#accordion">
+                    <div class="card-body" style="padding-top: 0;">
+                        <div>
+                            <div class="my-4" id="@elem.Report.Post.Id">
+                                <div class="flex-lg-grow-1">
+                                    <div class="row" style="margin-right: 2px; margin-left: 2px;">
+                                        <div class="card rounded-lg border-0 shadow-lg mb-6 lift col-7" style="
+                                    height: auto;
+                                    padding:0;
+                                    height: 100%;
+                                    ">
+                                            <img src="@elem.Report.Post.Image.Path" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
+                                        object-fit: cover;
+                                        left: 0;
+                                        top: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        max-height: 400px;">
+                                            <div class="card-body">
+                                                <input class="form-control mb-2" name="Category" readonly="readonly" value="@elem.Report.Post.category">
+                                                <textarea type="text" name="Description" id="Description" readonly="readonly" style="resize: none;" class="form-control mb-2">@elem.Report.Post.Description</textarea>
+                                                @{
+                                                    var commArea = elem.Report.Post.Id.ToString() + "commAreaa";
+                                                }
+                                                <div id="@commArea" >
+                                                    <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
+                                                    @{
+                                                        var contentId = elem.Report.Post.Id.ToString() + "content";
+                                                        ViewBag.contentId = contentId;
+                                                    }
+                                                    <div id="@ViewBag.contentId">
+                                                        @foreach (var commentVm in elem.CommentViewModel)
+                                                        {
+                                                            @await Component.InvokeAsync("Comment", new { vm = commentVm })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @{
+                                            var banID = "Ban" + elem.Report.Id.ToString();
+                                            var delPostID = "DeleteBBtn" + elem.Report.Id.ToString();
+                                            var hidePostId = "Hide" + elem.Report.Id.ToString();
+                                            var pardonId = "Pardon" + elem.Report.Id.ToString();
+                                            var acceptId = "Accept" + elem.Report.Id.ToString();
+                                            var hideCommentId = "HideCommnet" + elem.Report.Id.ToString();
+                                            var deleteCommentId = "DeleteComment" + elem.Report.Id.ToString();
+
+                                        }
+                                        <div class="col-5">
+                                            <div class="card">
+                                                <div class="card-body" style="padding-top: 0;">
+                                                    <h1 class="text-center">Actions</h1>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="@banID">
+                                                        <label class="form-check-label" for="@banID">
+                                                            Ban user
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="@delPostID">
+                                                        <label class="form-check-label" for="@delPostID">
+                                                            Delete post
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="@hidePostId">
+                                                        <label class="form-check-label" for="@hidePostId">
+                                                            Hide post
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="@hideCommentId">
+                                                        <label class="form-check-label" for="@hideCommentId">
+                                                            Hide comment
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" id="@deleteCommentId">
+                                                        <label class="form-check-label" for="@deleteCommentId">
+                                                            Delete comment
+                                                        </label>
+                                                    </div>
+                                                    <button id="@pardonId" type="button" class="PardonBtn btn btn-light" style="width: 100%; margin-top: 6px;">
+                                                        Pardon
+                                                    </button>
+                                                    <button disabled id="@acceptId" type="button" class="AcceptBtn btn btn-danger" style="width: 100%; margin-top: 6px;">
+                                                        Accept
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('.form-check-input').change(function () {
+            var accBtn = $(this).attr("id");
+            accBtn = accBtn.replace('Ban', '');
+            accBtn = accBtn.replace('DeleteBBtn', '');
+            accBtn = accBtn.replace('HideCommnet', '');
+            accBtn = accBtn.replace('Hide', '');
+            accBtn = accBtn.replace('DeleteComment', '');
+            var banId = '#Ban' + accBtn;
+            var delId = '#DeleteBBtn' + accBtn;
+            var hideId = '#Hide' + accBtn;
+            var hideCommId = '#HideCommnet' + accBtn;
+            var delCommId = '#DeleteComment' + accBtn;
+
+            accBtn = '#Accept' + accBtn;
+
+            if ($(hideId).is(':checked') || $(banId).is(':checked') || $(delId).is(':checked') || $(hideCommId).is(':checked') || $(delCommId).is(':checked')) {
+                $(accBtn).prop('disabled', false);
+            } else {
+                $(accBtn).prop('disabled', true);
+            }
+        });
+
+        $('.PardonBtn').click(function () {
+            var btnId = $(this).attr("id");
+            btnId = btnId.replace('Pardon', '');
+            var mainId = '#Main' + btnId;
+            $.ajax({
+                type: 'POST',
+                url:'@Url.Content("~/admin/pardon")',
+                data: { 'reportId': btnId },
+                success: function (data) {
+                    $(mainId).remove();
+                }
+            });
+        });
+
+        $('.AcceptBtn').click(function () {
+            var accBtn = $(this).attr("id");
+            accBtn = accBtn.replace('Accept', '');
+            var mainId = '#Main' + accBtn;
+            var banId = '#Ban' + accBtn;
+            var delId = '#DeleteBBtn' + accBtn;
+            var hideId = '#Hide' + accBtn;
+            var hideCommId = '#HideCommnet' + accBtn;
+            var delCommId = '#DeleteComment' + accBtn;
+            $.ajax({
+                type: 'POST',
+                url:'@Url.Content("~/admin/comment/decision")',
+                data: {
+                    'ReportId': accBtn,
+                    'IsBanUser': $(banId).is(':checked'),
+                    'IsDeletePost': $(delId).is(':checked'),
+                    'IsHidePost': $(hideId).is(':checked'),
+                    'IsHideComment': $(hideCommId).is(':checked'),
+                    'IsDeleteComment': $(delCommId).is(':checked')
+                },
+                success: function (data) {
+                    $(mainId).remove();
+                }
+            });
+        });
+    </script>
+}

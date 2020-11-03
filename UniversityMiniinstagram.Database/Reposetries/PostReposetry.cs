@@ -115,6 +115,12 @@ namespace UniversityMiniinstagram.Database.Reposetries
             _context.SaveChanges();
         }
 
+        public void UpdateComment(Comment comment)
+        {
+            _context.Comments.Update(comment);
+            _context.SaveChanges();
+        }
+
         public bool IsCommentReported(Guid commentId, string userId)
         {
             var result = _context.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
