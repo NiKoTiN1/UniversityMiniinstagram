@@ -45,23 +45,45 @@
 
             @if (User.Identity.IsAuthenticated)
             {
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
-                    </li>
-                </ul>
+                @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
 
-                <div class="dropleft">
-                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" asp-controller="Account" asp-action="Profile">@VLocalizer["ProfileBtn"]</a>
-                        <a class="dropdown-item">@VLocalizer["SettingsBtn"]</a>
-                        <a class="dropdown-item" asp-controller="Account" asp-action="Logout">@VLocalizer["LogoutBtn"]</a>
+                    <div class="dropleft">
+                        <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">@VLocalizer["ProfileBtn"]</a>
+                            <a class="dropdown-item" asp-controller="Admin" asp-action="GetPostReports" >@VLocalizer["AdminPageBtn"]</a>
+                            <a class="dropdown-item">@VLocalizer["SettingsBtn"]</a>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">@VLocalizer["LogoutBtn"]</a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
+                        </li>
+                    </ul>
 
+                    <div class="dropleft">
+                        <button class="btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">@VLocalizer["ProfileBtn"]</a>
+                            <a class="dropdown-item">@VLocalizer["SettingsBtn"]</a>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">@VLocalizer["LogoutBtn"]</a>
+                        </div>
+                    </div>
+                }
             }
             else
             {

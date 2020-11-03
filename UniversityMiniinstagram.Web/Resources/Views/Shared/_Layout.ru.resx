@@ -120,6 +120,9 @@
   <data name="AddPostBtn" xml:space="preserve">
     <value>Добавить пост</value>
   </data>
+  <data name="AdminPageBtn" xml:space="preserve">
+    <value>Администрирование</value>
+  </data>
   <data name="LoginBtn" xml:space="preserve">
     <value>Вход</value>
   </data>

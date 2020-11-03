@@ -17,28 +17,27 @@ namespace UniversityMiniinstagram.Database.Models
         DatabaseContext _context;
         public void AddReport(Report report)
         {
+            report.Date = DateTime.Now;
             _context.Reports.Add(report);
             _context.SaveChanges();
         }
 
-        public bool IsCommentReported(Guid commentId, string userId)
+        public ICollection<Report> GetPostReports()
         {
-            var result = _context.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
-            if(result.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            var result = _context.Reports.Where(report => report.PostId != null).OrderBy(report => report.Date).ToList();
+            return result;
         }
 
-        public bool IsPostReported(Guid postId, string userId)
+        public Report GetReport(Guid reportId)
         {
-            var result = _context.Reports.Where(report => report.PostId == postId && report.UserId == userId).ToList();
-            if (result.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            var report = _context.Reports.FirstOrDefault(report => report.Id == reportId);
+            return report;
+        }
+
+        public void RemoveReport(Report report)
+        {
+            _context.Reports.Remove(report);
+            _context.SaveChanges();
         }
     }
 }

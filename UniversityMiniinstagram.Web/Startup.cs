@@ -142,8 +142,14 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("15", "news/removedComment", new { controller = "News", action = "RemoveCommentPost" });
                 routing.MapRoute("16", "report/send", new { controller = "Admin", action = "SendReport" });
                 routing.MapRoute("17", "news/removedPost", new { controller = "News", action = "RemovePost" });
+                routing.MapRoute("18", "admin/reports/posts", new { controller = "Admin", action = "GetPostReports" });
+                routing.MapRoute("19", "admin/reports/comments", new { controller = "Admin", action = "GetCommentReports" });
+                routing.MapRoute("20", "admin/roles", new { controller = "Admin", action = "SetDeleteRoles" });
+                routing.MapRoute("21", "admin/appeals", new { controller = "Admin", action = "Appeals" });
+                routing.MapRoute("22", "admin/pardon", new { controller = "Admin", action = "PardonPost" });
+                routing.MapRoute("23", "admin/post/decision", new { controller = "Admin", action = "PostReportDecision" });
 
-                routing.MapRoute("18", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+                routing.MapRoute("24", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
 
             });
         }

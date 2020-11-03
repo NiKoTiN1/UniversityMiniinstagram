@@ -30,7 +30,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
 
         public ICollection<Comment> GetComments(Guid postId)
         {
-            ICollection<Comment> comments = _context.Comments.Where(comment => comment.PostId == postId).ToList();
+            ICollection<Comment> comments = _context.Comments.Where(comment => comment.PostId == postId).OrderBy(comment => comment.Date).ToList();
             return comments;
         }
         public Comment GetComment(Guid commentId)
@@ -49,6 +49,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public void AddComment(Comment comment)
         {
             comment.IsShow = true;
+            comment.Date = DateTime.Now;
             _context.Comments.Add(comment);
             _context.SaveChanges();
         }
@@ -106,6 +107,32 @@ namespace UniversityMiniinstagram.Database.Reposetries
             _context.Posts.Remove(post);
             _context.SaveChanges();
             return;
+        }
+
+        public void UpdatePost(Post post)
+        {
+            _context.Posts.Update(post);
+            _context.SaveChanges();
+        }
+
+        public bool IsCommentReported(Guid commentId, string userId)
+        {
+            var result = _context.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
+            if (result.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsPostReported(Guid postId, string userId)
+        {
+            var result = _context.Reports.Where(report => report.PostId == postId && report.UserId == userId).ToList();
+            if (result.Count == 0)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

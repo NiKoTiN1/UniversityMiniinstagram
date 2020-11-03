@@ -185,9 +185,9 @@ namespace UniversityMiniinstagram.Web.Controllers
             }
             return Unauthorized();
         }
+
         [HttpDelete]
         [Route("removeLike")]
-
         public IActionResult RemoveLike([FromForm] Guid postId)
         {
             if (ModelState.IsValid && postId != null)

@@ -14,20 +14,16 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class PostService : IPostService
     {
-        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService, IAdminService adminService, IServiceScopeFactory serviceScopeFactory)
+        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
         {
             _imageServices = imageServices;
             _postReposetry = postReposetry;
             _accountService = accountService;
-            _adminService = adminService;
-            _serviceScopeFactory = serviceScopeFactory;
         }
         
         IImageService _imageServices;
         IPostReposetry _postReposetry;
         IAccountService _accountService;
-        IAdminService _adminService;
-        IServiceScopeFactory _serviceScopeFactory;
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             var image = await _imageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
@@ -192,14 +188,14 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if(postId != new Guid())
             {
-                if (_adminService.IsPostReported(postId, guestId))
+                if (_postReposetry.IsPostReported(postId, guestId))
                 {
                     return false;
                 }
             }
             if (commentId != new Guid())
             {
-                if (_adminService.IsCommentReported(commentId, guestId))
+                if (_postReposetry.IsCommentReported(commentId, guestId))
                 {
                     return false;
                 }
@@ -217,5 +213,16 @@ namespace UniversityMiniinstagram.Services.Services
             return true;
         }
 
+        public bool HidePost(Guid postId)
+        {
+            var post = _postReposetry.GetPost(postId);
+            if(post == null)
+            {
+                return false;
+            }
+            post.IsShow = false;
+            _postReposetry.UpdatePost(post);
+            return true;
+        }
     }
 }

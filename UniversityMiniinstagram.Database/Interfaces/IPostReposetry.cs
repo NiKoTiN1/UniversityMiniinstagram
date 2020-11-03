@@ -19,5 +19,8 @@ namespace UniversityMiniinstagram.Database.Interfases
         public Post GetPost(Guid postId);
         public void RemoveComment(Comment comment);
         public void DeletePost(Post post);
+        public void UpdatePost(Post post);
+        public bool IsCommentReported(Guid commentId, string userId);
+        public bool IsPostReported(Guid postId, string userId);
     }
 }

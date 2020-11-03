@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Services.Interfaces
@@ -9,7 +11,8 @@ namespace UniversityMiniinstagram.Services.Interfaces
     {
         public void ReportComment(SendReportViewModel vm);
         public void ReportPost(SendReportViewModel vm);
-        public bool IsPostReported(Guid postId, string userId);
-        public bool IsCommentReported(Guid commentId, string userId);
+        public ICollection<Report> GetPostReports();
+        public bool RemoveReport(Guid reportId);
+        public Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm);
     }
 }

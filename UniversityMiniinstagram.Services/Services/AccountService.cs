@@ -45,6 +45,11 @@ namespace UniversityMiniinstagram.Services.Services
             return isInRole;
         }
 
+        public async Task<bool> SetBanRole (ApplicationUser user)
+        {
+            return await _accountReposetry.AddRoleToUser(user, "Banned");
+        }
+
         public async Task<bool> Login (LoginViewModel vm)
         {
             var result = await _accountReposetry.Login(vm.Email, vm.Password);

@@ -16,5 +16,7 @@ namespace UniversityMiniinstagram.Database
         public Post Post { get; set; }
         public Guid PostId { get; set; }
         public bool IsShow { get; set; }
+        [Required]
+        public DateTime Date { get; set; }
     }
 }
