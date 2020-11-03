@@ -1,24 +1,28 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Reposetries
 {
     public class AccountReposetry : IAccountReposetry
     {
-        public AccountReposetry(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager)
+        public AccountReposetry(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, DatabaseContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         UserManager<ApplicationUser> _userManager;
         RoleManager<IdentityRole> _roleManager;
         SignInManager<ApplicationUser> _signInManager;
+        DatabaseContext _context;
 
         public async Task<bool> CreateUser(ApplicationUser user, string password)
         {
@@ -66,6 +70,12 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return result.Succeeded;
         }
 
+        public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)
+        {
+            var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            return result.Succeeded;
+        }
+
         public async Task<bool> UpdateUser(ApplicationUser user)
         {
             var baseUser = await _userManager.FindByIdAsync(user.Id);
@@ -85,6 +95,25 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public async Task<bool> IsInRole(ApplicationUser user, string role)
         {
             return await _userManager.IsInRoleAsync(user, role);
+        }
+
+        public async Task<IList<string>> GetRoleList(ApplicationUser user)
+        {
+            var roleList = await _userManager.GetRolesAsync(user);
+            return roleList;
+        }
+
+        public async void SetRolesBeforeBan(ApplicationUser user, string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            RolesBeforeBan beforeBan = new RolesBeforeBan()
+            {
+                Id = Guid.NewGuid(),
+                Role = role,
+                User = user
+            };
+            _context.RolesBeforeBan.Add(beforeBan);
+            _context.SaveChanges();
         }
     }
 }

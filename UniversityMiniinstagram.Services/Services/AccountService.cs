@@ -47,6 +47,21 @@ namespace UniversityMiniinstagram.Services.Services
 
         public async Task<bool> SetBanRole (ApplicationUser user)
         {
+            var isBanned = await _accountReposetry.IsInRole(user, "Banned");
+            if (isBanned)
+            {
+                return true;
+            }
+            var roleList = await _accountReposetry.GetRoleList(user);
+            foreach(var role in roleList)
+            {
+                _accountReposetry.SetRolesBeforeBan(user, role);
+            }
+            var result = await _accountReposetry.RemoveRolesFromUser(user, roleList);
+            if (!result)
+            {
+                return false;
+            }
             return await _accountReposetry.AddRoleToUser(user, "Banned");
         }
 
