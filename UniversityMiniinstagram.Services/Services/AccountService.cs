@@ -55,7 +55,10 @@ namespace UniversityMiniinstagram.Services.Services
             var roleList = await _accountReposetry.GetRoleList(user);
             foreach(var role in roleList)
             {
-                _accountReposetry.SetRolesBeforeBan(user, role);
+                if(role != "User")
+                {
+                    await _accountReposetry.SetRolesBeforeBan(user, role);
+                }
             }
             var result = await _accountReposetry.RemoveRolesFromUser(user, roleList);
             if (!result)
@@ -63,6 +66,13 @@ namespace UniversityMiniinstagram.Services.Services
                 return false;
             }
             return await _accountReposetry.AddRoleToUser(user, "Banned");
+        }
+
+        public async Task<bool> UnBanUser(ApplicationUser user)
+        {
+            await _accountReposetry.UnBanUser(user);
+            _accountReposetry.DeleteSavedRoles(user.Id);
+            return true;
         }
 
         public async Task<bool> Login (LoginViewModel vm)
@@ -92,6 +102,7 @@ namespace UniversityMiniinstagram.Services.Services
             var result = await _accountReposetry.AddRole(name);
             return result;
         }
+
         public async Task<bool> EditProfile(EditProfileViewModel vm)
         {
             Image image = null;
@@ -108,6 +119,32 @@ namespace UniversityMiniinstagram.Services.Services
             };
             var result = await _accountReposetry.UpdateUser(user);
             return result;
+        }
+
+        public async Task<ICollection<string>> GetUserRoles(ApplicationUser user)
+        {
+            var roleList = await _accountReposetry.GetRoleList(user);
+            return roleList;
+        }
+        public IList<ApplicationUser> GetAllUsers()
+        {
+            var userList = _accountReposetry.GetAllUsers();
+            foreach(var user in userList)
+            {
+                if (user.AvatarId != null)
+                {
+                    var image = _imageService.GetImage(user.AvatarId.Value);
+                    if (image != null)
+                    {
+                        user.Avatar = image;
+                    }
+                }
+                else
+                {
+                    user.Avatar = new Image() { Path = "/Images/noPhoto.png" };
+                }
+            }
+            return userList;
         }
     }
 }

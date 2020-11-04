@@ -17,7 +17,10 @@ namespace UniversityMiniinstagram.Database.Interfases
         public Task<bool> AddRole(string name);
         public Task<bool> UpdateUser(ApplicationUser user);
         public Task<IList<string>> GetRoleList(ApplicationUser user);
-        public void SetRolesBeforeBan(ApplicationUser user, string roleName);
+        public Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName);
         public Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles);
+        public IList<ApplicationUser> GetAllUsers();
+        public Task<bool> UnBanUser(ApplicationUser user);
+        public void DeleteSavedRoles(string userId);
     }
 }

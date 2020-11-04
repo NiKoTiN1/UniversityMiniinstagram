@@ -95,7 +95,6 @@ namespace UniversityMiniinstagram.Services.Services
             return true;
         }
 
-
         public async Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
             var report = _adminReposetry.GetReport(vm.ReportId);
@@ -147,6 +146,25 @@ namespace UniversityMiniinstagram.Services.Services
                 _postService.DeletePost(post);
             }
             return true;
+        }
+        public async Task<List<UserRolesViewModel>> GetUsersAndRoles ()
+        {
+            var allUsers = _accountService.GetAllUsers();
+            List<UserRolesViewModel> vmList = new List<UserRolesViewModel>();
+            foreach(var user in allUsers)
+            {
+                if(!await _accountService.IsInRole(new IsInRoleViewModel() { user = user, roleName = "Admin" }))
+                {
+                    var userRoles = await _accountService.GetUserRoles(user);
+                    UserRolesViewModel vm = new UserRolesViewModel()
+                    {
+                        User = user,
+                        UserRoles = userRoles
+                    };
+                    vmList.Add(vm);
+                }
+            }
+            return vmList;
         }
     }
 }

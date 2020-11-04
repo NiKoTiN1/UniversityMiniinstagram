@@ -79,7 +79,11 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public async Task<bool> UpdateUser(ApplicationUser user)
         {
             var baseUser = await _userManager.FindByIdAsync(user.Id);
-            baseUser.Avatar = user.Avatar;
+            if(user.Avatar != null)
+            {
+                baseUser.Avatar = user.Avatar;
+                baseUser.AvatarId = user.Avatar.Id;
+            }
             baseUser.UserName = user.UserName;
             baseUser.Description = user.Description;
             var result = await _userManager.UpdateAsync(baseUser);
@@ -103,7 +107,13 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return roleList;
         }
 
-        public async void SetRolesBeforeBan(ApplicationUser user, string roleName)
+        public IList<ApplicationUser> GetAllUsers()
+        {
+            var allUsers =  _userManager.Users.ToList();
+            return allUsers;
+        }
+
+        public async Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName)
         {
             var role = await _roleManager.FindByNameAsync(roleName);
             RolesBeforeBan beforeBan = new RolesBeforeBan()
@@ -113,6 +123,20 @@ namespace UniversityMiniinstagram.Database.Reposetries
                 User = user
             };
             _context.RolesBeforeBan.Add(beforeBan);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public async Task<bool> UnBanUser(ApplicationUser user)
+        {
+            var result = await _userManager.RemoveFromRoleAsync(user, "Banned");
+            await _userManager.AddToRoleAsync(user, "User");
+            return result.Succeeded;
+        }
+        public void  DeleteSavedRoles(string userId)
+        {
+            var roles = _context.RolesBeforeBan.Where(role => role.UserId == userId).ToList();
+            _context.RolesBeforeBan.RemoveRange(roles);
             _context.SaveChanges();
         }
     }

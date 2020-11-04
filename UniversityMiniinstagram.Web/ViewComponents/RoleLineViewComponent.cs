@@ -2,17 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 
-namespace UniversityMiniinstagram.Web.Components
+namespace UniversityMiniinstagram.Web.ViewComponents
 {
-    public class CommentViewComponent : ViewComponent
+    public class RoleLineViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(CommentViewModel vm)
+        public IViewComponentResult Invoke(UserRolesViewModel vm)
         {
             return View(vm);
         }

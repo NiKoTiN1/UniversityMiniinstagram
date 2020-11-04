@@ -16,5 +16,8 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> AddRole(string name);
         public Task<bool> IsInRole(IsInRoleViewModel vm);
         public Task<bool> SetBanRole(ApplicationUser user);
+        public Task<ICollection<string>> GetUserRoles(ApplicationUser user);
+        public IList<ApplicationUser> GetAllUsers();
+        public Task<bool> UnBanUser(ApplicationUser user);
     }
 }

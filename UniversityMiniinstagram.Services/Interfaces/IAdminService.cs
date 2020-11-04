@@ -16,5 +16,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public bool RemoveReport(Guid reportId);
         public Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm);
         public Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm);
+        public Task<List<UserRolesViewModel>> GetUsersAndRoles();
     }
 }

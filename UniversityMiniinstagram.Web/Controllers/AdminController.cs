@@ -104,9 +104,10 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult SetDeleteRoles()
+        public async Task<ActionResult> SetDeleteRoles()
         {
-            return View();
+            var vm = await _adminService.GetUsersAndRoles();
+            return View(vm);
         }
         [HttpGet]
         public ActionResult Appeals()

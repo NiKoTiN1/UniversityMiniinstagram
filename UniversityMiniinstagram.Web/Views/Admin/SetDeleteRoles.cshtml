@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<UserRolesViewModel>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block shadow-sm" style="margin-top: 40px; width: 190px; height: 100%;
@@ -6,7 +7,7 @@
     top: 0;">
     <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column" style="background-color:white;">
-            <li class="nav-item" >
+            <li class="nav-item">
                 <a class="nav-link active" style="color:black;" asp-controller="Admin" asp-action="GetPostReports">
                     Post reports <span class="sr-only">(current)</span>
                 </a>
@@ -30,3 +31,78 @@
         </ul>
     </div>
 </nav>
+
+<div class="centeredSt" style="padding-left: 200px; min-width: 90%;">
+    @foreach (var elem in Model)
+    {
+        @await Component.InvokeAsync("RoleLine", new { vm = elem })
+    }
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('.Moder').click(function () {
+            var userId = $(this).attr("id");
+            userId = userId.replace('Moder', '');
+            var unModer = '#UnModer' + userId;
+            $(this).hide();
+            $(unModer).show();
+
+            @*$.ajax({
+                type: 'POST',
+                url:'@Url.Content("~/admin/pardon")',
+                data: { 'reportId': btnId },
+                success: function (data) {
+                    $(mainId).remove();
+                }
+            });*@
+        });
+
+        $('.UnModer').click(function () {
+            var userId = $(this).attr("id");
+            userId = userId.replace('UnModer', '');
+            var Moder = '#Moder' + userId;
+            $(this).hide();
+            $(Moder).show();
+
+            @* $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/admin/pardon")',
+                data: { 'reportId': btnId },
+                success: function (data) {
+                    $(mainId).remove();
+                }
+            });*@
+        });
+
+        $('.AddBan').click(function () {
+            var banId = $(this).attr("id");
+            var userId = banId.replace('AddBan', '');
+            var unBan = '#UnBan' + userId;
+             $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/account/ban")',
+                data: { 'userId': userId },
+                success: function (data) {
+                    $('#' + banId).hide();
+                    $(unBan).show();
+                }
+            });
+        });
+
+        $('.UnBan').click(function () {
+            var unBan = $(this).attr("id");
+            var userId = unBan.replace('UnBan', '');
+            var ban = '#AddBan' + userId;
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/account/unban")',
+                data: { 'userId': userId },
+                success: function (data) {
+                    $(ban).show();
+                    $('#' + unBan).hide();
+                }
+            });
+        });
+    </script>
+}

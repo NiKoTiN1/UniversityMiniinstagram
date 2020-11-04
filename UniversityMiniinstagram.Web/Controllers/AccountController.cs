@@ -205,5 +205,32 @@ namespace UniversityMiniinstagram.Web.Controllers
             return BadRequest();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> BanUser(string userId)
+        {
+            var user = await _accountService.GetUser(userId);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            var result = await _accountService.SetBanRole(user);
+            if(!result)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnBanUser(string userId)
+        {
+            var user = await _accountService.GetUser(userId);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            await _accountService.UnBanUser(user);
+            return Ok();
+        }
     }
 }
