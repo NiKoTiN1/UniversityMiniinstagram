@@ -166,5 +166,42 @@ namespace UniversityMiniinstagram.Services.Services
             }
             return vmList;
         }
+        public async Task<bool> AddModeratorRoots(string userId)
+        {
+            var user = await _accountService.GetUser(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            var result = await _accountService.SetModerator(user);
+            if(!result)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> RemoveModeratorRoots(string userId)
+        {
+            var user = await _accountService.GetUser(userId);
+            if (user == null)
+            {
+                return false;
+            }
+            var result = await _accountService.SetNonModerator(user);
+            if (!result)
+            {
+                return false;
+            }
+            return true;
+        }
+        public async Task<bool> isModerateAllowed(string curUserId, string reportUserId)
+        {
+            var curUser = await _accountService.GetUser(curUserId);
+            var reportUser = await _accountService.GetUser(reportUserId);
+            var result1 = await _accountService.IsInRole(new IsInRoleViewModel() { user = curUser, roleName = "Modarator" });
+            var result2 = await _accountService.IsInRole(new IsInRoleViewModel() { user = reportUser, roleName = "Modarator" });
+            return !(result1 && result2);
+        }
     }
 }

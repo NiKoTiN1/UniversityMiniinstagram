@@ -19,5 +19,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ICollection<string>> GetUserRoles(ApplicationUser user);
         public IList<ApplicationUser> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
+        public Task<bool> SetModerator(ApplicationUser user);
+        public Task<bool> SetNonModerator(ApplicationUser user);
     }
 }

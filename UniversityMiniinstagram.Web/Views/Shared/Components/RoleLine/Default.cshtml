@@ -18,25 +18,27 @@
                         var UnBanID = "UnBan" + Model.User.Id;
                     }
                     <h4 class="col-7">@Model.User.UserName</h4>
-                    @if (Model.UserRoles.Contains("Moderator"))
-                    {
-                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2">User</button>
-                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">Moderator</button>
-                    }
-                    else
-                    {
-                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">User</button>
-                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2">Moderator</button>
-                    }
                     @if (Model.UserRoles.Contains("Banned"))
                     {
+                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">User</button>
+                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">Moderator</button>
                         <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1 mr-2">Unban</button>
                         <button id="@BanID" type="button" class="AddBan btn btn-danger col-1 mr-2" style="display: none;">Ban</button>
                     }
                     else
                     {
-                        <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1" style="display: none;" >Unban</button>
-                        <button id="@BanID" type="button" class="AddBan btn btn-danger col-1" >Ban</button>
+                        @if (Model.UserRoles.Contains("Modarator"))
+                        {
+                            <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2">User</button>
+                            <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">Moderator</button>
+                        }
+                        else
+                        {
+                            <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">User</button>
+                            <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2">Moderator</button>
+                        }
+                        <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1" style="display: none;">Unban</button>
+                        <button id="@BanID" type="button" class="AddBan btn btn-danger col-1">Ban</button>
                     }
                 </div>
             </div>

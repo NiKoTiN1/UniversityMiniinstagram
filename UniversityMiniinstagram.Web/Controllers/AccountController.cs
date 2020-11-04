@@ -200,9 +200,9 @@ namespace UniversityMiniinstagram.Web.Controllers
             var isBanned = !await _accountService.IsInRole(vm);
             if (isBanned)
             {
-                return RedirectToAction("GetAllPosts", "News");
+                return RedirectToAction("GetAllPosts", "AddPost");
             }
-            return BadRequest();
+            return RedirectToAction("GetAllPosts", "News");
         }
 
         [HttpPost]

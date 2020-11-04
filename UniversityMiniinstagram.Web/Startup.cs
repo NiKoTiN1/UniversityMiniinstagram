@@ -50,7 +50,14 @@ namespace UniversityMiniinstagram
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>();
 
-            services.ConfigureApplicationCookie(options => options.LoginPath = "/account/login");
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                options.ValidationInterval = TimeSpan.Zero;
+            });
+
+            services.ConfigureApplicationCookie(options => {
+                options.LoginPath = "/account/login"; 
+            });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
@@ -151,8 +158,10 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("24", "admin/comment/decision", new { controller = "Admin", action = "CommentReportDecision" });
                 routing.MapRoute("25", "account/ban", new { controller = "Account", action = "BanUser" });
                 routing.MapRoute("26", "account/unban", new { controller = "Account", action = "UnBanUser" });
+                routing.MapRoute("27", "admin/moderroots", new { controller = "Admin", action = "AddModerator" });
+                routing.MapRoute("28", "admin/userroots", new { controller = "Admin", action = "RemoveModerator" });
 
-                routing.MapRoute("27", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+                routing.MapRoute("29", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
 
             });
         }

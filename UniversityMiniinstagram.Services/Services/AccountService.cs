@@ -126,6 +126,7 @@ namespace UniversityMiniinstagram.Services.Services
             var roleList = await _accountReposetry.GetRoleList(user);
             return roleList;
         }
+
         public IList<ApplicationUser> GetAllUsers()
         {
             var userList = _accountReposetry.GetAllUsers();
@@ -145,6 +146,20 @@ namespace UniversityMiniinstagram.Services.Services
                 }
             }
             return userList;
+        }
+
+        public async Task <bool> SetModerator(ApplicationUser user)
+        {
+            var result = await _accountReposetry.AddRoleToUser(user, "Modarator");
+            return result;
+        }
+
+        public async Task<bool> SetNonModerator(ApplicationUser user)
+        {
+            List<string> roles = new List<string>();
+            roles.Add("Modarator");
+            var result = await _accountReposetry.RemoveRolesFromUser(user, roles);
+            return result;
         }
     }
 }

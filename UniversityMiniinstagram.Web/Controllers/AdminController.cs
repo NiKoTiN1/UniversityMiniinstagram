@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
@@ -43,6 +44,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Modarator")]
         public async Task<ActionResult> GetPostReports()
         {
             List<AdminPostReportsVeiwModel> vmList = new List<AdminPostReportsVeiwModel>();
@@ -51,22 +53,25 @@ namespace UniversityMiniinstagram.Web.Controllers
             var reports = _adminService.GetPostReports();
             foreach(var report in reports)
             {
-                AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
-                vm.Report = report;
-                vm.CommentViewModel = new List<CommentViewModel>();
                 report.Post = await _postService.GetPost(report.PostId.Value);
-                foreach(var comment in report.Post.Comments)
+                if (report.Post.UserId != userIdClaim.Value)
                 {
-                    CommentViewModel commVm = new CommentViewModel()
+                    AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
+                    vm.Report = report;
+                    vm.CommentViewModel = new List<CommentViewModel>();
+                    foreach (var comment in report.Post.Comments)
                     {
-                        Comment = comment,
-                        IsDeleteRelated = false,
-                        IsReportRelated = false,
-                        ShowReportColor = false
-                    };
-                    vm.CommentViewModel.Add(commVm);
+                        CommentViewModel commVm = new CommentViewModel()
+                        {
+                            Comment = comment,
+                            IsDeleteRelated = false,
+                            IsReportRelated = false,
+                            ShowReportColor = false
+                        };
+                        vm.CommentViewModel.Add(commVm);
+                    }
+                    vmList.Add(vm);
                 }
-                vmList.Add(vm);
             }
             return View(vmList);
         }
@@ -80,25 +85,29 @@ namespace UniversityMiniinstagram.Web.Controllers
             var reports = _adminService.GetCommentReports();
             foreach (var report in reports)
             {
-                AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
-                vm.Report = report;
-                vm.CommentViewModel = new List<CommentViewModel>();
                 report.Post = await _postService.GetPost(report.Comment.PostId);
-                foreach (var comment in report.Post.Comments)
+                var isModerateAllowed = await _adminService.isModerateAllowed(userIdClaim.Value, report.Comment.UserId);
+                if ((report.Comment.UserId != userIdClaim.Value) && isModerateAllowed)
                 {
-                    CommentViewModel commVm = new CommentViewModel()
+                    AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
+                    vm.Report = report;
+                    vm.CommentViewModel = new List<CommentViewModel>();
+                    foreach (var comment in report.Post.Comments)
                     {
-                        Comment = comment,
-                        IsDeleteRelated = false,
-                        IsReportRelated = false,
-                    };
-                    if(report.CommentId == comment.Id)
-                    {
-                        commVm.ShowReportColor = true;
+                        CommentViewModel commVm = new CommentViewModel()
+                        {
+                            Comment = comment,
+                            IsDeleteRelated = false,
+                            IsReportRelated = false,
+                        };
+                        if (report.CommentId == comment.Id)
+                        {
+                            commVm.ShowReportColor = true;
+                        }
+                        vm.CommentViewModel.Add(commVm);
                     }
-                    vm.CommentViewModel.Add(commVm);
+                    vmList.Add(vm);
                 }
-                vmList.Add(vm);
             }
             return View(vmList);
         }
@@ -141,6 +150,28 @@ namespace UniversityMiniinstagram.Web.Controllers
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
             var result = await _adminService.CommentReportDecision(vm);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddModerator(string userId)
+        {
+            var result = await _adminService.AddModeratorRoots(userId);
+            if (result)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveModerator(string userId)
+        {
+            var result = await _adminService.RemoveModeratorRoots(userId);
             if (result)
             {
                 return Ok();

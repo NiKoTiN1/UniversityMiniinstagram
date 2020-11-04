@@ -33,6 +33,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public async Task<bool> AddRoleToUser(ApplicationUser user, string role)
         {
             var result = await _userManager.AddToRoleAsync(user, role);
+            await _userManager.UpdateSecurityStampAsync(user);
             return result.Succeeded;
         }
 
@@ -73,6 +74,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)
         {
             var result = await _userManager.RemoveFromRolesAsync(user, roles);
+            await _userManager.UpdateSecurityStampAsync(user);
             return result.Succeeded;
         }
 
@@ -129,6 +131,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
 
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
+            await _userManager.UpdateSecurityStampAsync(user);
             var result = await _userManager.RemoveFromRoleAsync(user, "Banned");
             await _userManager.AddToRoleAsync(user, "User");
             return result.Succeeded;
