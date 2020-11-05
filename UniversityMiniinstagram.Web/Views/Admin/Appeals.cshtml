@@ -1,4 +1,9 @@
-﻿@{
+﻿@section Styles
+{
+    <link rel="stylesheet" href="~/css/chat.css" />
+}
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block shadow-sm" style="margin-top: 40px; width: 190px; height: 100%;
@@ -33,3 +38,90 @@
         </ul>
     </div>
 </nav>
+
+
+<div>
+    <div class="content-wrapper" style="margin-left: 170px; margin-top: 50px;">
+
+        <!-- Row start -->
+        <div class="row gutters">
+
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+                <div class="card m-0" style=" height: 100vh;">
+
+                    <!-- Row start -->
+                    <div class="row no-gutters">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                            <div class="users-container">
+                                <ul class="users">
+                                    <li class="person active-user" data-chat="person2">
+                                        <div class="user">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar2.png" alt="Retail Admin">
+                                            <span class="status away"></span>
+                                        </div>
+                                        <p class="name-time">
+                                            <span class="name">Peter Gregor</span>
+                                        </p>
+                                    </li>
+                                    <li class="person" data-chat="person5">
+                                        <div class="user">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar5.png" alt="Retail Admin">
+                                            <span class="status away"></span>
+                                        </div>
+                                        <p class="name-time">
+                                            <span class="name">Michael Jordan</span>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                            <div class="selected-user">
+                                <span>To: <span class="name">Emily Russell</span></span>
+                            </div>
+                            <div class="chat-container">
+                                <ul class="chat-box chatContainerScroll">
+                                    <li class="chat-left">
+                                        <div class="chat-avatar">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                                            <div class="chat-name">Russell</div>
+                                        </div>
+                                        <div class="chat-text">
+                                            Hello, I'm Russell.
+                                            <br>How can I help you today?
+                                        </div>
+                                    </li>
+                                    <li class="chat-right">
+                                        <div class="chat-text">
+                                            Hi, Russell
+                                            <br> I need more information about Developer Plan.
+                                        </div>
+                                        <div class="chat-avatar">
+                                            <img src="https://www.bootdey.com/img/Content/avatar/avatar3.png" alt="Retail Admin">
+                                            <div class="chat-name">Sam</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="form-group mt-3 mb-0 row">
+                                    <textarea class="form-control col-11" rows="3" placeholder="Type your message here..." style="resize: none;"></textarea>
+                                    <label class="col-1" style="cursor: pointer; padding-left: 10px; padding-right: 40px;">
+                                        <svg width="2em" height="5em" viewBox="0 0 16 16" class="bi bi-cursor-fill mt-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z" />
+                                        </svg>
+                                        <input type="button" value="@*@Model.Post.Id*@" hidden="hidden" class="SendComment">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row end -->
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Row end -->
+
+    </div>
+</div>

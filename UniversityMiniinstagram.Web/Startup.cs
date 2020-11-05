@@ -29,6 +29,7 @@ using UniversityMiniinstagram.Database.Interfases;
 using UniversityMiniinstagram.Database.Reposetries;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
+using UniversityMiniinstagram.Web.Hubs;
 
 namespace UniversityMiniinstagram
 {
@@ -58,6 +59,8 @@ namespace UniversityMiniinstagram
             services.ConfigureApplicationCookie(options => {
                 options.LoginPath = "/account/login"; 
             });
+
+            services.AddSignalR();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
@@ -99,6 +102,7 @@ namespace UniversityMiniinstagram
 
         }
 
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -125,6 +129,8 @@ namespace UniversityMiniinstagram
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSignalR(routes => { routes.MapHub<CommentaryHub>("/comment"); });
 
             app.UseMvc(routing =>
             {

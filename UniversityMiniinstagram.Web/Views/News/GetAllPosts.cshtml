@@ -89,8 +89,8 @@
                                 }
                             </div>
                         </div>
-                        
-                        @{ 
+
+                        @{
                             var commArea = post.Post.Id.ToString() + "commAreaa";
                         }
                         <div id="@commArea" style="display:none;">
@@ -126,8 +126,12 @@
                 </div>
             </div>
         </div>
-        }
+    }
 </div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/commentary.js"></script>
 
 @section Scripts{
     <script type="text/javascript">
@@ -181,25 +185,6 @@
                 label.children().eq(2).attr("value", "1");
             }
 
-        });
-
-        $('.SendComment').click(function () {
-            var div = $(this).parent().parent().children(1);
-            var postId = $(this).attr("value");
-            var textId = '#' + postId + 'text';
-            var text = $(textId).val();
-            var countComment = $('#' + postId + 'count');
-            $.ajax({
-                type: 'POST',
-                url: 'addComment',
-                data: { 'postId': postId, 'text': text },
-                success: function (data) {
-                    var commAreaId = '#' + postId + 'content';
-                    $(commAreaId).append(data);
-                    $(textId).val("");
-                    countComment.text(parseInt(countComment.text()) + 1);
-                }
-            });
         });
 
         $('.dropdownRepPostEl').click(function () {
