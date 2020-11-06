@@ -2,9 +2,14 @@
 var connection = new signalR.HubConnectionBuilder().withUrl("/comment").build();
 
 
-connection.on("SendCommentHub", function (message) {
-    console.log(message);
-    //document.getElementById("messagesList").appendChild(li);
+connection.on("SendCommentHub", function (data, postId) {
+    console.log("bbb");
+    var textId = '#' + postId + 'text';
+    var countComment = $('#' + postId + 'count');
+    var commAreaId = '#' + postId + 'content';
+    $(commAreaId).append(data);
+    countComment.text(parseInt(countComment.text()) + 1);
+    $(textId).val("");
 });
 
 $('.SendComment').click(function () {
@@ -13,9 +18,7 @@ $('.SendComment').click(function () {
     var textId = '#' + postId + 'text';
     var text = $(textId).val();
     var countComment = $('#' + postId + 'count');
-    connection.invoke("SendMessage", text).catch(function (err) {
-        return console.error(err.toString());
-    });
+    connection.invoke("SendMessage", postId, text);
 
     //$.ajax({
     //    type: 'POST',

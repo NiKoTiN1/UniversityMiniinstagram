@@ -133,25 +133,21 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addComment")]
-        public async Task<ActionResult> CommentPost([FromForm] SendCommentViewModel vm)
+        public async Task<PartialViewResult> CommentPost([FromForm] SendCommentViewModel vm)
         {
             if (ModelState.IsValid && vm.Text != null && vm.PostId != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
+                var result = await _postServices.AddComment(vm, vm.UserId);
+                CommentViewModel commentViewModel = new CommentViewModel()
                 {
-                    var result = await _postServices.AddComment(vm, userIdClaim.Value);
-                    CommentViewModel commentViewModel = new CommentViewModel()
-                    {
-                        Comment = result,
-                        IsDeleteRelated = await _postServices.isDeleteRelated(result.User, userIdClaim.Value),
-                        IsReportRelated = await _postServices.isReportRelated(result.UserId, userIdClaim.Value, commentId:result.Id),
-                        ShowReportColor = false
-                    };
-                    return PartialView("_CommentBlock", commentViewModel);
-                }
+                    Comment = result,
+                    IsDeleteRelated = await _postServices.isDeleteRelated(result.User, vm.UserId),
+                    IsReportRelated = await _postServices.isReportRelated(result.UserId, vm.UserId, commentId: result.Id),
+                    ShowReportColor = false
+                };
+                return PartialView("_CommentBlock", commentViewModel);
             }
-            return Unauthorized();
+            return null;
         }
 
         [HttpDelete]

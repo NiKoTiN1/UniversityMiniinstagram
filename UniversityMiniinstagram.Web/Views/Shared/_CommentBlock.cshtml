@@ -1,9 +1,9 @@
-﻿    @model CommentViewModel
+﻿@model CommentViewModel
 @{
     var contentId = Model.Comment.Id.ToString() + "content";
     string color;
 }
-@if(Model.ShowReportColor)
+@if (Model.ShowReportColor)
 {
     color = "background-color: rgba(255, 0, 0, 0.4);";
 }

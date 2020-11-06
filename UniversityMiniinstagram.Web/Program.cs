@@ -22,5 +22,6 @@ namespace UniversityMiniinstagram
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
     }
 }

@@ -30,6 +30,7 @@ using UniversityMiniinstagram.Database.Reposetries;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Web.Hubs;
+using UniversityMiniinstagram.Web.Controllers;
 
 namespace UniversityMiniinstagram
 {
@@ -60,7 +61,8 @@ namespace UniversityMiniinstagram
                 options.LoginPath = "/account/login"; 
             });
 
-            services.AddSignalR();
+            services.AddSignalR(o => o.EnableDetailedErrors = true);
+
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
@@ -76,6 +78,10 @@ namespace UniversityMiniinstagram
 
             services.AddTransient<IAdminReposetry, AdminReposetry>();
             services.AddTransient<IAdminService, AdminService>();
+
+            services.AddTransient<IViewRenderService, ViewRenderService>();
+
+            services.AddScoped<NewsController>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
@@ -120,7 +126,6 @@ namespace UniversityMiniinstagram
             app.UseRequestLocalization(locOptions.Value);
 
             app.UseRequestLocalization();
-            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
