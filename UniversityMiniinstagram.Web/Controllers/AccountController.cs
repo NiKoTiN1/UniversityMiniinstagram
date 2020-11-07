@@ -155,13 +155,20 @@ namespace UniversityMiniinstagram.Web.Controllers
             vm.Userid = userIdClaim.Value;
             if (ModelState.IsValid && vm.Username != null)
             {
+                if(vm.Password != null)
+                {
+                    if(vm.OldPassword == null)
+                    {
+                        return RedirectToAction("EditProfile");
+                    }
+                }
                 var result = await _accountService.EditProfile(vm);
                 if(result)
                 {
                     return RedirectToAction("Profile");
                 }    
             }
-            return RedirectToAction("EditProfilePost");
+            return RedirectToAction("EditProfile");
         }
 
 

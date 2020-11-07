@@ -126,6 +126,12 @@
   <data name="InvalidFeedbackUserName" xml:space="preserve">
     <value>Ihr Benutzername ist erforderlich.</value>
   </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Altes Passwort</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Neues Kennwort</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Nutzername</value>
   </data>

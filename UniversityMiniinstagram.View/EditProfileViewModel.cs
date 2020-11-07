@@ -10,5 +10,7 @@ namespace UniversityMiniinstagram.View
         public string Description { get; set; }
         public string WebRootPath { get; set; }
         public string Userid { get; set; }
+        public string OldPassword { get; set; }
+        public string Password { get; set; }
     }
 }

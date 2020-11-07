@@ -128,9 +128,18 @@ namespace UniversityMiniinstagram.Services.Services
         public async Task<bool> EditProfile(EditProfileViewModel vm)
         {
             Image image = null;
-            if(vm.File != null)
+            var Ouser = await _accountReposetry.GetUser(vm.Userid);
+            if (vm.File != null)
             {
                 image = await _imageService.Add(vm, vm.WebRootPath);
+            }
+            if(vm.Password != null)
+            {
+                var res = await _accountReposetry.ChangePassword(Ouser, vm.OldPassword, vm.Password);
+                if(!res)
+                {
+                    return false;
+                }
             }
             ApplicationUser user = new ApplicationUser()
             {
@@ -139,7 +148,7 @@ namespace UniversityMiniinstagram.Services.Services
                 Description = vm.Description,
                 UserName = vm.Username
             };
-            var result = await _accountReposetry.UpdateUser(user);
+            var result = await _accountReposetry.UpdateUser(Ouser, user);
             return result;
         }
 

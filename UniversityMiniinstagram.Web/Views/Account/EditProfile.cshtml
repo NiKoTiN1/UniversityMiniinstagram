@@ -27,7 +27,7 @@
             <div class="input-group">
                 <div class="input-group-prepend">
                 </div>
-                <input type="text" class="form-control" id="Username" name="Username" placeholder="Username" value="@Model.UserName" required="">
+                <input type="text" class="form-control" id="Username" name="Username" placeholder="@VLocalizer["Username"]" value="@Model.UserName" required="">
                 <div class="invalid-feedback" style="width: 100%;">
                     @VLocalizer["InvalidFeedbackUserName"]
                 </div>
@@ -36,7 +36,17 @@
 
         <div class="mb-3">
             <label for="Description">@VLocalizer["Description"]</label>
-            <textarea type="text" name="Description" id="Description" class="form-control mb-2" style="resize: none;" placeholder="Description">@Model.Description</textarea>
+            <textarea type="text" name="Description" id="Description" class="form-control mb-2" style="resize: none;" placeholder="@VLocalizer["Description"]">@Model.Description</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="OldPassword">@VLocalizer["OldPassword"]</label>
+            <input type="password" name="OldPassword" id="OldPassword" class="form-control" placeholder="@VLocalizer["OldPassword"]">
+        </div>
+
+        <div class="mb-3">
+            <label for="Password">@VLocalizer["Password"]</label>
+            <textarea type="text" name="Password" id="Password" class="form-control mb-2" style="resize: none;" placeholder="@VLocalizer["Password"]"></textarea>
         </div>
 
         <hr class="mb-4">

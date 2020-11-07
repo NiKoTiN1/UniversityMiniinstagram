@@ -126,6 +126,12 @@
   <data name="InvalidFeedbackUserName" xml:space="preserve">
     <value>Введите никнейм</value>
   </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>Старый пароль</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Новый пароль</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Никнейм</value>
   </data>

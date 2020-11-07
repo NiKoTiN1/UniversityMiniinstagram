@@ -44,6 +44,12 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return result.Succeeded;
         }
 
+        public async Task<bool> ChangePassword(ApplicationUser user, string oldPass, string newPass)
+        {
+            var result = await _userManager.ChangePasswordAsync(user, oldPass, newPass);
+            return result.Succeeded;
+        }
+
         public async Task<bool> Login(string email ,string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -78,17 +84,16 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return result.Succeeded;
         }
 
-        public async Task<bool> UpdateUser(ApplicationUser user)
+        public async Task<bool> UpdateUser(ApplicationUser Ouser, ApplicationUser user)
         {
-            var baseUser = await _userManager.FindByIdAsync(user.Id);
             if(user.Avatar != null)
             {
-                baseUser.Avatar = user.Avatar;
-                baseUser.AvatarId = user.Avatar.Id;
+                Ouser.Avatar = user.Avatar;
+                Ouser.AvatarId = user.Avatar.Id;
             }
-            baseUser.UserName = user.UserName;
-            baseUser.Description = user.Description;
-            var result = await _userManager.UpdateAsync(baseUser);
+            Ouser.UserName = user.UserName;
+            Ouser.Description = user.Description;
+            var result = await _userManager.UpdateAsync(Ouser);
             return result.Succeeded;
         }
 
