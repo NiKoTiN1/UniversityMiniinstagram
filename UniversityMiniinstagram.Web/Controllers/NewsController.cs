@@ -15,7 +15,7 @@ using UniversityMiniinstagram.View;
 namespace UniversityMiniinstagram.Web.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "User")]
     [Route("news")]
     public class NewsController : Controller
     {
@@ -71,7 +71,6 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Route("addPost")]
-
         public IActionResult AddPost()
         {
             return View();

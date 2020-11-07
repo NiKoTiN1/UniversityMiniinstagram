@@ -1,46 +1,47 @@
-﻿@model UserRolesViewModel
-    <div class="card card-task mb-2">
-        <div class="card-body">
-            <div class="card-meta">
-                <div class="row">
-                    <div class="col-2" style="max-width: fit-content;">
-                        <img src="@Model.User.Avatar.Path" class="img-fluid rounded-circle mb-2 border border-dark" style="
+﻿@inject IViewLocalizer VLocalizer
+@model UserRolesViewModel
+<div class="card card-task mb-2">
+    <div class="card-body">
+        <div class="card-meta">
+            <div class="row">
+                <div class="col-2" style="max-width: fit-content;">
+                    <img src="@Model.User.Avatar.Path" class="img-fluid rounded-circle mb-2 border border-dark" style="
                             border-width: 3px !important;
                             width: 100%;
                             height: 100%;
                             max-height: 50px;
                             max-width: 50px;">
-                    </div>
-                    @{
-                        var unModerId = "UnModer" + Model.User.Id;
-                        var ModerId = "Moder" + Model.User.Id;
-                        var BanID = "AddBan" + Model.User.Id;
-                        var UnBanID = "UnBan" + Model.User.Id;
-                    }
-                    <h4 class="col-7">@Model.User.UserName</h4>
-                    @if (Model.UserRoles.Contains("Banned"))
+                </div>
+                @{
+                    var unModerId = "UnModer" + Model.User.Id;
+                    var ModerId = "Moder" + Model.User.Id;
+                    var BanID = "AddBan" + Model.User.Id;
+                    var UnBanID = "UnBan" + Model.User.Id;
+                }
+                <h4 class="col-7">@Model.User.UserName</h4>
+                @if (Model.UserRoles.Contains("Banned"))
+                {
+                    <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">@VLocalizer["User"]</button>
+                    <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">@VLocalizer["Moderator"]</button>
+                    <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1 mr-2">@VLocalizer["Unban"]</button>
+                    <button id="@BanID" type="button" class="AddBan btn btn-danger col-1 mr-2" style="display: none;">@VLocalizer["Ban"]</button>
+                }
+                else
+                {
+                    @if (Model.UserRoles.Contains("Modarator"))
                     {
-                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">User</button>
-                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">Moderator</button>
-                        <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1 mr-2">Unban</button>
-                        <button id="@BanID" type="button" class="AddBan btn btn-danger col-1 mr-2" style="display: none;">Ban</button>
+                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2">@VLocalizer["User"]</button>
+                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">@VLocalizer["Moderator"]</button>
                     }
                     else
                     {
-                        @if (Model.UserRoles.Contains("Modarator"))
-                        {
-                            <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2">User</button>
-                            <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">Moderator</button>
-                        }
-                        else
-                        {
-                            <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">User</button>
-                            <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2">Moderator</button>
-                        }
-                        <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1" style="display: none;">Unban</button>
-                        <button id="@BanID" type="button" class="AddBan btn btn-danger col-1">Ban</button>
+                        <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2" style="display: none;">@VLocalizer["User"]</button>
+                        <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2">@VLocalizer["Moderator"]</button>
                     }
-                </div>
+                    <button id="@UnBanID" type="button" class="UnBan btn btn-success col-1" style="display: none;">@VLocalizer["Unban"]</button>
+                    <button id="@BanID" type="button" class="AddBan btn btn-danger col-1">@VLocalizer["Ban"]</button>
+                }
             </div>
         </div>
     </div>
+</div>

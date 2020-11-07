@@ -1,4 +1,5 @@
-﻿@model CommentViewModel
+﻿@inject IViewLocalizer VLocalizer
+@model CommentViewModel
 @{
     var contentId = Model.Comment.Id.ToString() + "content";
     string color;
@@ -35,11 +36,11 @@ else
                         }
                         @if (Model.IsDeleteRelated)
                         {
-                            <a class="dropdown-item dropdownEl" id="@deleteId">Delete</a>
+                            <a class="dropdown-item dropdownEl" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
                         }
                         @if (Model.IsReportRelated)
                         {
-                            <a class="dropdown-item dropdownEl" id="@reportId">Report</a>
+                            <a class="dropdown-item dropdownEl" id="@reportId">@VLocalizer["ReportBtn"]</a>
                         }
                     </div>
                 </div>

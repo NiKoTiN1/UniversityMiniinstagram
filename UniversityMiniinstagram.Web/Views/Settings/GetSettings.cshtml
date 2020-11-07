@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Localization
+@inject IViewLocalizer VLocalizer
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var curCulture = requestCulture.RequestCulture.Culture.Name;
+}
+<div class="centeredSt">
+    @switch (curCulture)
+    {
+        case "en":
+            {
+                <select class="form-control mr-2" id="Language" name="Language">
+                    <option>Русский</option>
+                    <option selected>English</option>
+                    <option>Deutsche</option>
+                </select>
+                break;
+            }
+        case "ru":
+            {
+                <select class="form-control mr-2 " id="Language" name="Language">
+                    <option selected>Русский</option>
+                    <option>English</option>
+                    <option>Deutsche</option>
+                </select>
+                break;
+            }
+        case "de":
+            {
+                <select class="form-control mr-2" id="Language" name="Language">
+                    <option>Русский</option>
+                    <option>English</option>
+                    <option selected>Deutsche</option>
+                </select>
+                break;
+            }
+    }
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('#Language').change(function () {
+            var cultureVal = $(this);
+            var url = $(location).attr("href");
+            var culture = "";
+            switch (cultureVal.val())
+            {
+                case "Русский":
+                    {
+                        culture = "ru";
+                        break;
+                    }
+                case "English":
+                    {
+                        culture = "en";
+                        break;
+                    }
+                case "Deutsche":
+                    {
+                        culture = "de";
+                        break;
+                    }
+            }
+            var a = "";
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/settings/language")',
+                data: { 'culture': culture, 'returnUrl': url },
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+}

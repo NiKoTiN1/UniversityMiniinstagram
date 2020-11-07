@@ -22,5 +22,6 @@ namespace UniversityMiniinstagram.Database.Interfases
         public IList<ApplicationUser> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
         public void DeleteSavedRoles(string userId);
+        public bool IsAdminCreated();
     }
 }

@@ -28,8 +28,30 @@ namespace UniversityMiniinstagram.Services.Services
                 var isCreated = await _accountReposetry.CreateUser(user, vm.Password);
                 if (isCreated)
                 {
-                    var isRoleAdded = await _accountReposetry.AddRoleToUser(user, vm.Role);
-                    if(isRoleAdded)
+                    var isRoleAdded = await _accountReposetry.AddRoleToUser(user, "User");
+
+                    if (isRoleAdded)
+                    {
+                        return true;
+                    }
+                    await _accountReposetry.RemoveUser(user.Id);
+                }
+            }
+            return false;
+        }
+        public async Task<bool> RegisterAdmin(RegisterViewModel vm)
+        {
+            var isExist = await _accountReposetry.IsExist(vm.Email);
+            if (isExist)
+            {
+                ApplicationUser user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username };
+                var isCreated = await _accountReposetry.CreateUser(user, vm.Password);
+                if (isCreated)
+                {
+                    var isRoleAdded = await _accountReposetry.AddRoleToUser(user, "Admin");
+                    var isRoleAddedtemp1 = await _accountReposetry.AddRoleToUser(user, "Modarator");
+                    var isRoleAddedtemp2 = await _accountReposetry.AddRoleToUser(user, "User");
+                    if (isRoleAdded && isRoleAddedtemp1 && isRoleAddedtemp2)
                     {
                         return true;
                     }
@@ -160,6 +182,10 @@ namespace UniversityMiniinstagram.Services.Services
             roles.Add("Modarator");
             var result = await _accountReposetry.RemoveRolesFromUser(user, roles);
             return result;
+        }
+        public bool IsAdminCreated()
+        {
+            return _accountReposetry.IsAdminCreated();
         }
     }
 }

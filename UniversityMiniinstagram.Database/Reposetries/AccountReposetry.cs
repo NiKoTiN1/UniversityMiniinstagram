@@ -142,5 +142,9 @@ namespace UniversityMiniinstagram.Database.Reposetries
             _context.RolesBeforeBan.RemoveRange(roles);
             _context.SaveChanges();
         }
+        public bool IsAdminCreated()
+        {
+            return _roleManager.Roles.ToList().Count != 0;
+        }
     }
 }

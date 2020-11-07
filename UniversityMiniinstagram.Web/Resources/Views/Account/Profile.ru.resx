@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin" xml:space="preserve">
-    <value>я Администратор</value>
-  </data>
-  <data name="Btn" xml:space="preserve">
-    <value>Нажми!</value>
-  </data>
-  <data name="Flag" xml:space="preserve">
-    <value>/Images/RU.png</value>
-  </data>
-  <data name="User" xml:space="preserve">
-    <value>Я Пользвоатель</value>
+  <data name="EditBtn" xml:space="preserve">
+    <value>Изменить профиль</value>
   </data>
 </root>

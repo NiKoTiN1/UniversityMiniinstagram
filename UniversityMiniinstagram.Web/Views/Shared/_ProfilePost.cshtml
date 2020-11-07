@@ -1,4 +1,5 @@
-﻿@model PostsViewModel
+﻿@inject IViewLocalizer VLocalizer
+@model PostsViewModel
 
 <div class="row">
     <div class="col-9" style="
@@ -81,7 +82,7 @@
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">
             <form class="row" style="margin-left: auto; margin-right: auto; width: inherit;">
-                <textarea id="@textId" class="form-control col ml-2" rows="1" style="resize: none; margin-left: 0px !important;"></textarea>
+                <textarea id="@textId" placeholder="@VLocalizer["Comment"]" class="form-control col ml-2" rows="1" style="resize: none; margin-left: 0px !important;"></textarea>
                 <label class="col-0" style="cursor: pointer; padding-left: 10px; padding-right: 40px;">
                     <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-cursor-fill mt-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z" />

@@ -36,7 +36,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         IWebHostEnvironment _appEnvironment;
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin, Modarator, User")]
         public async Task<ViewResult> Profile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -54,6 +54,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Modarator, User")]
         public async Task<ViewResult> EditProfile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -68,7 +69,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin, Modarator, User")]
         public IActionResult ProfileNumb(int numb)
         {
             return View(numb);
@@ -88,6 +89,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
@@ -96,6 +98,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Modarator, User")]
         public IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(
@@ -140,6 +143,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Modarator, User")]
         public async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
         {
             vm.WebRootPath = _appEnvironment.WebRootPath;
@@ -164,31 +168,34 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateRolePost()
         {
-            var result = await _accountService.AddRole("Admin");
-
-            var result1 = await _accountService.AddRole("User");
-            var result2 = await _accountService.AddRole("Modarator");
-            var result3 = await _accountService.AddRole("Banned");
-
-            RegisterViewModel vm = new RegisterViewModel()
+            if(!_accountService.IsAdminCreated())
             {
-                Email = "Admin@mail.ru",
-                Description = "AdminAcc",
-                Password = "Admin_1",
-                Username = "Admin",
-                Role = "Admin"
-            };
-            var adminUser = await _accountService.Register(vm);
-            if (adminUser)
-            {
-                return RedirectToAction("Profile");
+                var result = await _accountService.AddRole("Admin");
+
+                var result1 = await _accountService.AddRole("User");
+                var result2 = await _accountService.AddRole("Modarator");
+                var result3 = await _accountService.AddRole("Banned");
+
+                RegisterViewModel vm = new RegisterViewModel()
+                {
+                    Email = "Admin@mail.ru",
+                    Description = "AdminAcc",
+                    Password = "Admin_1",
+                    Username = "Admin",
+                };
+                var adminUser = await _accountService.RegisterAdmin(vm);
+                if (adminUser)
+                {
+                    return RedirectToAction("Profile");
+                }
             }
             return BadRequest();
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> AccessDenied()
+        [Authorize]
+        public async Task<IActionResult> AccessDenied(string ReturnUrl = null)
         {
             var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             var user = await _accountService.GetUser(userIdClaim.Value);
@@ -200,12 +207,20 @@ namespace UniversityMiniinstagram.Web.Controllers
             var isBanned = !await _accountService.IsInRole(vm);
             if (isBanned)
             {
-                return RedirectToAction("GetAllPosts", "AddPost");
+                return RedirectToAction("BanPage");
             }
-            return RedirectToAction("GetAllPosts", "News");
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Banned")]
+        public IActionResult BanPage()
+        {
+            return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Modarator")]
         public async Task<IActionResult> BanUser(string userId)
         {
             var user = await _accountService.GetUser(userId);
@@ -222,6 +237,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Modarator")]
         public async Task<IActionResult> UnBanUser(string userId)
         {
             var user = await _accountService.GetUser(userId);

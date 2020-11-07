@@ -81,11 +81,11 @@
                                 }
                                 @if (post.IsDeleteRelated)
                                 {
-                                    <a class="dropdown-item dropdownDelPostEl" id="@deleteId">Delete</a>
+                                <a class="dropdown-item dropdownDelPostEl" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
                                 }
                                 @if (post.IsReportRelated)
                                 {
-                                    <a class="dropdown-item dropdownRepPostEl" id="@reportId">Report</a>
+                            <a class="dropdown-item dropdownRepPostEl" id="@reportId">@VLocalizer["ReportBtn"]</a>
                                 }
                             </div>
                         </div>

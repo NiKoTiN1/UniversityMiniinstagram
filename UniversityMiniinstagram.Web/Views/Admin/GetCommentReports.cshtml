@@ -1,4 +1,5 @@
-﻿@{
+﻿@inject IViewLocalizer VLocalizer
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block shadow-sm" style="margin-top: 40px; width: 190px; height: 100%;
@@ -8,28 +9,22 @@
         <ul class="nav flex-column" style="background-color:white;">
             <li class="nav-item">
                 <a class="nav-link active" style="color:black;" asp-controller="Admin" asp-action="GetPostReports">
-                    Post reports <span class="sr-only">(current)</span>
+                    @VLocalizer["PostReports"] <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item" style="background-color:#343a40;">
                 <a class="nav-link" style="color: white;" asp-controller="Admin" asp-action="GetCommentReports">
-                    Comment reports
+                    @VLocalizer["CommentReports"]
                 </a>
             </li>
             @if (User.IsInRole("Admin"))
             {
                 <li class="nav-item" style="background-color:white;">
                     <a class="nav-link" style="color: black; " asp-controller="Admin" asp-action="SetDeleteRoles">
-                        Roles
+                        @VLocalizer["Roles"]
                     </a>
                 </li>
             }
-            <li class="nav-item" style="background-color:white;">
-                <a class="nav-link" style="color: black;" asp-controller="Admin" asp-action="Appeals">
-                    Appeals
-                </a>
-            </li>
-
         </ul>
     </div>
 </nav>
@@ -76,7 +71,7 @@
                                                 @{
                                                     var commArea = elem.Report.Post.Id.ToString() + "commAreaa";
                                                 }
-                                                <div id="@commArea" >
+                                                <div id="@commArea">
                                                     <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                                                     @{
                                                         var contentId = elem.Report.Post.Id.ToString() + "content";

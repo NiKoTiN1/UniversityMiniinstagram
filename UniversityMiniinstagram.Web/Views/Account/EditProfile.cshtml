@@ -23,24 +23,24 @@
             </label>
         </div>
         <div class="mb-3">
-            <label for="username">Username</label>
+            <label for="username">@VLocalizer["Username"]</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                 </div>
                 <input type="text" class="form-control" id="Username" name="Username" placeholder="Username" value="@Model.UserName" required="">
                 <div class="invalid-feedback" style="width: 100%;">
-                    Your username is required.
+                    @VLocalizer["InvalidFeedbackUserName"]
                 </div>
             </div>
         </div>
 
         <div class="mb-3">
-            <label for="Description">Description</label>
+            <label for="Description">@VLocalizer["Description"]</label>
             <textarea type="text" name="Description" id="Description" class="form-control mb-2" style="resize: none;" placeholder="Description">@Model.Description</textarea>
         </div>
 
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Edit profile</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">@VLocalizer["EditProfileBtn"]</button>
     </form>
 </div>
 

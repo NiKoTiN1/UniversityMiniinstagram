@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Admin" xml:space="preserve">
-    <value>Ich bin admin</value>
-  </data>
-  <data name="Btn" xml:space="preserve">
-    <value>Klicken!</value>
-  </data>
-  <data name="Flag" xml:space="preserve">
-    <value>/Images/ger.jpg"</value>
-  </data>
-  <data name="User" xml:space="preserve">
-    <value>Ich bin Benutzer</value>
+  <data name="EditBtn" xml:space="preserve">
+    <value>Profil bearbeiten</value>
   </data>
 </root>

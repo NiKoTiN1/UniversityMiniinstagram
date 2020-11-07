@@ -10,6 +10,7 @@ using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
+    [Authorize(Roles = "User")]
     public class AdminController : Controller
     {
         public AdminController(IAdminService adminService, IPostService postService)
@@ -77,6 +78,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Modarator")]
         public async Task<ActionResult> GetCommentReports()
         {
             List<AdminPostReportsVeiwModel> vmList = new List<AdminPostReportsVeiwModel>();
@@ -113,18 +115,21 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> SetDeleteRoles()
         {
             var vm = await _adminService.GetUsersAndRoles();
             return View(vm);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Appeals()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Modarator")]
         public IActionResult PardonPost(Guid reportId)
         {
             var result = _adminService.RemoveReport(reportId);
@@ -136,6 +141,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Modarator")]
         public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
             var result = await _adminService.PostReportDecision(vm);
@@ -147,6 +153,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Modarator")]
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
             var result = await _adminService.CommentReportDecision(vm);
@@ -158,6 +165,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddModerator(string userId)
         {
             var result = await _adminService.AddModeratorRoots(userId);
@@ -169,6 +177,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveModerator(string userId)
         {
             var result = await _adminService.RemoveModeratorRoots(userId);
