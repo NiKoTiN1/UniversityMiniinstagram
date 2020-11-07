@@ -81,8 +81,6 @@ namespace UniversityMiniinstagram
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
 
-            services.AddScoped<NewsController>();
-
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");

@@ -24,25 +24,16 @@ namespace UniversityMiniinstagram.Web.Hubs
     [Authorize]
     public class CommentaryHub : Hub
     {
-        public CommentaryHub(IPostService postService, NewsController newsController, IViewRenderService renderService)
+        public CommentaryHub(IPostService postService, IViewRenderService renderService)
         {
             _postService = postService;
-            _newsController = newsController;
             _renderService = renderService;
         }
-        NewsController _newsController;
         IViewRenderService _renderService;
         IPostService _postService;
 
         public async Task SendMessage(Guid postId, string text)
         {
-            //var userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            //var data = await _newsController.CommentPost(new SendCommentViewModel() 
-            //{
-            //    PostId = postId,
-            //    Text = text,
-            //    UserId = userIdClaim.Value 
-            //});
             SendCommentViewModel vm = new SendCommentViewModel()
             {
                 PostId = postId,
@@ -57,14 +48,6 @@ namespace UniversityMiniinstagram.Web.Hubs
                 IsReportRelated = await _postService.isReportRelated(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                 ShowReportColor = false
             };
-
-
-            //var template = File.ReadAllText(@"Views\Shared\_CommentBlock.cshtml");
-            //Engine.Razor.AddTemplate("azaza", template);
-            //var result = Engine.Razor.RunCompile("azaza", typeof(CommentViewModel), commentViewModel.GetType());
-            ////Engine.Razor.Run("azaza", typeof(CommentViewModel), commentViewModel);
-            //var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Views\Shared\_CommentBlock.cshtml");
-            //var res1 = await _renderService.RenderToStringAsync($"~/Views/Shared/_CommentBlock.cshtml", commentViewModel);
             var res = await _renderService.RenderToStringAsync("_CommentBlock", commentViewModel);
             await Clients.All.SendAsync("SendCommentHub", res, postId);
         }      
