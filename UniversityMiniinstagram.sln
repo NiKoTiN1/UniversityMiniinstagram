@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Vie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Web", "UniversityMiniinstagram.Web\UniversityMiniinstagram.Web.csproj", "{AAF21CA5-A516-4A28-869E-CF10D6C95A92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversityMiniinstagram.Tests", "UniversityMiniinstagram.Tests\UniversityMiniinstagram.Tests.csproj", "{7CB8DE85-6C64-4348-88B4-E59EB6E89E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Tests", "UniversityMiniinstagram.Tests\UniversityMiniinstagram.Tests.csproj", "{7CB8DE85-6C64-4348-88B4-E59EB6E89E6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

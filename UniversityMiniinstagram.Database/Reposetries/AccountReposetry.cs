@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,16 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public async Task<bool> CreateUser(ApplicationUser user, string password)
         {
             var result =  await _userManager.CreateAsync(user, password);
+            return result.Succeeded;
+        }
+        public async Task<bool> CreateUser(ApplicationUser user)
+        {
+            var result = await _userManager.CreateAsync(user);
+            return result.Succeeded;
+        }
+        public async Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info)
+        {
+            var result = await _userManager.AddLoginAsync(user, info);
             return result.Succeeded;
         }
 
@@ -64,6 +75,20 @@ namespace UniversityMiniinstagram.Database.Reposetries
             }
             return false;
         }
+        public async Task Login(ApplicationUser user)
+        {
+            await _signInManager.SignInAsync(user, false);
+        }
+        public AuthenticationProperties GoogleLogin(string url)
+        {
+            var prop = _signInManager.ConfigureExternalAuthenticationProperties("Google", url);
+            return prop;
+        }
+        public async Task<bool> ExternalLogin(ExternalLoginInfo info)
+        {
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
+            return result.Succeeded;
+        }
 
         public async Task<ApplicationUser> GetUser(string id)
         {
@@ -71,10 +96,21 @@ namespace UniversityMiniinstagram.Database.Reposetries
             return user;
         }
 
+        public async Task<ApplicationUser> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
+        }
+
         public async Task<bool> AddRole(string name)
         {
             var result = await _roleManager.CreateAsync(new IdentityRole(name));
             return result.Succeeded;
+        }
+        public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            return info;
         }
 
         public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)

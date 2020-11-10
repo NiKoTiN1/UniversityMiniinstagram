@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +40,28 @@ namespace UniversityMiniinstagram.Services.Services
                 }
             }
             return false;
+        }
+        public async Task<bool> Register(ApplicationUser user)
+        {
+            var result = await _accountReposetry.CreateUser(user);
+            if(result)
+            {
+                var isRoleAdded = await _accountReposetry.AddRoleToUser(user, "User");
+
+                if (isRoleAdded)
+                {
+                    return true;
+                }
+            }
+            await _accountReposetry.RemoveUser(user.Id);
+            return false;
+        }
+
+
+        public async Task<bool> IsUserExist(string email)
+        {
+            var result = await _accountReposetry.IsExist(email);
+            return result;
         }
         public async Task<bool> RegisterAdmin(RegisterViewModel vm)
         {
@@ -90,6 +114,12 @@ namespace UniversityMiniinstagram.Services.Services
             return await _accountReposetry.AddRoleToUser(user, "Banned");
         }
 
+        public async Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info)
+        {
+            var result = await _accountReposetry.AddLoginToUser(user, info);
+            return result;
+        }
+
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
             await _accountReposetry.UnBanUser(user);
@@ -100,6 +130,26 @@ namespace UniversityMiniinstagram.Services.Services
         public async Task<bool> Login (LoginViewModel vm)
         {
             var result = await _accountReposetry.Login(vm.Email, vm.Password);
+            return result;
+        }
+        public async Task Login(ApplicationUser user)
+        {
+            await _accountReposetry.Login(user);
+        }
+
+        public AuthenticationProperties GoogleLogin(string url)
+        {
+            var res = _accountReposetry.GoogleLogin(url);
+            return res;
+        }
+        public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            var info = await _accountReposetry.GetExternalLoginInfoAsync();
+            return info;
+        }
+        public async Task<bool> ExternalLogin(ExternalLoginInfo info)
+        {
+            var result = await _accountReposetry.ExternalLogin(info);
             return result;
         }
 
@@ -118,6 +168,13 @@ namespace UniversityMiniinstagram.Services.Services
             user.Avatar = new Image() { Path = "/Images/noPhoto.png" };
             return user;
         }
+
+        public async Task<ApplicationUser> GetUserByEmail(string email)
+        {
+            var user = await _accountReposetry.GetUserByEmail(email);
+            return user;
+        }
+
 
         public async Task<bool> AddRole(string name)
         {

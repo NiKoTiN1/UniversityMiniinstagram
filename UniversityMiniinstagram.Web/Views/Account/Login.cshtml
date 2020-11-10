@@ -9,14 +9,24 @@
 }
 
 <div class="centered">
-    <form class="form-signin text-center" asp-controller="Account" asp-action="LoginPost" method="post">
-        <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["LoginLbl"]</h1>
+    <div class="container">
+        <div class="row" style="justify-content: center;">
+            <form class="form-signin text-center" asp-controller="Account" asp-action="LoginPost" method="post">
+                <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["LoginLbl"]</h1>
 
-        <input type="email" name="Email" id="inputEmail" class="form-control mb-2" placeholder="@VLocalizer["Email"]" required="" autofocus="">
+                <input type="email" name="Email" id="inputEmail" class="form-control mb-2" placeholder="@VLocalizer["Email"]" required="" autofocus="">
 
-        <input type="password" name="Password" id="inputPassword" class="form-control" placeholder="@VLocalizer["Password"]" required="">
-        <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
-        <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["LoginBtn"]</button>
-        <a class="text-center" asp-controller="Account" asp-action="Register">@VLocalizer["RegisterRedir"]</a>
-    </form>
+                <input type="password" name="Password" id="inputPassword" class="form-control" placeholder="@VLocalizer["Password"]" required="">
+                <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
+                <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["LoginBtn"]</button>
+                <a class="text-center" asp-controller="Account" asp-action="Register">@VLocalizer["RegisterRedir"]</a>
+            </form>
+        </div>
+        <div class="row" style="justify-content: center;">
+            <form method="get">
+                <input type="image" src="~/Images/btn_google_signin_light_normal_web.png" alt="Google authentication" asp-controller="Account"
+                       asp-action="GoogleLogin">
+            </form>
+        </div>
+    </div>
 </div>

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using UniversityMiniinstagram.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -80,6 +81,48 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             ViewBag.ReturnUrlParameter = ReturnUrl;
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult GoogleLogin()
+        {
+            var proptities = _accountService.GoogleLogin(Url.Action("GoogleResponse")); 
+            return new ChallengeResult("Google", proptities);
+        }
+            
+        public async Task<IActionResult> GoogleResponse(string returnUrl = null, string remoteError = null)
+        {
+            var info = await _accountService.GetExternalLoginInfoAsync();
+            var isExist = await _accountService.ExternalLogin(info);
+            if(isExist)
+            {
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var user = await _accountService.GetUserByEmail(email);
+                if(user == null)
+                {
+                    user = new ApplicationUser()
+                    {
+                        Email = email,
+                        UserName = email.Split("@").First()
+                    };
+                    var result = await _accountService.Register(user);
+                    if (!result)
+                    {
+                        RedirectToAction("Login");
+                    }
+                    result = await _accountService.AddLoginToUser(user, info);
+                    if (!result)
+                    {
+                        RedirectToAction("Login");
+                    }
+                    await _accountService.Login(user);
+                }
+            }
+            return RedirectToAction("Profile");
         }
 
         [HttpGet]

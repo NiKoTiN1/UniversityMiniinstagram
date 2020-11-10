@@ -31,6 +31,8 @@ using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Web.Hubs;
 using UniversityMiniinstagram.Web.Controllers;
+using Microsoft.AspNetCore.Authentication;
+
 
 namespace UniversityMiniinstagram
 {
@@ -65,7 +67,14 @@ namespace UniversityMiniinstagram
 
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
+                .AddCookie()
+                .AddGoogle(options =>
+                {
+                    IConfigurationSection googleAuthNSection =
+                        Configuration.GetSection("Authentication:Google");
+                    options.ClientId = Configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                });
 
             services.AddTransient<IPostReposetry, PostReposetry>();
             services.AddTransient<IPostService, PostService>();
@@ -172,8 +181,10 @@ namespace UniversityMiniinstagram
                 routing.MapRoute("29", "account/banned", new { controller = "Account", action = "BanPage" });
                 routing.MapRoute("30", "settings", new { controller = "Settings", action = "GetSettings" });
                 routing.MapRoute("31", "settings/language", new { controller = "Settings", action = "SetLanguage" });
+                routing.MapRoute("32", "account/google-login", new { controller = "Account", action = "GoogleLogin" });
+                routing.MapRoute("33", "account/google-response", new { controller = "Account", action = "GoogleResponse" });
 
-                routing.MapRoute("32", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
+                routing.MapRoute("34", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
 
             });
         }
