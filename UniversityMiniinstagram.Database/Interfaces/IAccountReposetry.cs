@@ -20,6 +20,7 @@ namespace UniversityMiniinstagram.Database.Interfases
         public Task Login(ApplicationUser user);
         public AuthenticationProperties GoogleLogin(string url);
         public Task<bool> ExternalLogin(ExternalLoginInfo info);
+        public Task Logout();
         public Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
         public Task<ApplicationUser> GetUser(string id);
         public Task<ApplicationUser> GetUserByEmail(string email);

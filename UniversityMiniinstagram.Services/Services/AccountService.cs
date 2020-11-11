@@ -120,6 +120,11 @@ namespace UniversityMiniinstagram.Services.Services
             return result;
         }
 
+        public async Task Logout()
+        {
+            await _accountReposetry.Logout();
+        }
+
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
             await _accountReposetry.UnBanUser(user);

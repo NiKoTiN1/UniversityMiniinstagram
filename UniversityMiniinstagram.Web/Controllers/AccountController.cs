@@ -135,6 +135,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
+            await _accountService.Logout();
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
             return RedirectToAction("Login");

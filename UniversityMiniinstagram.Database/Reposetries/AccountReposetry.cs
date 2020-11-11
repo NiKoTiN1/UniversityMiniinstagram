@@ -79,6 +79,11 @@ namespace UniversityMiniinstagram.Database.Reposetries
         {
             await _signInManager.SignInAsync(user, false);
         }
+
+        public async Task Logout()
+        {
+            await _signInManager.SignOutAsync();
+        }
         public AuthenticationProperties GoogleLogin(string url)
         {
             var prop = _signInManager.ConfigureExternalAuthenticationProperties("Google", url);

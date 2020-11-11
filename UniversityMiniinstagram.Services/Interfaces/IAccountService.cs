@@ -15,6 +15,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> Register(ApplicationUser user);
         public Task<bool> Login(LoginViewModel vm);
         public Task Login(ApplicationUser user);
+        public Task Logout();
         public Task<bool> IsUserExist(string email);
         public AuthenticationProperties GoogleLogin(string url);
         public Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
