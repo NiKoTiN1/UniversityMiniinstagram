@@ -178,7 +178,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 {
                     if (vm.returnUrl != null)
                     {
-                        return Redirect("https://localhost:5001" + vm.returnUrl);
+                        return Redirect(vm.returnUrl);
                     }
                     return RedirectToAction("Profile");
                 }
