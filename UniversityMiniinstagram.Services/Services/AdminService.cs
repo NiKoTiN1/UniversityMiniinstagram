@@ -81,7 +81,7 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if (vm.IsBanUser)
             {
-                var user = await _accountService.GetUser(report.UserId);
+                var user = await _accountService.GetUser(report.Post.UserId);
                 var result = await _accountService.SetBanRole(user);
                 if (!result)
                 {
