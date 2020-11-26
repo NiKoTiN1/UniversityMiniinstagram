@@ -70,6 +70,12 @@ namespace UniversityMiniinstagram.Services.Services
             _postReposetry.AddLike(newLike);
             return newLike;
         }
+        public bool IsLiked(Guid postId, string userId)
+        {
+            var likes = _postReposetry.GetLikes(postId);
+            var isLiked = likes.Where(like => like.UserId == userId);
+            return isLiked.Count() != 0;
+        }
         public void RemoveLike(Guid postId, string userId, DatabaseContext db=null)
         {
             _postReposetry.RemoveLike(postId, userId, db);

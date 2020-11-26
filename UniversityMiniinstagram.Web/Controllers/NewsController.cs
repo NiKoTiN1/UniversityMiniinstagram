@@ -173,9 +173,13 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var result = _postServices.AddLike(postId, userIdClaim.Value);
-                    if (result != null)
-                        return Ok(result);
+                    var isLiked = _postServices.IsLiked(postId, userIdClaim.Value);
+                    if(!isLiked)
+                    {
+                        var result = _postServices.AddLike(postId, userIdClaim.Value);
+                        if (result != null)
+                            return Ok(result);
+                    }
                 }
             }
             return Unauthorized();
@@ -190,8 +194,12 @@ namespace UniversityMiniinstagram.Web.Controllers
                 var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    _postServices.RemoveLike(postId, userIdClaim.Value);
-                    return Ok();
+                    var isLiked = _postServices.IsLiked(postId, userIdClaim.Value);
+                    if(isLiked)
+                    {
+                        _postServices.RemoveLike(postId, userIdClaim.Value);
+                        return Ok();
+                    }
                 }
             }
             return Unauthorized();

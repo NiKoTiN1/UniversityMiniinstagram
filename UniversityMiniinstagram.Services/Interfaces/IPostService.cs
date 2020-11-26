@@ -17,6 +17,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ICollection<Post>> GetAllPosts();
         public ICollection<Post> GetUserPosts(string userId);
         public Task<Post> GetPost(Guid postId);
+        public bool IsLiked(Guid postId, string userId);
         public Comment GetComment(Guid commentId);
         public bool HideComment(Guid commId);
         public Guid RemoveComment(Guid commentId);
