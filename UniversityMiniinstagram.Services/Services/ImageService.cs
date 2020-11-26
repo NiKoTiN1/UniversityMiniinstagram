@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfases;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -16,12 +17,14 @@ namespace UniversityMiniinstagram.Services
 {
     public class ImageService : IImageService
     {
-        public ImageService(IImageReposetry imageReposetry)
+        public ImageService(IImageReposetry imageReposetry, IConfiguration configuration)
         {
             _imageReposetry = imageReposetry;
+            Configuration = configuration;
         }
 
         IImageReposetry _imageReposetry;
+        IConfiguration Configuration { get; }
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)
         {
@@ -29,7 +32,7 @@ namespace UniversityMiniinstagram.Services
             {
                 Guid imageGuid = Guid.NewGuid();
                 var ext = vm.File.FileName.Split(".").Last();
-                string path = "/Images/" + imageGuid + '.' + ext;
+                string path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + ext;
 
                 using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
                 {
