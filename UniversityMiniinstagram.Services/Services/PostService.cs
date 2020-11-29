@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database;
@@ -88,9 +89,10 @@ namespace UniversityMiniinstagram.Services.Services
             {
                 ICollection<Like> likes = _postReposetry.GetLikes(post.Id);
                 ICollection<Comment> coments = _postReposetry.GetComments(post.Id);
+                var timeZone = TimeZoneInfo.Local;
                 foreach (var comment in coments)
                 {
-                    comment.Date = comment.Date.ToLocalTime();
+                    comment.Date = TimeZoneInfo.ConvertTimeFromUtc(comment.Date.ToLocalTime(), timeZone);
                     comment.User = await _accountService.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
