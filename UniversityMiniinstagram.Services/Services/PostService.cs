@@ -81,6 +81,7 @@ namespace UniversityMiniinstagram.Services.Services
             _postReposetry.RemoveLike(postId, userId, db);
         }
 
+        [Obsolete]
         public async Task<ICollection<Post>> GetAllPosts()
         {
             var posts = _postReposetry.GetAllPosts();
@@ -88,8 +89,10 @@ namespace UniversityMiniinstagram.Services.Services
             {
                 ICollection<Like> likes = _postReposetry.GetLikes(post.Id);
                 ICollection<Comment> coments = _postReposetry.GetComments(post.Id);
+                TimeZone localZone = TimeZone.CurrentTimeZone;
                 foreach (var comment in coments)
                 {
+                    comment.Date = localZone.ToLocalTime(comment.Date);
                     comment.User = await _accountService.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
@@ -120,7 +123,7 @@ namespace UniversityMiniinstagram.Services.Services
             }
             _imageServices.RemoveImage(post.Image);
             var ppost = _postReposetry.GetPost(post.Id);
-            if(ppost != null)
+            if (ppost != null)
             {
                 _postReposetry.DeletePost(ppost);
             }
