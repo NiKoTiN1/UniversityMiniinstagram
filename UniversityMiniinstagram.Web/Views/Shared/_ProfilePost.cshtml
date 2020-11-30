@@ -107,15 +107,19 @@
         var likesCount = label.children().eq(3);
         var isLiked = label.children().eq(2).attr("value");
         if (isLiked == "1") {
+            svgL.hide();
+            svg.show();
+            label.children().eq(2).attr("value", "0");
+            likesCount.text(parseInt(likesCount.text()) - 1);
             $.ajax({
                 type: 'DELETE',
                 url: '@Url.Content("~/news/removeLike")',
                 data: { 'postId': postId },
-                success: function (data) {
-                    svgL.hide();
-                    svg.show();
-                    label.children().eq(2).attr("value", "0");
-                    likesCount.text(parseInt(likesCount.text()) - 1);
+                error: function (data) {
+                    svg.hide();
+                    svgL.show();
+                    label.children().eq(2).attr("value", "1");
+                    likesCount.text(parseInt(likesCount.text()) + 1);
                 }
             });
         }
@@ -124,11 +128,11 @@
                 type: 'POST',
                 url: '@Url.Content("~/news/addLike")',
                 data: { 'postId': postId },
-                success: function (data) {
-                    svg.hide();
-                    svgL.show();
-                    label.children().eq(2).attr("value", "1");
-                    likesCount.text(parseInt(likesCount.text()) + 1);
+                error: function (data) {
+                    svgL.hide();
+                    svg.show();
+                    label.children().eq(2).attr("value", "0");
+                    likesCount.text(parseInt(likesCount.text()) - 1);
                 }
             });
 

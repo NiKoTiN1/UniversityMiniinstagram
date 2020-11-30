@@ -143,28 +143,38 @@
             var likesCount = label.children().eq(3);
             var isLiked = label.children().eq(2).attr("value");
             if (isLiked == "1") {
+                svgL.hide();
+                svg.show();
+                label.children().eq(2).attr("value", "0");
+                likesCount.text(parseInt(likesCount.text()) - 1);
                 $.ajax({
                     type: 'DELETE',
+                    async: false,
                     url: 'removeLike',
                     data: { 'postId': postId },
-                    success: function (data) {
+                    error: function (data) {
+                        svgL.show();
+                        svg.hide();
+                        label.children().eq(2).attr("value", "1");
+                        likesCount.text(parseInt(likesCount.text()) + 1);
+                    },
+                });
+            }
+            else {
+                svg.hide();
+                svgL.show();
+                label.children().eq(2).attr("value", "1");
+                likesCount.text(parseInt(likesCount.text()) + 1);
+                $.ajax({
+                    type: 'POST',
+                    async: false,   
+                    url: 'addLike',
+                    data: { 'postId': postId },
+                    error: function (data) {
                         svgL.hide();
                         svg.show();
                         label.children().eq(2).attr("value", "0");
                         likesCount.text(parseInt(likesCount.text()) - 1);
-                    }
-                });
-            }
-            else {
-                $.ajax({
-                    type: 'POST',
-                    url: 'addLike',
-                    data: { 'postId': postId },
-                    success: function (data) {
-                        svg.hide();
-                        svgL.show();
-                        label.children().eq(2).attr("value", "1");
-                        likesCount.text(parseInt(likesCount.text()) + 1);
                     }
                 });
 
