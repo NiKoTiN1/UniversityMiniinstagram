@@ -49,6 +49,7 @@ namespace UniversityMiniinstagram.Database.Reposetries
         public void AddComment(Comment comment)
         {
             comment.IsShow = true;
+            var a = DateTime.UtcNow;
             comment.Date = DateTime.UtcNow;
             _context.Comments.Add(comment);
             _context.SaveChanges();

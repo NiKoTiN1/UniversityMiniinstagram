@@ -48,12 +48,26 @@ else
             <div class="chat-item-body DIV-filter-by-text" data-filter-by="text">
                 <p style="margin-bottom: 4px;">@Model.Comment.Text</p>
             </div>
-            <p style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
+            @{ 
+                var dateId = "Date" + Model.Comment.Id.ToString();
+            }
+            <p id="@dateId" style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
         </div>
     </div>
 </div>
 
 <script>
+    $(document).ready(function () {
+        var offset = parseInt(document.cookie.replace("offset=", ""));
+        var dateElem = $("#" + '@dateId');
+        var date = new Date(dateElem.text());
+        date.setTime(date.getTime() + (offset * 60 * 60 * 1000));
+        var minutes = date.getMinutes();
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        dateElem.text(date.getDate() + "." + date.getMonth() + "." + date.getFullYear() + " " + date.getHours() + ":" + minutes);
+    });
 
     $('#@deleteId').click(function () {
         var label = $(this).attr("id");

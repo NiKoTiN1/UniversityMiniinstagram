@@ -89,7 +89,6 @@ namespace UniversityMiniinstagram.Services.Services
             {
                 ICollection<Like> likes = _postReposetry.GetLikes(post.Id);
                 ICollection<Comment> coments = _postReposetry.GetComments(post.Id);
-                var timeZone = TimeZoneInfo.Local;
                 foreach (var comment in coments)
                 {
                     comment.User = await _accountService.GetUser(comment.UserId);

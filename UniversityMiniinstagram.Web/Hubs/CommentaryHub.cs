@@ -45,9 +45,6 @@ namespace UniversityMiniinstagram.Web.Hubs
                 var userIdClaim = this.Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 var commresult = await _postService.AddComment(vm, userIdClaim.Value);
 
-                var offset = Convert.ToInt32(Context.Features.Get<IHttpContextFeature>().HttpContext.Request.Cookies["offset"]);
-                commresult.Date.AddHours(offset);
-
                 CommentViewModel commentViewModel = new CommentViewModel()
                 {
                     Comment = commresult,
