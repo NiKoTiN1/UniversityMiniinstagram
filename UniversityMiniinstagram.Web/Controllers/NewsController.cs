@@ -38,6 +38,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 List<PostsViewModel> postsViewModels = new List<PostsViewModel>();
                 ViewBag.UserId = userIdClaim.Value;
                 var posts = await _postServices.GetAllPosts();
+                var offset = Convert.ToInt32(Request.Cookies["offset"]);
                 foreach(var post in posts)
                 {
                     if(post.IsShow)
@@ -54,6 +55,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                             if (comment.IsShow)
                             {
                                 CommentViewModel commVm = new CommentViewModel();
+                                comment.Date.AddHours(offset);
                                 commVm.Comment = comment;
                                 commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
                                 commVm.IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id);
@@ -104,6 +106,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 {
                     var post = await _postServices.GetPost(postId);
                     ViewBag.UserId = post.User.Id;
+                    var offset = Convert.ToInt32(Request.Cookies["offset"]);
                     PostsViewModel postVm = new PostsViewModel()
                     {
                         Post = post,
@@ -114,6 +117,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     {
                         if (comment.IsShow)
                         {
+                            comment.Date.AddHours(offset);
                             CommentViewModel commVm = new CommentViewModel()
                             {
                                 Comment = comment,

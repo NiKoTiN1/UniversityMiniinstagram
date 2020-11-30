@@ -32,6 +32,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+    <PackageReference Include="Microsoft.JSInterop" Version="3.1.10" />
     <PackageReference Include="RazorEngine.NetCore" Version="3.1.0" />
   </ItemGroup>
 

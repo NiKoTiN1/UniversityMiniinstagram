@@ -92,7 +92,6 @@ namespace UniversityMiniinstagram.Services.Services
                 var timeZone = TimeZoneInfo.Local;
                 foreach (var comment in coments)
                 {
-                    comment.Date = TimeZoneInfo.ConvertTimeFromUtc(comment.Date, timeZone);
                     comment.User = await _accountService.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
