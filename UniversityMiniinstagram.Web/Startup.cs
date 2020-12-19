@@ -1,25 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UniversityMiniinstagram.Database;
-using UniversityMiniinstagram.Web;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Constraints;
 using UniversityMiniinstagram.Web.Contraints;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -30,8 +21,6 @@ using UniversityMiniinstagram.Database.Reposetries;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Web.Hubs;
-using UniversityMiniinstagram.Web.Controllers;
-using Microsoft.AspNetCore.Authentication;
 
 
 namespace UniversityMiniinstagram

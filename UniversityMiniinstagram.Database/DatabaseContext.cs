@@ -12,20 +12,16 @@ namespace UniversityMiniinstagram.Database
     public class DatabaseContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Image> Images { get; set; }
-
         public DbSet<Comment> Comments { get; set; }
-
         public DbSet<Post> Posts { get; set; }
         public DbSet<Like> Likes { get; set; }
-
         public DbSet<RolesBeforeBan> RolesBeforeBan { get; set; }
-
         public DbSet<Report> Reports { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
-            Database.Migrate();
+             Database.Migrate();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
