@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using UniversityMiniinstagram.Database;
-using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 

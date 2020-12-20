@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.Database
+namespace UniversityMiniinstagram.Database.Models
 {
     public class ApplicationUser : IdentityUser
     {

@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using UniversityMiniinstagram.Database.Models;
-using System.Linq;
 
 namespace UniversityMiniinstagram.Database
 {

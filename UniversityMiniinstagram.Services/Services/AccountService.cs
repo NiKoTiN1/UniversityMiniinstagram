@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database;
-using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 

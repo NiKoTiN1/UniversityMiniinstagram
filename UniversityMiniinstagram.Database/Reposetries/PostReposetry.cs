@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Reposetries
 {

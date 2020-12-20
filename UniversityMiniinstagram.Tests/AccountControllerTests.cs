@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Web.Controllers;
 using Xunit;
 

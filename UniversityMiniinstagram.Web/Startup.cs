@@ -11,14 +11,13 @@ using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using UniversityMiniinstagram.Web.Contraints;
+using UniversityMiniinstagram.Web.Constraints;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using UniversityMiniinstagram.Database.Interfases;
-using UniversityMiniinstagram.Database.Reposetries;
 using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Reposetries;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Web.Hubs;
 

@@ -1,25 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Linq;
-using System.Text;
-using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.View;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using IdentityServer4.Extensions;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using UniversityMiniinstagram.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authentication.Google;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {

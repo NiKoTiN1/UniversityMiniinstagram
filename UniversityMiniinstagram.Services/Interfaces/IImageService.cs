@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.View;
 

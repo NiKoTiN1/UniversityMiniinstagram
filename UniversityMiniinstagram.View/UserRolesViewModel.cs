@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UniversityMiniinstagram.Database;
+﻿using System.Collections.Generic;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.View
 {

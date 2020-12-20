@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database;
-using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 

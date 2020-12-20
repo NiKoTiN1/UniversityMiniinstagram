@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Web.Controllers

@@ -1,24 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Connections.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
-using RazorEngine;
-using RazorEngine.Templating;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.View;
-using UniversityMiniinstagram.Web.Controllers;
 
 namespace UniversityMiniinstagram.Web.Hubs
 {

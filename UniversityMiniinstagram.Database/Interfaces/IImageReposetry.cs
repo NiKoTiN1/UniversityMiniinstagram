@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.Database.Interfases
+namespace UniversityMiniinstagram.Database.Interfaces
 {
     public interface IImageReposetry
     {

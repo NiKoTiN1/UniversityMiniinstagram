@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using UniversityMiniinstagram.Database;
+﻿using System.ComponentModel.DataAnnotations;
+using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.View
 {

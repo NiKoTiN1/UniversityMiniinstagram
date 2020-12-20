@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UniversityMiniinstagram.Database.Interfaces;
 
 namespace UniversityMiniinstagram.Database.Models

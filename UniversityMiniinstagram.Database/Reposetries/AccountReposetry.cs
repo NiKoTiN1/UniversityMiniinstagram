@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database.Interfases;
+using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Reposetries

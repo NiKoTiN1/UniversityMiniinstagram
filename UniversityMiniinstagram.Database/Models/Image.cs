@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace UniversityMiniinstagram.Database
+namespace UniversityMiniinstagram.Database.Models
 {
     public class Image
     {
