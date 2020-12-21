@@ -1,4 +1,4 @@
-﻿namespace UniversityMiniinstagram.View
+﻿namespace UniversityMiniinstagram.Views
 {
     public class LoginViewModel
     {

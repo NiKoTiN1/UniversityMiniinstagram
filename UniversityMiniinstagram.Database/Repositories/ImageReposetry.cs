@@ -3,25 +3,25 @@ using System.Linq;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.Database.Reposetries
+namespace UniversityMiniinstagram.Database.Repositories
 {
     public class ImageReposetry : IImageReposetry
     {
         public ImageReposetry(DatabaseContext context)
         {
-            Context = context;
+            this.Context = context;
         }
 
         private readonly DatabaseContext Context;
         public void AddImage(Image image)
         {
-            Context.Images.Add(image);
-            Context.SaveChanges();
+            this.Context.Images.Add(image);
+            this.Context.SaveChanges();
         }
 
         public Image GetImage(Guid imageId)
         {
-            Image image = Context.Images.FirstOrDefault(image => image.Id == imageId);
+            Image image = this.Context.Images.FirstOrDefault(image => image.Id == imageId);
             return image;
         }
 
@@ -33,8 +33,8 @@ namespace UniversityMiniinstagram.Database.Reposetries
                 db.SaveChanges();
                 return;
             }
-            Context.Remove(image);
-            Context.SaveChanges();
+            this.Context.Remove(image);
+            this.Context.SaveChanges();
         }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Services", "UniversityMiniinstagram.Services\UniversityMiniinstagram.Services.csproj", "{1BC1F8BE-D75B-4EDD-B299-D2B71468B533}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.View", "UniversityMiniinstagram.View\UniversityMiniinstagram.View.csproj", "{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Views", "UniversityMiniinstagram.View\UniversityMiniinstagram.Views.csproj", "{37AD2B3D-870F-4F0F-968E-5E7CD77D55F8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversityMiniinstagram.Web", "UniversityMiniinstagram.Web\UniversityMiniinstagram.Web.csproj", "{AAF21CA5-A516-4A28-869E-CF10D6C95A92}"
 EndProject

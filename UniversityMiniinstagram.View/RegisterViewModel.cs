@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.View
+namespace UniversityMiniinstagram.Views
 {
     public class RegisterViewModel
     {

@@ -7,7 +7,7 @@ using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Services
 {

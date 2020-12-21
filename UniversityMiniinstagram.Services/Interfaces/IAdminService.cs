@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Models;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Services.Interfaces
 {

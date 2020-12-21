@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UniversityMiniinstagram.View
+namespace UniversityMiniinstagram.Views
 {
     public class AdminPostReportDecisionViewModel
     {

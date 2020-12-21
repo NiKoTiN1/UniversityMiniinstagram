@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.ViewComponents
 {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -45,7 +45,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<ActionResult> GetPostReports()
         {
             var vmList = new List<AdminPostReportsVeiwModel>();
@@ -80,7 +80,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<ActionResult> GetCommentReports()
         {
             var vmList = new List<AdminPostReportsVeiwModel>();

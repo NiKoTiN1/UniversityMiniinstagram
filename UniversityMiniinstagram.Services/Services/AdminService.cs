@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
-namespace UniversityMiniinstagram.Services.Services
+namespace UniversityMiniinstagram.Services
 {
     public class AdminService : IAdminService
     {

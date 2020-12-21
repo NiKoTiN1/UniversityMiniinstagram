@@ -37,7 +37,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UniversityMiniinstagram.Database\UniversityMiniinstagram.Database.csproj" />
     <ProjectReference Include="..\UniversityMiniinstagram.Services\UniversityMiniinstagram.Services.csproj" />
-    <ProjectReference Include="..\UniversityMiniinstagram.View\UniversityMiniinstagram.View.csproj" />
+    <ProjectReference Include="..\UniversityMiniinstagram.View\UniversityMiniinstagram.Views.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

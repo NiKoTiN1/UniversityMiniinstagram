@@ -11,7 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Services.Interfaces;
 
-namespace UniversityMiniinstagram.Services.Services
+namespace UniversityMiniinstagram.Services
 {
     public class ViewRenderService : IViewRenderService
     {

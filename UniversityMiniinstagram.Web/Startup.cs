@@ -14,10 +14,9 @@ using System.Globalization;
 using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
-using UniversityMiniinstagram.Database.Reposetries;
+using UniversityMiniinstagram.Database.Repositories;
 using UniversityMiniinstagram.Services;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Services.Services;
 using UniversityMiniinstagram.Web.Constraints;
 using UniversityMiniinstagram.Web.Hubs;
 

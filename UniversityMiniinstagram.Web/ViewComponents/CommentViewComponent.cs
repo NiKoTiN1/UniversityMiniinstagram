@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UniversityMiniinstagram.View;
+using UniversityMiniinstagram.Views;
 
-namespace UniversityMiniinstagram.Web.Components
+namespace UniversityMiniinstagram.Web.ViewComponents
 {
     public class CommentViewComponent : ViewComponent
     {

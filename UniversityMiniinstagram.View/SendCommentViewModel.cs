@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace UniversityMiniinstagram.View
+namespace UniversityMiniinstagram.Views
 {
     public class SendCommentViewModel
     {

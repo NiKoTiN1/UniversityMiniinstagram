@@ -4,7 +4,7 @@ using System.Linq;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.Database.Reposetries
+namespace UniversityMiniinstagram.Database.Repositories
 {
     public class PostReposetry : IPostReposetry
     {

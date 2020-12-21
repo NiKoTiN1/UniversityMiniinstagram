@@ -1,6 +1,6 @@
 ﻿using UniversityMiniinstagram.Database.Models;
 
-namespace UniversityMiniinstagram.View
+namespace UniversityMiniinstagram.Views
 {
     public class IsInRoleViewModel
     {

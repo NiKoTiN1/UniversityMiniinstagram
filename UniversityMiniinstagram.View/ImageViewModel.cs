@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace UniversityMiniinstagram.View
+namespace UniversityMiniinstagram.Views
 {
     public class ImageViewModel
     {
