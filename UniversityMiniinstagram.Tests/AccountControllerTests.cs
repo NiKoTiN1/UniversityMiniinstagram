@@ -16,9 +16,9 @@ namespace UniversityMiniinstagram.Tests
             accountS.Setup(service => service.IsAdminCreated());
             var postS = new Mock<IPostService>();
             var host = new Mock<IWebHostEnvironment>();
-            AccountController accountController = new AccountController(accountS.Object, postS.Object, host.Object);
-            var result = await accountController.CreateRolePost();
-            var viewResult = Assert.IsAssignableFrom<BadRequestResult>(result);
+            var accountController = new AccountController(accountS.Object, postS.Object, host.Object);
+            IActionResult result = await accountController.CreateRolePost();
+            BadRequestResult viewResult = Assert.IsAssignableFrom<BadRequestResult>(result);
         }
     }
 }

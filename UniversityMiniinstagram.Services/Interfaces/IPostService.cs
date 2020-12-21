@@ -21,8 +21,8 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Comment GetComment(Guid commentId);
         public bool HideComment(Guid commId);
         public Guid RemoveComment(Guid commentId);
-        public Task<bool> isDeleteRelated(ApplicationUser postHolder, string guestId);
-        public Task<bool> isReportRelated(string postHolderId, string guestId, Guid postId = new Guid(), Guid commentId = new Guid());
+        public Task<bool> IsDeleteRelated(ApplicationUser postHolder, string guestId);
+        public Task<bool> IsReportRelated(string postHolderId, string guestId, Guid postId = new Guid(), Guid commentId = new Guid());
         public bool HidePost(Guid postId);
     }
 }

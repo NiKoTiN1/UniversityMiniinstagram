@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 
@@ -19,44 +19,46 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         public NewsController(IPostService postServices, IWebHostEnvironment appEnvironment)
         {
-            _postServices = postServices;
-            _appEnvironment = appEnvironment;
+            this.PostServices = postServices;
+            this.AppEnvironment = appEnvironment;
         }
 
-        IPostService _postServices;
-        IWebHostEnvironment _appEnvironment;
+        private readonly IPostService PostServices;
+        private readonly IWebHostEnvironment AppEnvironment;
 
         [HttpGet]
         [Route("all")]
         public async Task<IActionResult> GetAllPosts()
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            if(userIdClaim != null)
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
             {
-                List<PostsViewModel> postsViewModels = new List<PostsViewModel>();
+                var postsViewModels = new List<PostsViewModel>();
                 ViewBag.UserId = userIdClaim.Value;
-                var posts = await _postServices.GetAllPosts();
-                foreach(var post in posts)
+                ICollection<Database.Models.Post> posts = await this.PostServices.GetAllPosts();
+                foreach (Database.Models.Post post in posts)
                 {
-                    if(post.IsShow)
+                    if (post.IsShow)
                     {
-                        PostsViewModel postVm = new PostsViewModel()
+                        var postVm = new PostsViewModel()
                         {
                             Post = post,
-                            IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId: post.Id),
-                            IsDeleteRelated = await _postServices.isDeleteRelated(post.User, userIdClaim.Value),
-                            vm = new List<CommentViewModel>()
+                            IsReportRelated = await this.PostServices.IsReportRelated(post.UserId, userIdClaim.Value, postId: post.Id),
+                            IsDeleteRelated = await this.PostServices.IsDeleteRelated(post.User, userIdClaim.Value),
+                            CommentVM = new List<CommentViewModel>()
                         };
-                        foreach (var comment in post.Comments)
+                        foreach (Database.Models.Comment comment in post.Comments)
                         {
                             if (comment.IsShow)
                             {
-                                CommentViewModel commVm = new CommentViewModel();
-                                commVm.Comment = comment;
-                                commVm.IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value);
-                                commVm.IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id);
-                                commVm.ShowReportColor = false;
-                                postVm.vm.Add(commVm);
+                                var commVm = new CommentViewModel
+                                {
+                                    Comment = comment,
+                                    IsDeleteRelated = await this.PostServices.IsDeleteRelated(comment.User, userIdClaim.Value),
+                                    IsReportRelated = await this.PostServices.IsReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
+                                    ShowReportColor = false
+                                };
+                                postVm.CommentVM.Add(commVm);
                             }
                         }
                         postsViewModels.Add(postVm);
@@ -78,14 +80,16 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("addPost")]
         public async Task<IActionResult> AddPost([FromForm] CreatePostViewModel vm)
         {
-            if(ModelState.IsValid && vm != null)
+            if (ModelState.IsValid && vm != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var result = await _postServices.AddPost(vm, _appEnvironment.WebRootPath, userIdClaim.Value);
+                    Database.Models.Post result = await this.PostServices.AddPost(vm, this.AppEnvironment.WebRootPath, userIdClaim.Value);
                     if (result != null)
+                    {
                         return RedirectToAction("GetAllPosts");
+                    }
                 }
             }
             return Unauthorized();
@@ -97,29 +101,29 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var post = await _postServices.GetPost(postId);
+                    Database.Models.Post post = await this.PostServices.GetPost(postId);
                     ViewBag.UserId = post.User.Id;
-                    PostsViewModel postVm = new PostsViewModel()
+                    var postVm = new PostsViewModel()
                     {
                         Post = post,
-                        IsReportRelated = await _postServices.isReportRelated(post.UserId, userIdClaim.Value, postId:postId),
-                        vm = new List<CommentViewModel>()
+                        IsReportRelated = await this.PostServices.IsReportRelated(post.UserId, userIdClaim.Value, postId: postId),
+                        CommentVM = new List<CommentViewModel>()
                     };
-                    foreach (var comment in post.Comments)
+                    foreach (Database.Models.Comment comment in post.Comments)
                     {
                         if (comment.IsShow)
                         {
-                            CommentViewModel commVm = new CommentViewModel()
+                            var commVm = new CommentViewModel()
                             {
                                 Comment = comment,
-                                IsDeleteRelated = await _postServices.isDeleteRelated(comment.User, userIdClaim.Value),
-                                IsReportRelated = await _postServices.isReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
+                                IsDeleteRelated = await this.PostServices.IsDeleteRelated(comment.User, userIdClaim.Value),
+                                IsReportRelated = await this.PostServices.IsReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
                                 ShowReportColor = false
                             };
-                            postVm.vm.Add(commVm);
+                            postVm.CommentVM.Add(commVm);
                         }
                     }
                     return PartialView("_ProfilePost", postVm);
@@ -134,12 +138,12 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && vm.Text != null && vm.PostId != null)
             {
-                var result = await _postServices.AddComment(vm, vm.UserId);
-                CommentViewModel commentViewModel = new CommentViewModel()
+                Database.Models.Comment result = await this.PostServices.AddComment(vm, vm.UserId);
+                var commentViewModel = new CommentViewModel()
                 {
                     Comment = result,
-                    IsDeleteRelated = await _postServices.isDeleteRelated(result.User, vm.UserId),
-                    IsReportRelated = await _postServices.isReportRelated(result.UserId, vm.UserId, commentId: result.Id),
+                    IsDeleteRelated = await this.PostServices.IsDeleteRelated(result.User, vm.UserId),
+                    IsReportRelated = await this.PostServices.IsReportRelated(result.UserId, vm.UserId, commentId: result.Id),
                     ShowReportColor = false
                 };
                 return PartialView("_CommentBlock", commentViewModel);
@@ -153,8 +157,8 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && commentId != null)
             {
-                var postId = _postServices.RemoveComment(commentId);
-                if(postId != new Guid())
+                Guid postId = this.PostServices.RemoveComment(commentId);
+                if (postId != new Guid())
                 {
                     return Ok(postId);
                 }
@@ -168,15 +172,17 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = _postServices.IsLiked(postId, userIdClaim.Value);
-                    if(!isLiked)
+                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    if (!isLiked)
                     {
-                        var result = _postServices.AddLike(postId, userIdClaim.Value);
+                        Database.Models.Like result = this.PostServices.AddLike(postId, userIdClaim.Value);
                         if (result != null)
+                        {
                             return Ok(result);
+                        }
                     }
                 }
             }
@@ -189,13 +195,13 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = _postServices.IsLiked(postId, userIdClaim.Value);
-                    if(isLiked)
+                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    if (isLiked)
                     {
-                        _postServices.RemoveLike(postId, userIdClaim.Value);
+                        this.PostServices.RemoveLike(postId, userIdClaim.Value);
                         return Ok();
                     }
                 }
@@ -209,8 +215,8 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                var post = await _postServices.GetPost(postId);
-                _postServices.DeletePost(post);
+                Database.Models.Post post = await this.PostServices.GetPost(postId);
+                this.PostServices.DeletePost(post);
                 return Ok();
             }
             return Unauthorized();

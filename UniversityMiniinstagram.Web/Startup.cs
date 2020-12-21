@@ -1,24 +1,24 @@
-using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using System;
+using System.Globalization;
 using UniversityMiniinstagram.Database;
+using UniversityMiniinstagram.Database.Interfaces;
+using UniversityMiniinstagram.Database.Models;
+using UniversityMiniinstagram.Database.Reposetries;
+using UniversityMiniinstagram.Services;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Services.Services;
-using UniversityMiniinstagram.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using UniversityMiniinstagram.Web.Constraints;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using UniversityMiniinstagram.Database.Interfaces;
-using UniversityMiniinstagram.Database.Reposetries;
-using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Web.Hubs;
 
 
@@ -47,8 +47,9 @@ namespace UniversityMiniinstagram
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
-            services.ConfigureApplicationCookie(options => {
-                options.LoginPath = "/account/login"; 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/account/login";
             });
 
             services.AddSignalR(o => o.EnableDetailedErrors = true);
@@ -89,7 +90,7 @@ namespace UniversityMiniinstagram
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                var supportedCultures = new[]
+                CultureInfo[] supportedCultures = new[]
                 {
                     new CultureInfo("en"),
                     new CultureInfo("de"),
@@ -117,7 +118,7 @@ namespace UniversityMiniinstagram
                 app.UseHsts();
             }
 
-            var locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            IOptions<RequestLocalizationOptions> locOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(locOptions.Value);
 
             app.UseRequestLocalization();
@@ -134,7 +135,7 @@ namespace UniversityMiniinstagram
 
             app.UseMvc(routing =>
             {
-                routing.MapRoute("1", "account/login", new { controller = "Account", action = "Login"});
+                routing.MapRoute("1", "account/login", new { controller = "Account", action = "Login" });
                 routing.MapRoute("2", "account/logined", new { controller = "Account", action = "LoginPost" });
 
                 routing.MapRoute("3", "account/profile", new { controller = "Account", action = "Profile" });

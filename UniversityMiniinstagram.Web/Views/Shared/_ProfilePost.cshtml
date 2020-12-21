@@ -37,7 +37,7 @@
             var commArea = Model.Post.Id.ToString() + "content";
         }
         <div id="@commArea" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
-            @foreach (var commentVm in Model.vm)
+            @foreach (var commentVm in Model.CommentVM)
             {
                 @await Component.InvokeAsync("Comment", new { vm = commentVm })
             }

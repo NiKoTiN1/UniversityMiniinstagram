@@ -13,7 +13,6 @@ namespace UniversityMiniinstagram.Database.Models
         public Guid? CommentId { get; set; }
         public Post Post { get; set; }
         public Guid? PostId { get; set; }
-
         [Required]
         public DateTime Date { get; set; }
     }

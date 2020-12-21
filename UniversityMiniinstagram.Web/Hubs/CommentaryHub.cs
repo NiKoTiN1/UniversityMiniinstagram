@@ -14,34 +14,35 @@ namespace UniversityMiniinstagram.Web.Hubs
     {
         public CommentaryHub(IPostService postService, IViewRenderService renderService)
         {
-            _postService = postService;
-            _renderService = renderService;
+            this.PostService = postService;
+            this.RenderService = renderService;
         }
-        IViewRenderService _renderService;
-        IPostService _postService;
+
+        private readonly IViewRenderService RenderService;
+        private readonly IPostService PostService;
 
         public async Task SendMessage(Guid postId, string text)
         {
-            if(text != "" && text != "" && text != " ")
+            if (text != "" && text != "" && text != " ")
             {
-                SendCommentViewModel vm = new SendCommentViewModel()
+                var vm = new SendCommentViewModel()
                 {
                     PostId = postId,
                     Text = text
                 };
-                var userIdClaim = this.Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                var commresult = await _postService.AddComment(vm, userIdClaim.Value);
+                Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Database.Models.Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
 
-                CommentViewModel commentViewModel = new CommentViewModel()
+                var commentViewModel = new CommentViewModel()
                 {
                     Comment = commresult,
-                    IsDeleteRelated = await _postService.isDeleteRelated(commresult.User, userIdClaim.Value),
-                    IsReportRelated = await _postService.isReportRelated(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
+                    IsDeleteRelated = await this.PostService.IsDeleteRelated(commresult.User, userIdClaim.Value),
+                    IsReportRelated = await this.PostService.IsReportRelated(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                     ShowReportColor = false
                 };
-                var res = await _renderService.RenderToStringAsync("_CommentBlock", commentViewModel);
+                var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);
                 await Clients.All.SendAsync("SendCommentHub", res, postId);
             }
-        }      
+        }
     }
 }

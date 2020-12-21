@@ -24,7 +24,7 @@ namespace UniversityMiniinstagram.Database.Interfaces
         public Task<ApplicationUser> GetUser(string id);
         public Task<ApplicationUser> GetUserByEmail(string email);
         public Task<bool> AddRole(string name);
-        public Task<bool> UpdateUser(ApplicationUser Ouser, ApplicationUser user);
+        public Task<bool> UpdateUser(ApplicationUser oldUser, ApplicationUser user);
         public Task<IList<string>> GetRoleList(ApplicationUser user);
         public Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName);
         public Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles);

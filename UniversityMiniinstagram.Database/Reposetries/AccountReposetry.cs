@@ -13,62 +13,62 @@ namespace UniversityMiniinstagram.Database.Reposetries
     {
         public AccountReposetry(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, DatabaseContext context)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _signInManager = signInManager;
-            _context = context;
+            this.UserManager = userManager;
+            this.RoleManager = roleManager;
+            this.SignInManager = signInManager;
+            this.Context = context;
         }
 
-        UserManager<ApplicationUser> _userManager;
-        RoleManager<IdentityRole> _roleManager;
-        SignInManager<ApplicationUser> _signInManager;
-        DatabaseContext _context;
+        private readonly UserManager<ApplicationUser> UserManager;
+        private readonly RoleManager<IdentityRole> RoleManager;
+        private readonly SignInManager<ApplicationUser> SignInManager;
+        private readonly DatabaseContext Context;
 
         public async Task<bool> CreateUser(ApplicationUser user, string password)
         {
-            var result =  await _userManager.CreateAsync(user, password);
+            IdentityResult result = await this.UserManager.CreateAsync(user, password);
             return result.Succeeded;
         }
         public async Task<bool> CreateUser(ApplicationUser user)
         {
-            var result = await _userManager.CreateAsync(user);
+            IdentityResult result = await this.UserManager.CreateAsync(user);
             return result.Succeeded;
         }
         public async Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info)
         {
-            var result = await _userManager.AddLoginAsync(user, info);
+            IdentityResult result = await this.UserManager.AddLoginAsync(user, info);
             return result.Succeeded;
         }
 
         public async Task<bool> AddRoleToUser(ApplicationUser user, string role)
         {
-            var result = await _userManager.AddToRoleAsync(user, role);
-            await _userManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.AddToRoleAsync(user, role);
+            await this.UserManager.UpdateSecurityStampAsync(user);
             return result.Succeeded;
         }
 
         public async Task<bool> RemoveUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            var result = await _userManager.DeleteAsync(user);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
+            IdentityResult result = await this.UserManager.DeleteAsync(user);
             return result.Succeeded;
         }
 
         public async Task<bool> ChangePassword(ApplicationUser user, string oldPass, string newPass)
         {
-            var result = await _userManager.ChangePasswordAsync(user, oldPass, newPass);
+            IdentityResult result = await this.UserManager.ChangePasswordAsync(user, oldPass, newPass);
             return result.Succeeded;
         }
 
-        public async Task<bool> Login(string email ,string password)
+        public async Task<bool> Login(string email, string password)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            ApplicationUser user = await this.UserManager.FindByEmailAsync(email);
             if (user != null)
             {
-                var result = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+                PasswordVerificationResult result = this.UserManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
                 if (result != PasswordVerificationResult.Failed)
                 {
-                    await _signInManager.SignInAsync(user, false);
+                    await this.SignInManager.SignInAsync(user, false);
                     return true;
                 }
             }
@@ -76,120 +76,120 @@ namespace UniversityMiniinstagram.Database.Reposetries
         }
         public async Task Login(ApplicationUser user)
         {
-            await _signInManager.SignInAsync(user, false);
+            await this.SignInManager.SignInAsync(user, false);
         }
 
         public async Task Logout()
         {
-            await _signInManager.SignOutAsync();
+            await this.SignInManager.SignOutAsync();
         }
         public AuthenticationProperties GoogleLogin(string url)
         {
-            var prop = _signInManager.ConfigureExternalAuthenticationProperties("Google", url);
+            AuthenticationProperties prop = this.SignInManager.ConfigureExternalAuthenticationProperties("Google", url);
             return prop;
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
+            SignInResult result = await this.SignInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
             return result.Succeeded;
         }
 
         public async Task<ApplicationUser> GetUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
             return user;
         }
 
         public async Task<ApplicationUser> GetUserByEmail(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            ApplicationUser user = await this.UserManager.FindByEmailAsync(email);
             return user;
         }
 
         public async Task<bool> AddRole(string name)
         {
-            var result = await _roleManager.CreateAsync(new IdentityRole(name));
+            IdentityResult result = await this.RoleManager.CreateAsync(new IdentityRole(name));
             return result.Succeeded;
         }
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            ExternalLoginInfo info = await this.SignInManager.GetExternalLoginInfoAsync();
             return info;
         }
 
         public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)
         {
-            var result = await _userManager.RemoveFromRolesAsync(user, roles);
-            await _userManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.RemoveFromRolesAsync(user, roles);
+            await this.UserManager.UpdateSecurityStampAsync(user);
             return result.Succeeded;
         }
 
         public async Task<bool> UpdateUser(ApplicationUser Ouser, ApplicationUser user)
         {
-            if(user.Avatar != null)
+            if (user.Avatar != null)
             {
                 Ouser.Avatar = user.Avatar;
                 Ouser.AvatarId = user.Avatar.Id;
             }
             Ouser.UserName = user.UserName;
             Ouser.Description = user.Description;
-            var result = await _userManager.UpdateAsync(Ouser);
+            IdentityResult result = await this.UserManager.UpdateAsync(Ouser);
             return result.Succeeded;
         }
 
         public async Task<bool> IsExist(string mail)
         {
-            var result = await _userManager.FindByEmailAsync(mail);
+            ApplicationUser result = await this.UserManager.FindByEmailAsync(mail);
             return (result == null);
         }
 
         public async Task<bool> IsInRole(ApplicationUser user, string role)
         {
-            return await _userManager.IsInRoleAsync(user, role);
+            return await this.UserManager.IsInRoleAsync(user, role);
         }
 
         public async Task<IList<string>> GetRoleList(ApplicationUser user)
         {
-            var roleList = await _userManager.GetRolesAsync(user);
+            IList<string> roleList = await this.UserManager.GetRolesAsync(user);
             return roleList;
         }
 
         public IList<ApplicationUser> GetAllUsers()
         {
-            var allUsers =  _userManager.Users.ToList();
+            var allUsers = this.UserManager.Users.ToList();
             return allUsers;
         }
 
         public async Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName)
         {
-            var role = await _roleManager.FindByNameAsync(roleName);
-            RolesBeforeBan beforeBan = new RolesBeforeBan()
+            IdentityRole role = await this.RoleManager.FindByNameAsync(roleName);
+            var beforeBan = new RolesBeforeBan()
             {
                 Id = Guid.NewGuid(),
                 Role = role,
                 User = user
             };
-            _context.RolesBeforeBan.Add(beforeBan);
-            _context.SaveChanges();
+            this.Context.RolesBeforeBan.Add(beforeBan);
+            this.Context.SaveChanges();
             return true;
         }
 
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
-            await _userManager.UpdateSecurityStampAsync(user);
-            var result = await _userManager.RemoveFromRoleAsync(user, "Banned");
-            await _userManager.AddToRoleAsync(user, "User");
+            await this.UserManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, "Banned");
+            await this.UserManager.AddToRoleAsync(user, "User");
             return result.Succeeded;
         }
-        public void  DeleteSavedRoles(string userId)
+        public void DeleteSavedRoles(string userId)
         {
-            var roles = _context.RolesBeforeBan.Where(role => role.UserId == userId).ToList();
-            _context.RolesBeforeBan.RemoveRange(roles);
-            _context.SaveChanges();
+            var roles = this.Context.RolesBeforeBan.Where(role => role.UserId == userId).ToList();
+            this.Context.RolesBeforeBan.RemoveRange(roles);
+            this.Context.SaveChanges();
         }
         public bool IsAdminCreated()
         {
-            return _roleManager.Roles.ToList().Count != 0;
+            return this.RoleManager.Roles.ToList().Count != 0;
         }
     }
 }

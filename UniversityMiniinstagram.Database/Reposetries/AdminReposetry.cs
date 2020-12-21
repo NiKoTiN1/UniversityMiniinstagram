@@ -9,39 +9,39 @@ namespace UniversityMiniinstagram.Database.Models
     {
         public AdminReposetry(DatabaseContext context)
         {
-            _context = context;
+            Context = context;
         }
 
-        DatabaseContext _context;
+        private readonly DatabaseContext Context;
         public void AddReport(Report report)
         {
             report.Date = DateTime.Now;
-            _context.Reports.Add(report);
-            _context.SaveChanges();
+            Context.Reports.Add(report);
+            Context.SaveChanges();
         }
 
         public ICollection<Report> GetPostReports()
         {
-            var result = _context.Reports.Where(report => report.PostId != null).OrderBy(report => report.Date).ToList();
+            var result = Context.Reports.Where(report => report.PostId != null).OrderBy(report => report.Date).ToList();
             return result;
         }
 
         public ICollection<Report> GetCommentReports()
         {
-            var result = _context.Reports.Where(report => report.CommentId != null).OrderBy(report => report.Date).ToList();
+            var result = Context.Reports.Where(report => report.CommentId != null).OrderBy(report => report.Date).ToList();
             return result;
         }
 
         public Report GetReport(Guid reportId)
         {
-            var report = _context.Reports.FirstOrDefault(report => report.Id == reportId);
+            Report report = Context.Reports.FirstOrDefault(report => report.Id == reportId);
             return report;
         }
 
         public void RemoveReport(Report report)
         {
-            _context.Reports.Remove(report);
-            _context.SaveChanges();
+            Context.Reports.Remove(report);
+            Context.SaveChanges();
         }
     }
 }

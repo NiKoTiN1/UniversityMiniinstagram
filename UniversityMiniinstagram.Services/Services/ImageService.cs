@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
@@ -15,51 +15,54 @@ namespace UniversityMiniinstagram.Services
     {
         public ImageService(IImageReposetry imageReposetry, IConfiguration configuration)
         {
-            _imageReposetry = imageReposetry;
+            this.ImageReposetry = imageReposetry;
             Configuration = configuration;
         }
 
-        IImageReposetry _imageReposetry;
-        IConfiguration Configuration { get; }
+        private readonly IImageReposetry ImageReposetry;
+
+        private IConfiguration Configuration { get; }
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)
         {
             if (vm.File != null)
             {
-                Guid imageGuid = Guid.NewGuid();
+                var imageGuid = Guid.NewGuid();
                 var ext = vm.File.FileName.Split(".").Last();
-                string path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + ext;
+                var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + ext;
 
                 using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
                 {
                     await vm.File.CopyToAsync(fileStream);
                 }
-                Image image = new Image()
+                var image = new Image()
                 {
                     Id = imageGuid,
                     Path = path,
                     UploadDate = DateTime.Now,
                 };
-                _imageReposetry.AddImage(image);
+                this.ImageReposetry.AddImage(image);
                 return image;
             }
             else
-                return null ;
+            {
+                return null;
+            }
         }
 
         public Image GetImage(Guid imageId)
         {
-            var image = _imageReposetry.GetImage(imageId);
+            Image image = this.ImageReposetry.GetImage(imageId);
             return image;
         }
 
-        public void RemoveImage(Image image, DatabaseContext db=null)
+        public void RemoveImage(Image image, DatabaseContext db = null)
         {
             if (File.Exists("wwwroot/" + image.Path))
             {
                 File.Delete("wwwroot/" + image.Path);
             }
-            _imageReposetry.RemoveImage(image, db);
+            this.ImageReposetry.RemoveImage(image, db);
         }
     }
 }

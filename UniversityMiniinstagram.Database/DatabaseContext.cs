@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database
@@ -16,7 +16,7 @@ namespace UniversityMiniinstagram.Database
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
-             Database.Migrate();
+            Database.Migrate();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

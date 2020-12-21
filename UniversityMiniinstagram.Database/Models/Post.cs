@@ -11,12 +11,9 @@ namespace UniversityMiniinstagram.Database.Models
         [Required]
         public Image Image { get; set; }
         public Guid ImageId { get; set; }
-
         [Required]
         public DateTime UploadDate { get; set; }
-
-        public Category category { get; set; }
-
+        public Category CategoryPost { get; set; }
         public string Description { get; set; }
         public ApplicationUser User { get; set; }
         public string UserId { get; set; }

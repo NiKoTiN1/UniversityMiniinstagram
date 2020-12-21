@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Database;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Services.Interfaces

@@ -12,47 +12,47 @@ namespace UniversityMiniinstagram.Services.Services
     {
         public AdminService(IAdminReposetry adminReposetry, IPostService postService, IAccountService accountService)
         {
-            _adminReposetry = adminReposetry;
-            _postService = postService;
-            _accountService = accountService;
+            this.AdminReposetry = adminReposetry;
+            this.PostService = postService;
+            this.AccountService = accountService;
         }
 
-        IAdminReposetry _adminReposetry;
-        IPostService _postService;
-        IAccountService _accountService;
+        private readonly IAdminReposetry AdminReposetry;
+        private readonly IPostService PostService;
+        private readonly IAccountService AccountService;
 
         public void ReportComment(SendReportViewModel vm)
         {
-            _adminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
+            this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
         }
 
         public void ReportPost(SendReportViewModel vm)
         {
-            _adminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, UserId = vm.UserId });
+            this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, UserId = vm.UserId });
         }
 
         public ICollection<Report> GetPostReports()
         {
-            var result = _adminReposetry.GetPostReports();
+            ICollection<Report> result = this.AdminReposetry.GetPostReports();
             return result;
         }
 
         public ICollection<Report> GetCommentReports()
         {
-            var result = _adminReposetry.GetCommentReports();
-            foreach(var report in result)
+            ICollection<Report> result = this.AdminReposetry.GetCommentReports();
+            foreach (Report report in result)
             {
-                report.Comment = _postService.GetComment(report.CommentId.Value);
+                report.Comment = this.PostService.GetComment(report.CommentId.Value);
             }
             return result;
         }
 
         public bool RemoveReport(Guid reportId)
         {
-            var report = _adminReposetry.GetReport(reportId);
+            Report report = this.AdminReposetry.GetReport(reportId);
             if (report != null)
             {
-                _adminReposetry.RemoveReport(report);
+                this.AdminReposetry.RemoveReport(report);
                 return true;
             }
             return false;
@@ -60,19 +60,19 @@ namespace UniversityMiniinstagram.Services.Services
 
         public async Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
-            var report = _adminReposetry.GetReport(vm.ReportId);
-            if(report == null)
+            Report report = this.AdminReposetry.GetReport(vm.ReportId);
+            if (report == null)
             {
                 return false;
             }
-            var post = await _postService.GetPost(report.PostId.Value);
-            if(post == null)
+            Post post = await this.PostService.GetPost(report.PostId.Value);
+            if (post == null)
             {
                 return false;
             }
             if (vm.IsHidePost)
             {
-                var result = _postService.HidePost(post.Id);
+                var result = this.PostService.HidePost(post.Id);
                 if (!result)
                 {
                     return false;
@@ -80,8 +80,8 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if (vm.IsBanUser)
             {
-                var user = await _accountService.GetUser(report.Post.UserId);
-                var result = await _accountService.SetBanRole(user);
+                ApplicationUser user = await this.AccountService.GetUser(report.Post.UserId);
+                var result = await this.AccountService.SetBanRole(user);
                 if (!result)
                 {
                     return false;
@@ -89,39 +89,39 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if (vm.IsDeletePost)
             {
-                _postService.DeletePost(post);
+                this.PostService.DeletePost(post);
             }
             return true;
         }
 
         public async Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
-            var report = _adminReposetry.GetReport(vm.ReportId);
+            Report report = this.AdminReposetry.GetReport(vm.ReportId);
             if (report == null)
             {
                 return false;
             }
-            var comment = _postService.GetComment(report.CommentId.Value);
-            if(comment == null)
+            Comment comment = this.PostService.GetComment(report.CommentId.Value);
+            if (comment == null)
             {
                 return false;
             }
-            var post = await _postService.GetPost(comment.PostId);
+            Post post = await this.PostService.GetPost(comment.PostId);
             if (post == null)
             {
                 return false;
             }
             if (vm.IsHidePost)
             {
-                var result = _postService.HidePost(post.Id);
+                var result = this.PostService.HidePost(post.Id);
                 if (!result)
                 {
                     return false;
                 }
             }
-            if(vm.IsHideComment)
+            if (vm.IsHideComment)
             {
-                var result = _postService.HideComment(report.CommentId.Value);
+                var result = this.PostService.HideComment(report.CommentId.Value);
                 if (!result)
                 {
                     return false;
@@ -129,8 +129,8 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if (vm.IsBanUser)
             {
-                var user = await _accountService.GetUser(report.Comment.UserId);
-                var result = await _accountService.SetBanRole(user);
+                ApplicationUser user = await this.AccountService.GetUser(report.Comment.UserId);
+                var result = await this.AccountService.SetBanRole(user);
                 if (!result)
                 {
                     return false;
@@ -138,24 +138,24 @@ namespace UniversityMiniinstagram.Services.Services
             }
             if (vm.IsDeleteComment)
             {
-                _postService.RemoveComment(report.CommentId.Value);
+                this.PostService.RemoveComment(report.CommentId.Value);
             }
             if (vm.IsDeletePost)
             {
-                _postService.DeletePost(post);
+                this.PostService.DeletePost(post);
             }
             return true;
         }
-        public async Task<List<UserRolesViewModel>> GetUsersAndRoles ()
+        public async Task<List<UserRolesViewModel>> GetUsersAndRoles()
         {
-            var allUsers = _accountService.GetAllUsers();
-            List<UserRolesViewModel> vmList = new List<UserRolesViewModel>();
-            foreach(var user in allUsers)
+            IList<ApplicationUser> allUsers = this.AccountService.GetAllUsers();
+            var vmList = new List<UserRolesViewModel>();
+            foreach (ApplicationUser user in allUsers)
             {
-                if(!await _accountService.IsInRole(new IsInRoleViewModel() { user = user, roleName = "Admin" }))
+                if (!await this.AccountService.IsInRole(new IsInRoleViewModel() { User = user, RoleName = "Admin" }))
                 {
-                    var userRoles = await _accountService.GetUserRoles(user);
-                    UserRolesViewModel vm = new UserRolesViewModel()
+                    ICollection<string> userRoles = await this.AccountService.GetUserRoles(user);
+                    var vm = new UserRolesViewModel()
                     {
                         User = user,
                         UserRoles = userRoles
@@ -167,39 +167,31 @@ namespace UniversityMiniinstagram.Services.Services
         }
         public async Task<bool> AddModeratorRoots(string userId)
         {
-            var user = await _accountService.GetUser(userId);
+            ApplicationUser user = await this.AccountService.GetUser(userId);
             if (user == null)
             {
                 return false;
             }
-            var result = await _accountService.SetModerator(user);
-            if(!result)
-            {
-                return false;
-            }
-            return true;
+            var result = await this.AccountService.SetModerator(user);
+            return result;
         }
 
         public async Task<bool> RemoveModeratorRoots(string userId)
         {
-            var user = await _accountService.GetUser(userId);
+            ApplicationUser user = await this.AccountService.GetUser(userId);
             if (user == null)
             {
                 return false;
             }
-            var result = await _accountService.SetNonModerator(user);
-            if (!result)
-            {
-                return false;
-            }
-            return true;
+            var result = await this.AccountService.SetNonModerator(user);
+            return result;
         }
-        public async Task<bool> isModerateAllowed(string curUserId, string reportUserId)
+        public async Task<bool> IsModerateAllowed(string curUserId, string reportUserId)
         {
-            var curUser = await _accountService.GetUser(curUserId);
-            var reportUser = await _accountService.GetUser(reportUserId);
-            var result1 = await _accountService.IsInRole(new IsInRoleViewModel() { user = curUser, roleName = "Modarator" });
-            var result2 = await _accountService.IsInRole(new IsInRoleViewModel() { user = reportUser, roleName = "Modarator" });
+            ApplicationUser curUser = await this.AccountService.GetUser(curUserId);
+            ApplicationUser reportUser = await this.AccountService.GetUser(reportUserId);
+            var result1 = await this.AccountService.IsInRole(new IsInRoleViewModel() { User = curUser, RoleName = "Moderator" });
+            var result2 = await this.AccountService.IsInRole(new IsInRoleViewModel() { User = reportUser, RoleName = "Moderator" });
             return !(result1 && result2);
         }
     }

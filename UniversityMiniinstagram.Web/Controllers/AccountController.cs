@@ -1,17 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Claims;
 using System.Linq;
-using UniversityMiniinstagram.View;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using IdentityServer4.Extensions;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Http;
-using UniversityMiniinstagram.Services.Interfaces;
-using Microsoft.AspNetCore.Hosting;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Models;
+using UniversityMiniinstagram.Services.Interfaces;
+using UniversityMiniinstagram.View;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -19,26 +19,26 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         public AccountController(IAccountService accountService, IPostService postService, IWebHostEnvironment appEnvironment)
         {
-            _accountService = accountService;
-            _postService = postService;
-            _appEnvironment = appEnvironment;
+            this.AccountService = accountService;
+            this.PostService = postService;
+            this.AppEnvironment = appEnvironment;
         }
 
-        IAccountService _accountService;
-        IPostService _postService;
-        IWebHostEnvironment _appEnvironment;
+        private readonly IAccountService AccountService;
+        private readonly IPostService PostService;
+        private readonly IWebHostEnvironment AppEnvironment;
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Modarator, User")]
+        [Authorize(Roles = "Admin, Moderator, User")]
         public async Task<ViewResult> Profile()
         {
             var result = HttpContext.User.IsAuthenticated();
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
 
             if (userIdClaim != null)
             {
-                var user = await _accountService.GetUser(userIdClaim.Value);
-                var posts = _postService.GetUserPosts(user.Id);
+                ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
+                System.Collections.Generic.ICollection<Post> posts = this.PostService.GetUserPosts(user.Id);
                 user.Posts = posts;
                 ViewBag.isAdmin = true;
                 return View(user);
@@ -47,22 +47,22 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Modarator, User")]
+        [Authorize(Roles = "Admin, Moderator, User")]
         public async Task<ViewResult> EditProfile()
         {
             var result = HttpContext.User.IsAuthenticated();
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
 
             if (userIdClaim != null)
             {
-                var user = await _accountService.GetUser(userIdClaim.Value);
+                ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
                 return View(user);
             }
             return View();
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Modarator, User")]
+        [Authorize(Roles = "Admin, Moderator, User")]
         public IActionResult ProfileNumb(int numb)
         {
             return View(numb);
@@ -78,40 +78,40 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         public IActionResult GoogleLogin()
         {
-            var proptities = _accountService.GoogleLogin(Url.Action("GoogleResponse")); 
+            AuthenticationProperties proptities = this.AccountService.GoogleLogin(Url.Action("GoogleResponse"));
             return new ChallengeResult("Google", proptities);
         }
-            
-        public async Task<IActionResult> GoogleResponse(string returnUrl = null, string remoteError = null)
+
+        public async Task<IActionResult> GoogleResponse()
         {
-            var info = await _accountService.GetExternalLoginInfoAsync();
-            var isExist = await _accountService.ExternalLogin(info);
-            if(isExist)
+            Microsoft.AspNetCore.Identity.ExternalLoginInfo info = await this.AccountService.GetExternalLoginInfoAsync();
+            var isExist = await this.AccountService.ExternalLogin(info);
+            if (isExist)
             {
                 return RedirectToAction("Profile");
             }
             else
             {
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                var user = await _accountService.GetUserByEmail(email);
-                if(user == null)
+                ApplicationUser user = await this.AccountService.GetUserByEmail(email);
+                if (user == null)
                 {
                     user = new ApplicationUser()
                     {
                         Email = email,
                         UserName = email.Split("@").First()
                     };
-                    var result = await _accountService.Register(user);
+                    var result = await this.AccountService.Register(user);
                     if (!result)
                     {
                         RedirectToAction("Login");
                     }
-                    result = await _accountService.AddLoginToUser(user, info);
+                    result = await this.AccountService.AddLoginToUser(user, info);
                     if (!result)
                     {
                         RedirectToAction("Login");
                     }
-                    await _accountService.Login(user);
+                    await this.AccountService.Login(user);
                 }
             }
             return RedirectToAction("Profile");
@@ -127,14 +127,14 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await _accountService.Logout();
+            await this.AccountService.Logout();
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
             return RedirectToAction("Login");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Modarator, User")]
+        [Authorize(Roles = "Admin, Moderator, User")]
         public IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(
@@ -151,8 +151,8 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _accountService.Register(model);
-                if(result)
+                var result = await this.AccountService.Register(model);
+                if (result)
                 {
                     return RedirectToAction("Login");
                 }
@@ -165,44 +165,40 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && vm.Email != null && vm.Password != null)
             {
-                var result = await _accountService.Login(vm);
+                var result = await this.AccountService.Login(vm);
                 if (result)
                 {
-                    if (vm.returnUrl != null)
-                    {
-                        return Redirect(vm.returnUrl);
-                    }
-                    return RedirectToAction("Profile");
+                    return vm.ReturnUrl != null ? Redirect(vm.ReturnUrl) : (IActionResult)RedirectToAction("Profile");
                 }
             }
             return RedirectToAction("Login");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Modarator, User")]
+        [Authorize(Roles = "Admin, Moderator, User")]
         public async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
         {
-            vm.WebRootPath = _appEnvironment.WebRootPath;
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            if(userIdClaim.Value == null)
+            vm.WebRootPath = this.AppEnvironment.WebRootPath;
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim.Value == null)
             {
                 return Unauthorized();
             }
             vm.Userid = userIdClaim.Value;
             if (ModelState.IsValid && vm.Username != null)
             {
-                if(vm.Password != null)
+                if (vm.Password != null)
                 {
-                    if(vm.OldPassword == null)
+                    if (vm.OldPassword == null)
                     {
                         return RedirectToAction("EditProfile");
                     }
                 }
-                var result = await _accountService.EditProfile(vm);
-                if(result)
+                var result = await this.AccountService.EditProfile(vm);
+                if (result)
                 {
                     return RedirectToAction("Profile");
-                }    
+                }
             }
             return RedirectToAction("EditProfile");
         }
@@ -211,22 +207,21 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> CreateRolePost()
         {
-            if(!_accountService.IsAdminCreated())
+            if (!this.AccountService.IsAdminCreated())
             {
-                var result = await _accountService.AddRole("Admin");
+                await this.AccountService.AddRole("Admin");
+                await this.AccountService.AddRole("User");
+                await this.AccountService.AddRole("Moderator");
+                await this.AccountService.AddRole("Banned");
 
-                var result1 = await _accountService.AddRole("User");
-                var result2 = await _accountService.AddRole("Modarator");
-                var result3 = await _accountService.AddRole("Banned");
-
-                RegisterViewModel vm = new RegisterViewModel()
+                var vm = new RegisterViewModel()
                 {
                     Email = "Admin@mail.ru",
                     Description = "AdminAcc",
                     Password = "Admin_1",
                     Username = "Admin",
                 };
-                var adminUser = await _accountService.RegisterAdmin(vm);
+                var adminUser = await this.AccountService.RegisterAdmin(vm);
                 if (adminUser)
                 {
                     return RedirectToAction("Profile");
@@ -238,21 +233,17 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> AccessDenied(string ReturnUrl = null)
+        public async Task<IActionResult> AccessDenied()
         {
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            var user = await _accountService.GetUser(userIdClaim.Value);
-            IsInRoleViewModel vm = new IsInRoleViewModel()
-            { 
-                user = user,
-                roleName = "User"
-            };
-            var isBanned = !await _accountService.IsInRole(vm);
-            if (isBanned)
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
+            var vm = new IsInRoleViewModel()
             {
-                return RedirectToAction("BanPage");
-            }
-            return View();
+                User = user,
+                RoleName = "User"
+            };
+            var isBanned = !await this.AccountService.IsInRole(vm);
+            return isBanned ? RedirectToAction("BanPage") : (IActionResult)View();
         }
 
         [HttpGet]
@@ -263,32 +254,28 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> BanUser(string userId)
         {
-            var user = await _accountService.GetUser(userId);
+            ApplicationUser user = await this.AccountService.GetUser(userId);
             if (user == null)
             {
                 return BadRequest();
             }
-            var result = await _accountService.SetBanRole(user);
-            if(!result)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await this.AccountService.SetBanRole(user);
+            return !result ? BadRequest() : (IActionResult)Ok();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> UnBanUser(string userId)
         {
-            var user = await _accountService.GetUser(userId);
+            ApplicationUser user = await this.AccountService.GetUser(userId);
             if (user == null)
             {
                 return BadRequest();
             }
-            await _accountService.UnBanUser(user);
+            await this.AccountService.UnBanUser(user);
             return Ok();
         }
     }

@@ -18,6 +18,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<List<UserRolesViewModel>> GetUsersAndRoles();
         public Task<bool> AddModeratorRoots(string userId);
         public Task<bool> RemoveModeratorRoots(string userId);
-        public Task<bool> isModerateAllowed(string curUserId, string reportUserId);
+        public Task<bool> IsModerateAllowed(string curUserId, string reportUserId);
     }
 }

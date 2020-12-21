@@ -9,11 +9,8 @@ namespace UniversityMiniinstagram.View
         public string Email { get; set; }
         [Required]
         public string Password { get; set; }
-
         public string Username { get; set; }
-
         public string Description { get; set; }
-
         public Image Avatar { get; set; }
 
     }

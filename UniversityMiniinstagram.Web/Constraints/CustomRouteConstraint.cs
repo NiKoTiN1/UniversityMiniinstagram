@@ -7,9 +7,7 @@ namespace UniversityMiniinstagram.Web.Constraints
     {
         public bool Match(HttpContext httpContext, IRouter route, string routeKey, RouteValueDictionary values, RouteDirection routeDirection)
         {
-            if (values["numb"]?.ToString() == "1")
-                return true;
-            return false;
+            return values["numb"]?.ToString() == "1";
         }
     }
 }

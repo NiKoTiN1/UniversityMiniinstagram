@@ -10,134 +10,125 @@ namespace UniversityMiniinstagram.Database.Reposetries
     {
         public PostReposetry(DatabaseContext context)
         {
-            _context = context;
+            this.Context = context;
         }
 
-        DatabaseContext _context;
+        private readonly DatabaseContext Context;
         public ICollection<Post> GetAllPosts()
         {
-            ICollection<Post> posts = _context.Posts.OrderBy(post => post.UploadDate).ToList();
+            ICollection<Post> posts = this.Context.Posts.OrderBy(post => post.UploadDate).ToList();
             return posts;
         }
 
         public ICollection<Like> GetLikes(Guid postId)
         {
-            ICollection<Like> likes = _context.Likes.Where(like => like.PostId == postId).ToList();
+            ICollection<Like> likes = this.Context.Likes.Where(like => like.PostId == postId).ToList();
             return likes;
         }
 
         public ICollection<Comment> GetComments(Guid postId)
         {
-            ICollection<Comment> comments = _context.Comments.Where(comment => comment.PostId == postId).OrderBy(comment => comment.Date).ToList();
+            ICollection<Comment> comments = this.Context.Comments.Where(comment => comment.PostId == postId).OrderBy(comment => comment.Date).ToList();
             return comments;
         }
         public Comment GetComment(Guid commentId)
         {
-            var comment = _context.Comments.FirstOrDefault(comment => comment.Id == commentId);
+            Comment comment = this.Context.Comments.FirstOrDefault(comment => comment.Id == commentId);
             return comment;
         }
 
         public void AddPost(Post post)
         {
             post.IsShow = true;
-            _context.Posts.Add(post);
-            _context.SaveChanges();
+            this.Context.Posts.Add(post);
+            this.Context.SaveChanges();
         }
 
         public void AddComment(Comment comment)
         {
             comment.IsShow = true;
-            var a = DateTime.UtcNow;
             comment.Date = DateTime.UtcNow;
-            _context.Comments.Add(comment);
-            _context.SaveChanges();
+            this.Context.Comments.Add(comment);
+            this.Context.SaveChanges();
         }
 
         public void AddLike(Like like)
         {
-            _context.Likes.Add(like);
-            _context.SaveChanges();
+            this.Context.Likes.Add(like);
+            this.Context.SaveChanges();
         }
 
         public void RemoveLike(Guid postId, string userId, DatabaseContext db = null)
         {
-            if(db != null)
+            if (db != null)
             {
-                var likee = db.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
+                Like likee = db.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
                 db.Likes.Remove(likee);
                 db.SaveChanges();
                 return;
             }
-            var like = _context.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
-            _context.Likes.Remove(like);
-            _context.SaveChanges();
+            Like like = this.Context.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
+            this.Context.Likes.Remove(like);
+            this.Context.SaveChanges();
         }
 
         public ICollection<Post> GetUserPosts(string userId)
         {
-            var userPosts = _context.Posts.Where(post => post.UserId == userId).OrderBy(post => post.UploadDate).ToList();
+            var userPosts = this.Context.Posts.Where(post => post.UserId == userId).OrderBy(post => post.UploadDate).ToList();
             return userPosts;
         }
 
         public Post GetPost(Guid postId)
         {
-            var post = _context.Posts.FirstOrDefault(post => post.Id == postId);
+            Post post = this.Context.Posts.FirstOrDefault(post => post.Id == postId);
             return post;
         }
 
         public void RemoveComment(Comment comment)
         {
-            var reports = _context.Reports.Where(report => report.CommentId == comment.Id);
-            foreach(var report in reports)
+            IQueryable<Report> reports = this.Context.Reports.Where(report => report.CommentId == comment.Id);
+            foreach (Report report in reports)
             {
-                _context.Reports.Remove(report);
+                this.Context.Reports.Remove(report);
             }
-            _context.Comments.Remove(comment);
-            _context.SaveChanges();
+            this.Context.Comments.Remove(comment);
+            this.Context.SaveChanges();
         }
 
         public void DeletePost(Post post)
         {
-            var reports = _context.Reports.Where(report => report.PostId == post.Id);
-            foreach (var report in reports)
+            IQueryable<Report> reports = this.Context.Reports.Where(report => report.PostId == post.Id);
+            foreach (Report report in reports)
             {
-                _context.Reports.Remove(report);
+                this.Context.Reports.Remove(report);
             }
-            _context.Posts.Remove(post);
-            _context.SaveChanges();
+            this.Context.Posts.Remove(post);
+            this.Context.SaveChanges();
             return;
         }
 
         public void UpdatePost(Post post)
         {
-            _context.Posts.Update(post);
-            _context.SaveChanges();
+            this.Context.Posts.Update(post);
+            this.Context.SaveChanges();
         }
 
         public void UpdateComment(Comment comment)
         {
-            _context.Comments.Update(comment);
-            _context.SaveChanges();
+            this.Context.Comments.Update(comment);
+            this.Context.SaveChanges();
         }
 
         public bool IsCommentReported(Guid commentId, string userId)
         {
-            var result = _context.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
-            if (result.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            var result = this.Context.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
+            return result.Count != 0;
         }
 
         public bool IsPostReported(Guid postId, string userId)
         {
-            var result = _context.Reports.Where(report => report.PostId == postId && report.UserId == userId).ToList();
-            if (result.Count == 0)
-            {
-                return false;
-            }
-            return true;
+            var result = this.Context.Reports.Where(report => report.PostId == postId && report.UserId == userId).ToList();
+            return result.Count != 0;
         }
     }
 }

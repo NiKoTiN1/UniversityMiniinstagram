@@ -15,50 +15,48 @@ namespace UniversityMiniinstagram.Services.Services
 {
     public class ViewRenderService : IViewRenderService
     {
-        private readonly IRazorViewEngine _razorViewEngine;
-        private readonly ITempDataProvider _tempDataProvider;
-        private readonly IServiceProvider _serviceProvider;
-
         public ViewRenderService(IRazorViewEngine razorViewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider)
         {
-            _razorViewEngine = razorViewEngine;
-            _tempDataProvider = tempDataProvider;
-            _serviceProvider = serviceProvider;
+            this.RazorViewEngine = razorViewEngine;
+            this.TempDataProvider = tempDataProvider;
+            this.ServiceProvider = serviceProvider;
         }
+
+        private readonly IRazorViewEngine RazorViewEngine;
+        private readonly ITempDataProvider TempDataProvider;
+        private readonly IServiceProvider ServiceProvider;
 
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
-            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
+            var httpContext = new DefaultHttpContext { RequestServices = ServiceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            using (var sw = new StringWriter())
+            using var sw = new StringWriter();
+            Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult viewResult = this.RazorViewEngine.FindView(actionContext, viewName, false);
+
+            if (viewResult.View == null)
             {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
-
-                if (viewResult.View == null)
-                {
-                    throw new ArgumentNullException($"{viewName} does not match any available view");
-                }
-
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    sw,
-                    new HtmlHelperOptions()
-                );
-
-                await viewResult.View.RenderAsync(viewContext);
-                return sw.ToString();
+                throw new ArgumentNullException($"{viewName} does not match any available view");
             }
+
+            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+            {
+                Model = model
+            };
+
+            var viewContext = new ViewContext(
+                actionContext,
+                viewResult.View,
+                viewDictionary,
+                new TempDataDictionary(actionContext.HttpContext, this.TempDataProvider),
+                sw,
+                new HtmlHelperOptions()
+            );
+
+            await viewResult.View.RenderAsync(viewContext);
+            return sw.ToString();
         }
     }
 }

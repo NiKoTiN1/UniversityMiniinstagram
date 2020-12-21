@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.View;
 
@@ -15,30 +15,30 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         public AdminController(IAdminService adminService, IPostService postService)
         {
-            _adminService = adminService;
-            _postService = postService;
+            this.AdminService = adminService;
+            this.PostService = postService;
         }
 
-        IAdminService _adminService;
-        IPostService _postService;
+        private readonly IAdminService AdminService;
+        private readonly IPostService PostService;
 
         [HttpPost]
         public ActionResult SendReport([FromForm] SendReportViewModel vm)
         {
             if (ModelState.IsValid && vm != null)
             {
-                var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
                     vm.UserId = userIdClaim.Value;
                 }
-                if(vm.CommentId != new Guid())
+                if (vm.CommentId != new Guid())
                 {
-                    _adminService.ReportComment(vm);
+                    this.AdminService.ReportComment(vm);
                 }
                 else
                 {
-                    _adminService.ReportPost(vm);
+                    this.AdminService.ReportPost(vm);
                 }
             }
             return Ok();
@@ -48,21 +48,23 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize(Roles = "Admin,Modarator")]
         public async Task<ActionResult> GetPostReports()
         {
-            List<AdminPostReportsVeiwModel> vmList = new List<AdminPostReportsVeiwModel>();
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            var vmList = new List<AdminPostReportsVeiwModel>();
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            var reports = _adminService.GetPostReports();
-            foreach(var report in reports)
+            ICollection<Database.Models.Report> reports = this.AdminService.GetPostReports();
+            foreach (Database.Models.Report report in reports)
             {
-                report.Post = await _postService.GetPost(report.PostId.Value);
+                report.Post = await this.PostService.GetPost(report.PostId.Value);
                 if (report.Post.UserId != userIdClaim.Value)
                 {
-                    AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
-                    vm.Report = report;
-                    vm.CommentViewModel = new List<CommentViewModel>();
-                    foreach (var comment in report.Post.Comments)
+                    var vm = new AdminPostReportsVeiwModel
                     {
-                        CommentViewModel commVm = new CommentViewModel()
+                        Report = report,
+                        CommentViewModel = new List<CommentViewModel>()
+                    };
+                    foreach (Database.Models.Comment comment in report.Post.Comments)
+                    {
+                        var commVm = new CommentViewModel()
                         {
                             Comment = comment,
                             IsDeleteRelated = false,
@@ -81,22 +83,24 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize(Roles = "Admin,Modarator")]
         public async Task<ActionResult> GetCommentReports()
         {
-            List<AdminPostReportsVeiwModel> vmList = new List<AdminPostReportsVeiwModel>();
-            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            var vmList = new List<AdminPostReportsVeiwModel>();
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            var reports = _adminService.GetCommentReports();
-            foreach (var report in reports)
+            ICollection<Database.Models.Report> reports = this.AdminService.GetCommentReports();
+            foreach (Database.Models.Report report in reports)
             {
-                report.Post = await _postService.GetPost(report.Comment.PostId);
-                var isModerateAllowed = await _adminService.isModerateAllowed(userIdClaim.Value, report.Comment.UserId);
+                report.Post = await this.PostService.GetPost(report.Comment.PostId);
+                var isModerateAllowed = await this.AdminService.IsModerateAllowed(userIdClaim.Value, report.Comment.UserId);
                 if ((report.Comment.UserId != userIdClaim.Value) && isModerateAllowed)
                 {
-                    AdminPostReportsVeiwModel vm = new AdminPostReportsVeiwModel();
-                    vm.Report = report;
-                    vm.CommentViewModel = new List<CommentViewModel>();
-                    foreach (var comment in report.Post.Comments)
+                    var vm = new AdminPostReportsVeiwModel
                     {
-                        CommentViewModel commVm = new CommentViewModel()
+                        Report = report,
+                        CommentViewModel = new List<CommentViewModel>()
+                    };
+                    foreach (Database.Models.Comment comment in report.Post.Comments)
+                    {
+                        var commVm = new CommentViewModel()
                         {
                             Comment = comment,
                             IsDeleteRelated = false,
@@ -118,7 +122,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> SetDeleteRoles()
         {
-            var vm = await _adminService.GetUsersAndRoles();
+            List<UserRolesViewModel> vm = await this.AdminService.GetUsersAndRoles();
             return View(vm);
         }
         [HttpGet]
@@ -129,63 +133,43 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public IActionResult PardonPost(Guid reportId)
         {
-            var result = _adminService.RemoveReport(reportId);
-            if (result)
-            {
-                return Ok();
-            }
-            return BadRequest();
+            var result = this.AdminService.RemoveReport(reportId);
+            return result ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
-            var result = await _adminService.PostReportDecision(vm);
-            if(result)
-            {
-                return Ok();
-            }
-            return BadRequest();
+            var result = await this.AdminService.PostReportDecision(vm);
+            return result ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Modarator")]
+        [Authorize(Roles = "Admin, Moderator")]
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
-            var result = await _adminService.CommentReportDecision(vm);
-            if (result)
-            {
-                return Ok();
-            }
-            return BadRequest();
+            var result = await this.AdminService.CommentReportDecision(vm);
+            return result ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddModerator(string userId)
         {
-            var result = await _adminService.AddModeratorRoots(userId);
-            if (result)
-            {
-                return Ok();
-            }
-            return BadRequest();
+            var result = await this.AdminService.AddModeratorRoots(userId);
+            return result ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveModerator(string userId)
         {
-            var result = await _adminService.RemoveModeratorRoots(userId);
-            if (result)
-            {
-                return Ok();
-            }
-            return BadRequest();
+            var result = await this.AdminService.RemoveModeratorRoots(userId);
+            return result ? Ok() : (IActionResult)BadRequest();
         }
     }
 }

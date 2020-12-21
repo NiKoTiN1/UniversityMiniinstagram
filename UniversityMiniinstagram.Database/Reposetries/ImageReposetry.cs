@@ -9,32 +9,32 @@ namespace UniversityMiniinstagram.Database.Reposetries
     {
         public ImageReposetry(DatabaseContext context)
         {
-            _context = context;
+            Context = context;
         }
 
-        DatabaseContext _context;
+        private readonly DatabaseContext Context;
         public void AddImage(Image image)
         {
-            _context.Images.Add(image);
-            _context.SaveChanges();
+            Context.Images.Add(image);
+            Context.SaveChanges();
         }
 
         public Image GetImage(Guid imageId)
         {
-            var image = _context.Images.FirstOrDefault(image => image.Id == imageId);
+            Image image = Context.Images.FirstOrDefault(image => image.Id == imageId);
             return image;
         }
 
-        public void RemoveImage(Image image, DatabaseContext db=null)
+        public void RemoveImage(Image image, DatabaseContext db = null)
         {
-            if(db != null)
+            if (db != null)
             {
                 db.Remove(image);
                 db.SaveChanges();
                 return;
             }
-            _context.Remove(image);
-            _context.SaveChanges();
+            Context.Remove(image);
+            Context.SaveChanges();
         }
     }
 }
