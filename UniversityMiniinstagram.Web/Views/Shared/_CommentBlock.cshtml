@@ -36,11 +36,11 @@ else
                         }
                         @if (Model.IsDeleteRelated)
                         {
-                            <a class="dropdown-item dropdownEl" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
+                            <a class="dropdown-item dropdownDel" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
                         }
                         @if (Model.IsReportRelated)
                         {
-                            <a class="dropdown-item dropdownEl" id="@reportId">@VLocalizer["ReportBtn"]</a>
+                            <a class="dropdown-item dropdownRep" id="@reportId">@VLocalizer["ReportBtn"]</a>
                         }
                     </div>
                 </div>
@@ -48,59 +48,10 @@ else
             <div class="chat-item-body DIV-filter-by-text" data-filter-by="text">
                 <p style="margin-bottom: 4px;">@Model.Comment.Text</p>
             </div>
-            @{ 
+            @{
                 var dateId = "Date" + Model.Comment.Id.ToString();
             }
-            <p id="@dateId" style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
+            <p id="@dateId" class="DateElem" style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        var offset = parseInt(document.cookie.replace("offset=", ""));
-        var dateElem = $("#" + '@dateId');
-        var date = new Date(dateElem.text());
-        date.setTime(date.getTime() + (offset * 60 * 60 * 1000));
-        var minutes = date.getMinutes();
-        if (minutes < 10) {
-            minutes = "0" + minutes;
-        }
-        dateElem.text(date.getDate() + "." + date.getMonth() + "." + date.getFullYear() + " " + date.getHours() + ":" + minutes);
-    });
-
-    $('#@deleteId').click(function () {
-        var label = $(this).attr("id");
-        label = label.replace('Delete', '');
-        var comment = $('#' + label + 'content');
-        $.ajax({
-            type: 'DELETE',
-            url: '@Url.Content("~/news/removedComment")',
-            data: { 'commentId': label },
-            success: function (data) {
-                var countComment = $('#' + data + 'count');
-                countComment.text(parseInt(countComment.text()) - 1);
-                comment.remove();
-                }
-            });
-    });
-
-    $('#@reportId').click(function () {
-        var elem = $(this);
-        var label = elem.attr("id");
-        label = label.replace('Report', '');
-        var div = $(this).parent();
-        var commentBtnId = '#' + label + 'Button';
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Content("~/report/send")',
-            data: { 'CommentId': label  },
-            success: function (data) {
-                elem.remove();
-                if (div.children().length == 0) {
-                    $(commentBtnId).remove();
-                }
-            }
-        });
-    });
-</script>

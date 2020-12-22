@@ -132,25 +132,6 @@ namespace UniversityMiniinstagram.Web.Controllers
             return Unauthorized();
         }
 
-        [HttpPost]
-        [Route("addComment")]
-        public async Task<PartialViewResult> CommentPost([FromForm] SendCommentViewModel vm)
-        {
-            if (ModelState.IsValid && vm.Text != null && vm.PostId != null)
-            {
-                Database.Models.Comment result = await this.PostServices.AddComment(vm, vm.UserId);
-                var commentViewModel = new CommentViewModel()
-                {
-                    Comment = result,
-                    IsDeleteRelated = await this.PostServices.IsDeleteRelated(result.User, vm.UserId),
-                    IsReportRelated = await this.PostServices.IsReportRelated(result.UserId, vm.UserId, commentId: result.Id),
-                    ShowReportColor = false
-                };
-                return PartialView("_CommentBlock", commentViewModel);
-            }
-            return null;
-        }
-
         [HttpDelete]
         [Route("removedComment")]
         public ActionResult RemoveCommentPost([FromForm] Guid commentId)

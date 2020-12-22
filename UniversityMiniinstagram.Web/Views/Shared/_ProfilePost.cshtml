@@ -72,12 +72,7 @@
                 <input type="button" value="@Model.Post.Id" hidden="hidden" class="Like">
             </label>
             @{
-                var postReportId = Model.Post.Id.ToString() + "PostReport";
                 var textId = Model.Post.Id.ToString() + "text";
-            }
-            @if (Model.IsReportRelated)
-            {
-                <a id="@postReportId" class="PostReportBtn" style="float: right; cursor: pointer; margin-left: auto; padding-right: 16px;">Report</a>
             }
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">
@@ -97,62 +92,6 @@
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/commentary.js"></script>
-
-<script>
-    $('.Like').click(function () {
-        var label = $(this).parent();
-        var postId = $(this).attr("value");
-        var svg = label.children().eq(0);
-        var svgL = label.children().eq(1);
-        var likesCount = label.children().eq(3);
-        var isLiked = label.children().eq(2).attr("value");
-        if (isLiked == "1") {
-            svgL.hide();
-            svg.show();
-            label.children().eq(2).attr("value", "0");
-            likesCount.text(parseInt(likesCount.text()) - 1);
-            $.ajax({
-                type: 'DELETE',
-                url: '@Url.Content("~/news/removeLike")',
-                data: { 'postId': postId },
-                error: function (data) {
-                    svg.hide();
-                    svgL.show();
-                    label.children().eq(2).attr("value", "1");
-                    likesCount.text(parseInt(likesCount.text()) + 1);
-                }
-            });
-        }
-        else {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Content("~/news/addLike")',
-                data: { 'postId': postId },
-                error: function (data) {
-                    svgL.hide();
-                    svg.show();
-                    label.children().eq(2).attr("value", "0");
-                    likesCount.text(parseInt(likesCount.text()) - 1);
-                }
-            });
-
-        }
-    });
-
-    $('.PostReportBtn').click(function () {
-        var elem = $(this);
-        var label = $(this).attr("id");
-        label = label.replace('PostReport', '');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Content("~/report/send")',
-            data: { 'CommentId': label  },
-            success: function (data) {
-                elem.remove();
-                if (div.children().length == 0) {
-                    $(commentBtnId).remove();
-                }
-            }
-        });
-    });
-</script>
+<script src="~/js/like.js"></script>
+<script src="~/js/dropdownDeleteCommentary.js"></script>
+<script src="~/js/commentaryDateSetup.js"></script>

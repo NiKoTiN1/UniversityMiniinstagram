@@ -41,7 +41,7 @@ namespace UniversityMiniinstagram.Web.Hubs
                     ShowReportColor = false
                 };
                 var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);
-                await Clients.All.SendAsync("SendCommentHub", res, postId);
+                await Clients.All.SendAsync("SendCommentHub", res, postId, commentViewModel.Comment.Id.ToString());
             }
         }
     }
