@@ -6,7 +6,7 @@
     var moderatorRole = '#Moder' + userId;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/account/ban")',
+        url: '/account/ban',
         data: { 'userId': userId },
         success: function (data) {
             $('#' + banId).hide();
@@ -24,7 +24,7 @@ $('.UnBan').click(function () {
     var moderatorRole = '#Moder' + userId;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/account/unban")',
+        url: '/account/unban',
         data: { 'userId': userId },
         success: function (data) {
             $(ban).show();

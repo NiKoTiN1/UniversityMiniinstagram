@@ -11,6 +11,7 @@ using UniversityMiniinstagram.Views;
 namespace UniversityMiniinstagram.Web.Controllers
 {
     [Authorize(Roles = "User")]
+    [Route("admin")]
     public class AdminController : Controller
     {
         public AdminController(IAdminService adminService, IPostService postService)
@@ -23,6 +24,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         private readonly IPostService PostService;
 
         [HttpPost]
+        [Route("report/send")]
         public ActionResult SendReport([FromForm] SendReportViewModel vm)
         {
             if (ModelState.IsValid && vm != null)
@@ -46,6 +48,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("reports/posts")]
         public async Task<ActionResult> GetPostReports()
         {
             var vmList = new List<AdminPostReportsVeiwModel>();
@@ -81,6 +84,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("reports/comments")]
         public async Task<ActionResult> GetCommentReports()
         {
             var vmList = new List<AdminPostReportsVeiwModel>();
@@ -120,13 +124,16 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [Route("roles")]
         public async Task<ActionResult> SetDeleteRoles()
         {
             List<UserRolesViewModel> vm = await this.AdminService.GetUsersAndRoles();
             return View(vm);
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [Route("appeals")]
         public ActionResult Appeals()
         {
             return View();
@@ -134,6 +141,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("pardon")]
         public IActionResult PardonPost(Guid reportId)
         {
             var result = this.AdminService.RemoveReport(reportId);
@@ -142,6 +150,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("post/decision")]
         public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
             var result = await this.AdminService.PostReportDecision(vm);
@@ -150,6 +159,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("comment/decision")]
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
             var result = await this.AdminService.CommentReportDecision(vm);
@@ -158,6 +168,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [Route("set-moder-roots")]
         public async Task<IActionResult> AddModerator(string userId)
         {
             var result = await this.AdminService.AddModeratorRoots(userId);
@@ -166,6 +177,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
+        [Route("set-user-roots")]
         public async Task<IActionResult> RemoveModerator(string userId)
         {
             var result = await this.AdminService.RemoveModeratorRoots(userId);

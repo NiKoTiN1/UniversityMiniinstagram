@@ -17,7 +17,6 @@ using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Database.Repositories;
 using UniversityMiniinstagram.Services;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Web.Constraints;
 using UniversityMiniinstagram.Web.Hubs;
 
 
@@ -132,49 +131,7 @@ namespace UniversityMiniinstagram
 
             app.UseSignalR(routes => { routes.MapHub<CommentaryHub>("/comment"); });
 
-            app.UseMvc(routing =>
-            {
-                routing.MapRoute("1", "account/login", new { controller = "Account", action = "Login" });
-                routing.MapRoute("2", "account/logined", new { controller = "Account", action = "LoginPost" });
-
-                routing.MapRoute("3", "account/profile", new { controller = "Account", action = "Profile" });
-                routing.MapRoute("4", "account/profile/{numb}", new { controller = "Account", action = "ProfileNumb" },
-                    new { numb = new CustomRouteConstraint() });
-
-                routing.MapRoute("5", "account/register", new { controller = "Account", action = "Register" });
-                routing.MapRoute("6", "account/registed", new { controller = "Account", action = "RegisterPost" });
-                routing.MapRoute("7", "account/logout", new { controller = "Account", action = "Logout" });
-
-                routing.MapRoute("8", "news/all", new { controller = "News", action = "GetAllPosts" });
-                routing.MapRoute("9", "news/addPost", new { controller = "News", action = "AddPost" });
-                routing.MapRoute("10", "account/setlanguage", new { controller = "Account", action = "SetLanguage" });
-                routing.MapRoute("11", "account/profile/edit", new { controller = "Account", action = "EditProfile" });
-                routing.MapRoute("12", "account/profile/edited", new { controller = "Account", action = "EditProfilePost" });
-                routing.MapRoute("13", "news/getPost", new { controller = "News", action = "GetPost" });
-                routing.MapRoute("14", "Account/AccessDenied", new { controller = "Account", action = "AccessDenied" });
-                routing.MapRoute("15", "news/removedComment", new { controller = "News", action = "RemoveCommentPost" });
-                routing.MapRoute("16", "report/send", new { controller = "Admin", action = "SendReport" });
-                routing.MapRoute("17", "news/removedPost", new { controller = "News", action = "RemovePost" });
-                routing.MapRoute("18", "admin/reports/posts", new { controller = "Admin", action = "GetPostReports" });
-                routing.MapRoute("19", "admin/reports/comments", new { controller = "Admin", action = "GetCommentReports" });
-                routing.MapRoute("20", "admin/roles", new { controller = "Admin", action = "SetDeleteRoles" });
-                routing.MapRoute("21", "admin/appeals", new { controller = "Admin", action = "Appeals" });
-                routing.MapRoute("22", "admin/pardon", new { controller = "Admin", action = "PardonPost" });
-                routing.MapRoute("23", "admin/post/decision", new { controller = "Admin", action = "PostReportDecision" });
-                routing.MapRoute("24", "admin/comment/decision", new { controller = "Admin", action = "CommentReportDecision" });
-                routing.MapRoute("25", "account/ban", new { controller = "Account", action = "BanUser" });
-                routing.MapRoute("26", "account/unban", new { controller = "Account", action = "UnBanUser" });
-                routing.MapRoute("27", "admin/moderroots", new { controller = "Admin", action = "AddModerator" });
-                routing.MapRoute("28", "admin/userroots", new { controller = "Admin", action = "RemoveModerator" });
-                routing.MapRoute("29", "account/banned", new { controller = "Account", action = "BanPage" });
-                routing.MapRoute("30", "settings", new { controller = "Settings", action = "GetSettings" });
-                routing.MapRoute("31", "settings/language", new { controller = "Settings", action = "SetLanguage" });
-                routing.MapRoute("32", "account/google-login", new { controller = "Account", action = "GoogleLogin" });
-                routing.MapRoute("33", "account/google-response", new { controller = "Account", action = "GoogleResponse" });
-
-                routing.MapRoute("34", "account/addrole", new { controller = "Account", action = "CreateRolePost" });
-
-            });
+            app.UseMvc();
         }
     }
 }

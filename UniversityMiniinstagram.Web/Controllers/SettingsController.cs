@@ -7,15 +7,18 @@ using System;
 namespace UniversityMiniinstagram.Web.Controllers
 {
     [Authorize]
+    [Route("settings")]
     public class SettingsController : Controller
     {
         [HttpGet]
+        [Route("")]
         public ViewResult GetSettings()
         {
             return View();
         }
 
         [HttpPost]
+        [Route("language")]
         public IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(

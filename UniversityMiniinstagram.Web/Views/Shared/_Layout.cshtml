@@ -46,7 +46,7 @@
 
             @if (User.Identity.IsAuthenticated)
             {
-                @if (User.IsInRole("Admin") || User.IsInRole("Modarator"))
+                @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
                 {
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">

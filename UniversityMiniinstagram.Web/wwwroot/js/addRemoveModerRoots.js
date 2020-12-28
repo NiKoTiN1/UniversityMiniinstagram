@@ -4,7 +4,7 @@
     var unModer = '#UnModer' + userId;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/admin/moderroots")',
+        url: '/admin/set-moder-roots',
         data: { 'userId': userId },
         success: function (data) {
             $('#Moder' + userId).hide();
@@ -19,7 +19,7 @@ $('.UnModer').click(function () {
     var Moder = '#Moder' + userId;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/admin/userroots")',
+        url: '/admin/set-user-roots',
         data: { 'userId': userId },
         success: function (data) {
             $('#UnModer' + userId).hide();

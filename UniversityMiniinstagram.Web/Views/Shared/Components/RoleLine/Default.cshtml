@@ -28,7 +28,7 @@
                 }
                 else
                 {
-                    @if (Model.UserRoles.Contains("Modarator"))
+                    @if (Model.UserRoles.Contains("Moderator"))
                     {
                         <button id="@unModerId" type="button" class="UnModer btn btn-primary col-2 mr-2">@VLocalizer["User"]</button>
                         <button id="@ModerId" type="button" class="Moder btn btn-secondary col-2 mr-2" style="display: none;">@VLocalizer["Moderator"]</button>

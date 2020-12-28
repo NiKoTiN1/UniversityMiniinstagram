@@ -189,9 +189,9 @@ namespace UniversityMiniinstagram.Web.Controllers
             }
             return Unauthorized();
         }
+
         [HttpDelete]
         [Route("removedPost")]
-
         public async Task<IActionResult> RemovePost([FromForm] Guid postId)
         {
             if (ModelState.IsValid && postId != null)

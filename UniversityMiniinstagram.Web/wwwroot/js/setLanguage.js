@@ -22,7 +22,7 @@
     var a = "";
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/settings/language")',
+        url: '/settings/language',
         data: { 'culture': culture, 'returnUrl': url },
         success: function (data) {
             location.reload();

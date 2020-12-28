@@ -15,6 +15,7 @@ using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
+    [Route("account")]
     public class AccountController : Controller
     {
         public AccountController(IAccountService accountService, IPostService postService, IWebHostEnvironment appEnvironment)
@@ -30,6 +31,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Moderator, User")]
+        [Route("profile")]
         public async Task<ViewResult> Profile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -48,6 +50,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Moderator, User")]
+        [Route("profile/edit")]
         public async Task<ViewResult> EditProfile()
         {
             var result = HttpContext.User.IsAuthenticated();
@@ -62,13 +65,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Moderator, User")]
-        public IActionResult ProfileNumb(int numb)
-        {
-            return View(numb);
-        }
-
-        [HttpGet]
+        [Route("login")]
         public IActionResult Login(string ReturnUrl = null)
         {
             ViewBag.ReturnUrlParameter = ReturnUrl;
@@ -76,12 +73,14 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
+        [Route("google-login")]
         public IActionResult GoogleLogin()
         {
             AuthenticationProperties proptities = this.AccountService.GoogleLogin(Url.Action("GoogleResponse"));
             return new ChallengeResult("Google", proptities);
         }
 
+        [Route("google-response")]
         public async Task<IActionResult> GoogleResponse()
         {
             Microsoft.AspNetCore.Identity.ExternalLoginInfo info = await this.AccountService.GetExternalLoginInfoAsync();
@@ -118,13 +117,15 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        [Route("registration")]
+        public IActionResult Registration()
         {
             return View();
         }
 
         [HttpGet]
         [Authorize]
+        [Route("logout")]
         public async Task<IActionResult> Logout()
         {
             await this.AccountService.Logout();
@@ -135,6 +136,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator, User")]
+        [Route("set-language")]
         public IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(
@@ -147,7 +149,8 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegisterPost(RegisterViewModel model)
+        [Route("registered")]
+        public async Task<IActionResult> RegistrationPost(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -161,6 +164,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
+        [Route("authorized")]
         public async Task<IActionResult> LoginPost(LoginViewModel vm)
         {
             if (ModelState.IsValid && vm.Email != null && vm.Password != null)
@@ -176,6 +180,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator, User")]
+        [Route("profile/edited")]
         public async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
         {
             vm.WebRootPath = this.AppEnvironment.WebRootPath;
@@ -205,6 +210,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
 
         [HttpGet]
+        [Route("add-role")]
         public async Task<IActionResult> CreateRolePost()
         {
             if (!this.AccountService.IsAdminCreated())
@@ -233,6 +239,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize]
+        [Route("AccessDenied")]
         public async Task<IActionResult> AccessDenied()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
@@ -248,6 +255,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Banned")]
+        [Route("banned")]
         public IActionResult BanPage()
         {
             return View();
@@ -255,6 +263,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("ban")]
         public async Task<IActionResult> BanUser(string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
@@ -268,6 +277,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
+        [Route("unban")]
         public async Task<IActionResult> UnBanUser(string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
