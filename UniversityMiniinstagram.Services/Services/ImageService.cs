@@ -20,7 +20,6 @@ namespace UniversityMiniinstagram.Services
         }
 
         private readonly IImageReposetry ImageReposetry;
-
         private IConfiguration Configuration { get; }
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)

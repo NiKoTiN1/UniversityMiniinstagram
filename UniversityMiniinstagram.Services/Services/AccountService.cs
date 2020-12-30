@@ -19,6 +19,7 @@ namespace UniversityMiniinstagram.Services
 
         private readonly IAccountReposetry AccountReposetry;
         private readonly IImageService ImageService;
+
         public async Task<bool> Register(RegisterViewModel vm)
         {
             var isExist = await this.AccountReposetry.IsExist(vm.Email);

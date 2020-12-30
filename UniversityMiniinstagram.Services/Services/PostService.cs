@@ -22,6 +22,7 @@ namespace UniversityMiniinstagram.Services
         private readonly IImageService ImageServices;
         private readonly IPostReposetry PostReposetry;
         private readonly IAccountService AccountService;
+
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             Image image = await this.ImageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
