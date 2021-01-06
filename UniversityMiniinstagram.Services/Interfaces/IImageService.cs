@@ -10,6 +10,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
     {
         public Task<Image> Add(ImageViewModel vm, string rootPath);
         public Image GetImage(Guid imageId);
-        public void RemoveImage(Image image, DatabaseContext db = null);
+        public Task RemoveImage(Image image, DatabaseContext db = null);
     }
 }

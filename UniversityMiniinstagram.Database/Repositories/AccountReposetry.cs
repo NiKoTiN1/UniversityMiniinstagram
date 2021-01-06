@@ -169,8 +169,8 @@ namespace UniversityMiniinstagram.Database.Repositories
                 Role = role,
                 User = user
             };
-            this.Context.RolesBeforeBan.Add(beforeBan);
-            this.Context.SaveChanges();
+            await this.Context.RolesBeforeBan.AddAsync(beforeBan);
+            await this.Context.SaveChangesAsync();
             return true;
         }
 
@@ -181,11 +181,11 @@ namespace UniversityMiniinstagram.Database.Repositories
             await this.UserManager.AddToRoleAsync(user, "User");
             return result.Succeeded;
         }
-        public void DeleteSavedRoles(string userId)
+        public async Task DeleteSavedRoles(string userId)
         {
             var roles = this.Context.RolesBeforeBan.Where(role => role.UserId == userId).ToList();
             this.Context.RolesBeforeBan.RemoveRange(roles);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
         public bool IsAdminCreated()
         {

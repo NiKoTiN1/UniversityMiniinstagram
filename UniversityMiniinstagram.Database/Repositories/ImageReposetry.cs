@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
@@ -13,10 +14,10 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
 
         private readonly DatabaseContext Context;
-        public void AddImage(Image image)
+        public async Task AddImage(Image image)
         {
             this.Context.Images.Add(image);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
         public Image GetImage(Guid imageId)
@@ -25,12 +26,12 @@ namespace UniversityMiniinstagram.Database.Repositories
             return image;
         }
 
-        public void RemoveImage(Image image, DatabaseContext db = null)
+        public async Task RemoveImage(Image image, DatabaseContext db = null)
         {
             if (db != null)
             {
                 db.Remove(image);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return;
             }
             this.Context.Remove(image);

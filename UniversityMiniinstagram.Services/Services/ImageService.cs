@@ -40,7 +40,7 @@ namespace UniversityMiniinstagram.Services
                     Path = path,
                     UploadDate = DateTime.Now,
                 };
-                this.ImageReposetry.AddImage(image);
+                await this.ImageReposetry.AddImage(image);
                 return image;
             }
             else
@@ -55,13 +55,13 @@ namespace UniversityMiniinstagram.Services
             return image;
         }
 
-        public void RemoveImage(Image image, DatabaseContext db = null)
+        public async Task RemoveImage(Image image, DatabaseContext db = null)
         {
             if (File.Exists("wwwroot/" + image.Path))
             {
                 File.Delete("wwwroot/" + image.Path);
             }
-            this.ImageReposetry.RemoveImage(image, db);
+            await this.ImageReposetry.RemoveImage(image, db);
         }
     }
 }

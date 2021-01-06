@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
@@ -37,39 +38,39 @@ namespace UniversityMiniinstagram.Database.Repositories
             return comment;
         }
 
-        public void AddPost(Post post)
+        public async Task AddPost(Post post)
         {
             post.IsShow = true;
             this.Context.Posts.Add(post);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
-        public void AddComment(Comment comment)
+        public async Task AddComment(Comment comment)
         {
             comment.IsShow = true;
             comment.Date = DateTime.UtcNow;
             this.Context.Comments.Add(comment);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
-        public void AddLike(Like like)
+        public async Task AddLike(Like like)
         {
             this.Context.Likes.Add(like);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
-        public void RemoveLike(Guid postId, string userId, DatabaseContext db = null)
+        public async Task RemoveLike(Guid postId, string userId, DatabaseContext db = null)
         {
             if (db != null)
             {
                 Like likee = db.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
                 db.Likes.Remove(likee);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return;
             }
             Like like = this.Context.Likes.FirstOrDefault(li => li.PostId == postId && li.UserId == userId);
             this.Context.Likes.Remove(like);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
         public ICollection<Post> GetUserPosts(string userId)
@@ -84,7 +85,7 @@ namespace UniversityMiniinstagram.Database.Repositories
             return post;
         }
 
-        public void RemoveComment(Comment comment)
+        public async Task RemoveComment(Comment comment)
         {
             IQueryable<Report> reports = this.Context.Reports.Where(report => report.CommentId == comment.Id);
             foreach (Report report in reports)
@@ -92,10 +93,10 @@ namespace UniversityMiniinstagram.Database.Repositories
                 this.Context.Reports.Remove(report);
             }
             this.Context.Comments.Remove(comment);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
-        public void DeletePost(Post post)
+        public async Task DeletePost(Post post)
         {
             IQueryable<Report> reports = this.Context.Reports.Where(report => report.PostId == post.Id);
             foreach (Report report in reports)
@@ -103,20 +104,20 @@ namespace UniversityMiniinstagram.Database.Repositories
                 this.Context.Reports.Remove(report);
             }
             this.Context.Posts.Remove(post);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
             return;
         }
 
-        public void UpdatePost(Post post)
+        public async Task UpdatePost(Post post)
         {
             this.Context.Posts.Update(post);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
-        public void UpdateComment(Comment comment)
+        public async Task UpdateComment(Comment comment)
         {
             this.Context.Comments.Update(comment);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
         public bool IsCommentReported(Guid commentId, string userId)

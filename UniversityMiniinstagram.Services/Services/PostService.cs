@@ -37,7 +37,7 @@ namespace UniversityMiniinstagram.Services
                     UserId = userId,
                     CategoryPost = vm.CategoryPost
                 };
-                this.PostReposetry.AddPost(newPost);
+                await this.PostReposetry.AddPost(newPost);
                 return newPost;
             }
             return null;
@@ -54,11 +54,11 @@ namespace UniversityMiniinstagram.Services
                 PostId = vm.PostId,
                 User = user
             };
-            this.PostReposetry.AddComment(newComment);
+            await this.PostReposetry.AddComment(newComment);
             return newComment;
         }
 
-        public Like AddLike(Guid postId, string userId)
+        public async Task<Like> AddLike(Guid postId, string userId)
         {
             var newLike = new Like()
             {
@@ -66,7 +66,7 @@ namespace UniversityMiniinstagram.Services
                 PostId = postId,
                 UserId = userId,
             };
-            this.PostReposetry.AddLike(newLike);
+            await this.PostReposetry.AddLike(newLike);
             return newLike;
         }
         public bool IsLiked(Guid postId, string userId)
@@ -75,9 +75,9 @@ namespace UniversityMiniinstagram.Services
             IEnumerable<Like> isLiked = likes.Where(like => like.UserId == userId);
             return isLiked.Count() != 0;
         }
-        public void RemoveLike(Guid postId, string userId, DatabaseContext db = null)
+        public async Task RemoveLike(Guid postId, string userId, DatabaseContext db = null)
         {
-            this.PostReposetry.RemoveLike(postId, userId, db);
+            await this.PostReposetry.RemoveLike(postId, userId, db);
         }
 
         public async Task<ICollection<Post>> GetAllPosts()
@@ -105,23 +105,23 @@ namespace UniversityMiniinstagram.Services
             return comment;
         }
 
-        public void DeletePost(Post post)
+        public async Task DeletePost(Post post)
         {
             for (var i = post.Comments.Count - 1; i >= 0; i--)
             {
-                this.PostReposetry.RemoveComment(post.Comments.ElementAt(i));
+                await this.PostReposetry.RemoveComment(post.Comments.ElementAt(i));
             }
 
             for (var i = post.Likes.Count - 1; i >= 0; i--)
             {
                 Like like = post.Likes.ElementAt(i);
-                this.PostReposetry.RemoveLike(like.PostId, like.UserId);
+                await this.PostReposetry.RemoveLike(like.PostId, like.UserId);
             }
-            this.ImageServices.RemoveImage(post.Image);
+            await this.ImageServices.RemoveImage(post.Image);
             Post ppost = this.PostReposetry.GetPost(post.Id);
             if (ppost != null)
             {
-                this.PostReposetry.DeletePost(ppost);
+                await this.PostReposetry.DeletePost(ppost);
             }
         }
 
@@ -159,13 +159,13 @@ namespace UniversityMiniinstagram.Services
             return post;
         }
 
-        public Guid RemoveComment(Guid commentId)
+        public async Task<Guid> RemoveComment(Guid commentId)
         {
             Comment comment = this.PostReposetry.GetComment(commentId);
             Guid postId = comment.PostId;
             if (comment != null)
             {
-                this.PostReposetry.RemoveComment(comment);
+                await this.PostReposetry.RemoveComment(comment);
                 return postId;
             }
             return new Guid();
@@ -212,7 +212,7 @@ namespace UniversityMiniinstagram.Services
             return !await this.AccountService.IsInRole(isInRolePostHolderVM);
         }
 
-        public bool HidePost(Guid postId)
+        public async Task<bool> HidePost(Guid postId)
         {
             Post post = this.PostReposetry.GetPost(postId);
             if (post == null)
@@ -220,11 +220,11 @@ namespace UniversityMiniinstagram.Services
                 return false;
             }
             post.IsShow = false;
-            this.PostReposetry.UpdatePost(post);
+            await this.PostReposetry.UpdatePost(post);
             return true;
         }
 
-        public bool HideComment(Guid commId)
+        public async Task<bool> HideComment(Guid commId)
         {
             Comment comment = this.PostReposetry.GetComment(commId);
             if (comment == null)
@@ -232,7 +232,7 @@ namespace UniversityMiniinstagram.Services
                 return false;
             }
             comment.IsShow = false;
-            this.PostReposetry.UpdateComment(comment);
+            await this.PostReposetry.UpdateComment(comment);
             return true;
         }
     }

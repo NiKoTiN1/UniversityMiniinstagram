@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
@@ -14,11 +15,11 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
 
         private readonly DatabaseContext Context;
-        public void AddReport(Report report)
+        public async Task AddReport(Report report)
         {
             report.Date = DateTime.Now;
             this.Context.Reports.Add(report);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
 
         public ICollection<Report> GetPostReports()
@@ -39,10 +40,10 @@ namespace UniversityMiniinstagram.Database.Repositories
             return report;
         }
 
-        public void RemoveReport(Report report)
+        public async Task RemoveReport(Report report)
         {
             this.Context.Reports.Remove(report);
-            this.Context.SaveChanges();
+            await this.Context.SaveChangesAsync();
         }
     }
 }

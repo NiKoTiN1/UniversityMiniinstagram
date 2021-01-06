@@ -21,14 +21,14 @@ namespace UniversityMiniinstagram.Services
         private readonly IPostService PostService;
         private readonly IAccountService AccountService;
 
-        public void ReportComment(SendReportViewModel vm)
+        public async Task ReportComment(SendReportViewModel vm)
         {
-            this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
+            await this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
         }
 
-        public void ReportPost(SendReportViewModel vm)
+        public async Task ReportPost(SendReportViewModel vm)
         {
-            this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, UserId = vm.UserId });
+            await this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, UserId = vm.UserId });
         }
 
         public ICollection<Report> GetPostReports()
@@ -47,12 +47,12 @@ namespace UniversityMiniinstagram.Services
             return result;
         }
 
-        public bool RemoveReport(Guid reportId)
+        public async Task<bool> RemoveReport(Guid reportId)
         {
             Report report = this.AdminReposetry.GetReport(reportId);
             if (report != null)
             {
-                this.AdminReposetry.RemoveReport(report);
+                await this.AdminReposetry.RemoveReport(report);
                 return true;
             }
             return false;
@@ -72,7 +72,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsHidePost)
             {
-                var result = this.PostService.HidePost(post.Id);
+                var result = await this.PostService.HidePost(post.Id);
                 if (!result)
                 {
                     return false;
@@ -89,7 +89,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsDeletePost)
             {
-                this.PostService.DeletePost(post);
+                await this.PostService.DeletePost(post);
             }
             return true;
         }
@@ -113,7 +113,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsHidePost)
             {
-                var result = this.PostService.HidePost(post.Id);
+                var result = await this.PostService.HidePost(post.Id);
                 if (!result)
                 {
                     return false;
@@ -121,7 +121,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsHideComment)
             {
-                var result = this.PostService.HideComment(report.CommentId.Value);
+                var result = await this.PostService.HideComment(report.CommentId.Value);
                 if (!result)
                 {
                     return false;
@@ -138,11 +138,11 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsDeleteComment)
             {
-                this.PostService.RemoveComment(report.CommentId.Value);
+                await this.PostService.RemoveComment(report.CommentId.Value);
             }
             if (vm.IsDeletePost)
             {
-                this.PostService.DeletePost(post);
+                await this.PostService.DeletePost(post);
             }
             return true;
         }

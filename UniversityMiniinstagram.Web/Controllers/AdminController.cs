@@ -25,7 +25,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("report/send")]
-        public ActionResult SendReport([FromForm] SendReportViewModel vm)
+        public async Task<ActionResult> SendReport([FromForm] SendReportViewModel vm)
         {
             if (ModelState.IsValid && vm != null)
             {
@@ -36,11 +36,11 @@ namespace UniversityMiniinstagram.Web.Controllers
                 }
                 if (vm.CommentId != new Guid())
                 {
-                    this.AdminService.ReportComment(vm);
+                    await this.AdminService.ReportComment(vm);
                 }
                 else
                 {
-                    this.AdminService.ReportPost(vm);
+                    await this.AdminService.ReportPost(vm);
                 }
             }
             return Ok();
@@ -142,9 +142,9 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
         [Route("pardon")]
-        public IActionResult PardonPost(Guid reportId)
+        public async Task<IActionResult> PardonPost(Guid reportId)
         {
-            var result = this.AdminService.RemoveReport(reportId);
+            var result = await this.AdminService.RemoveReport(reportId);
             return result ? Ok() : (IActionResult)BadRequest();
         }
 

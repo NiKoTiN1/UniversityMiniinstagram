@@ -123,7 +123,7 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
             await this.AccountReposetry.UnBanUser(user);
-            this.AccountReposetry.DeleteSavedRoles(user.Id);
+            await this.AccountReposetry.DeleteSavedRoles(user.Id);
             return true;
         }
 

@@ -134,11 +134,11 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedComment")]
-        public ActionResult RemoveCommentPost([FromForm] Guid commentId)
+        public async Task<ActionResult> RemoveCommentPost([FromForm] Guid commentId)
         {
             if (ModelState.IsValid && commentId != null)
             {
-                Guid postId = this.PostServices.RemoveComment(commentId);
+                Guid postId = await this.PostServices.RemoveComment(commentId);
                 if (postId != new Guid())
                 {
                     return Ok(postId);
@@ -149,7 +149,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addLike")]
-        public IActionResult LikePost([FromForm] Guid postId)
+        public async Task<IActionResult> LikePost([FromForm] Guid postId)
         {
             if (ModelState.IsValid && postId != null)
             {
@@ -159,7 +159,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (!isLiked)
                     {
-                        Database.Models.Like result = this.PostServices.AddLike(postId, userIdClaim.Value);
+                        Database.Models.Like result = await this.PostServices.AddLike(postId, userIdClaim.Value);
                         if (result != null)
                         {
                             return Ok(result);
@@ -172,7 +172,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removeLike")]
-        public IActionResult RemoveLike([FromForm] Guid postId)
+        public async Task<IActionResult> RemoveLike([FromForm] Guid postId)
         {
             if (ModelState.IsValid && postId != null)
             {
@@ -182,7 +182,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (isLiked)
                     {
-                        this.PostServices.RemoveLike(postId, userIdClaim.Value);
+                        await this.PostServices.RemoveLike(postId, userIdClaim.Value);
                         return Ok();
                     }
                 }
@@ -197,7 +197,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (ModelState.IsValid && postId != null)
             {
                 Database.Models.Post post = await this.PostServices.GetPost(postId);
-                this.PostServices.DeletePost(post);
+                await this.PostServices.DeletePost(post);
                 return Ok();
             }
             return Unauthorized();
