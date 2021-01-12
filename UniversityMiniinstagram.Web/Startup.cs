@@ -62,22 +62,22 @@ namespace UniversityMiniinstagram
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
 
-            services.AddTransient<IPostReposetry, PostReposetry>();
+            services.AddTransient<IPostRepository, PostRepository>();
             services.AddTransient<IPostService, PostService>();
 
-            services.AddTransient<IImageReposetry, ImageReposetry>();
+            services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IImageService, ImageService>();
 
-            services.AddTransient<IAccountReposetry, AccountReposetry>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IAccountService, AccountService>();
 
-            services.AddTransient<IAdminReposetry, AdminReposetry>();
+            services.AddTransient<IAdminRepository, AdminRepository>();
             services.AddTransient<IAdminService, AdminService>();
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
-            services.AddTransient<IImageReposetry, ImageReposetry>();
-            services.AddTransient<ILikeReposetry, LikeReposetry>();
-            services.AddTransient<ICommentReposetry, CommentReposetry>();
+            services.AddTransient<IImageRepository, ImageRepository>();
+            services.AddTransient<ILikeRepository, LikeRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 

@@ -5,9 +5,9 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Repositories
 {
-    public class CommentReposetry : BaseReposetry<Comment>, ICommentReposetry
+    public class CommentRepository : BaseRepository<Comment>, ICommentRepository
     {
-        public CommentReposetry(DatabaseContext context)
+        public CommentRepository(DatabaseContext context)
             : base(context)
         {
             this.dbContext = context;

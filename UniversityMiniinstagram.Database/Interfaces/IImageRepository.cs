@@ -2,7 +2,7 @@
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface IImageReposetry : IBaseReposetry<Image>
+    public interface IImageRepository : IBaseRepository<Image>
     {
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
@@ -10,9 +9,9 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Repositories
 {
-    public class AccountReposetry : IAccountReposetry
+    public class AccountRepository : IAccountRepository
     {
-        public AccountReposetry(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, DatabaseContext context)
+        public AccountRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, DatabaseContext context)
         {
             this.UserManager = userManager;
             this.RoleManager = roleManager;
@@ -155,22 +154,27 @@ namespace UniversityMiniinstagram.Database.Repositories
             return roleList;
         }
 
-        public async Task<IList<ApplicationUser>> GetAllUsers()
+        public IList<ApplicationUser> GetAllUsers()
         {
-            List<ApplicationUser> allUsers = await this.UserManager.Users.ToListAsync();
+            var allUsers = this.UserManager.Users.ToList();
             return allUsers;
         }
 
-        public async Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName)
+        public async Task<bool> SetRolesBeforeBan(ApplicationUser user, IEnumerable<string> roleList)
         {
-            IdentityRole role = await this.RoleManager.FindByNameAsync(roleName);
-            var beforeBan = new RolesBeforeBan()
+            var rolesBeforeBan = new List<RolesBeforeBan>();
+            foreach (var roleName in roleList)
             {
-                Id = Guid.NewGuid().ToString(),
-                Role = role,
-                User = user
-            };
-            await this.Context.RolesBeforeBan.AddAsync(beforeBan);
+                IdentityRole role = await this.RoleManager.FindByNameAsync(roleName);
+                rolesBeforeBan.Add(new RolesBeforeBan()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Role = role,
+                    User = user
+                });
+            }
+
+            await this.Context.RolesBeforeBan.AddRangeAsync(rolesBeforeBan);
             await this.Context.SaveChangesAsync();
             return true;
         }
@@ -190,7 +194,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
         public bool IsAdminCreated()
         {
-            return this.RoleManager.Roles.ToList().Count != 0;
+            return this.RoleManager.Roles.Any();
         }
     }
 }

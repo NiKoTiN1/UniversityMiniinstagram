@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface IBaseReposetry<T>
+    public interface IBaseRepository<T>
     {
         public Task Add(T item);
         public Task<T> Get(string Id);

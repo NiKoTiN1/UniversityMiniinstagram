@@ -3,9 +3,9 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Repositories
 {
-    public class ImageReposetry : BaseReposetry<Image>, IImageReposetry
+    public class ImageRepository : BaseRepository<Image>, IImageRepository
     {
-        public ImageReposetry(DatabaseContext context)
+        public ImageRepository(DatabaseContext context)
             : base(context)
         {
             this.Context = context;

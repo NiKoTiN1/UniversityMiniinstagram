@@ -155,7 +155,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = await this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (!isLiked)
                     {
                         Database.Models.Like result = await this.PostServices.AddLike(postId, userIdClaim.Value);
@@ -178,7 +178,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = await this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (isLiked)
                     {
                         await this.PostServices.RemoveLike(postId, userIdClaim.Value);

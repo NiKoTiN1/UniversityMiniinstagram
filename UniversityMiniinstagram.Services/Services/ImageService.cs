@@ -12,13 +12,13 @@ namespace UniversityMiniinstagram.Services
 {
     public class ImageService : IImageService
     {
-        public ImageService(IImageReposetry imageReposetry, IConfiguration configuration)
+        public ImageService(IImageRepository imageReposetry, IConfiguration configuration)
         {
             this.ImageReposetry = imageReposetry;
             Configuration = configuration;
         }
 
-        private readonly IImageReposetry ImageReposetry;
+        private readonly IImageRepository ImageReposetry;
         private IConfiguration Configuration { get; }
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)

@@ -6,9 +6,9 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Repositories
 {
-    public class LikeReposetry : BaseReposetry<Like>, ILikeReposetry
+    public class LikeRepository : BaseRepository<Like>, ILikeRepository
     {
-        public LikeReposetry(DatabaseContext context)
+        public LikeRepository(DatabaseContext context)
             : base(context)
         {
             this.dbContext = context;

@@ -9,7 +9,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
     {
         public Task ReportComment(SendReportViewModel vm);
         public Task ReportPost(SendReportViewModel vm);
-        public Task<ICollection<Report>> GetPostReports();
+        public ICollection<Report> GetPostReports();
         public Task<ICollection<Report>> GetCommentReports();
         public Task<bool> RemoveReport(string reportId);
         public Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm);

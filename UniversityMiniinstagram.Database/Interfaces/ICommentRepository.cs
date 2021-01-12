@@ -3,7 +3,7 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface ICommentReposetry : IBaseReposetry<Comment>
+    public interface ICommentRepository : IBaseRepository<Comment>
     {
         public ICollection<Comment> GetAll(string postId);
         public bool IsCommentReported(string commentId, string userId);

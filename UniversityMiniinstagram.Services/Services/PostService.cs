@@ -12,10 +12,10 @@ namespace UniversityMiniinstagram.Services
     public class PostService : IPostService
     {
         public PostService(IImageService imageServices,
-            IPostReposetry postReposetry,
+            IPostRepository postReposetry,
             IAccountService accountService,
-            ICommentReposetry commentReposetry,
-            ILikeReposetry likeReposetry)
+            ICommentRepository commentReposetry,
+            ILikeRepository likeReposetry)
         {
             this.ImageServices = imageServices;
             this.PostReposetry = postReposetry;
@@ -25,10 +25,10 @@ namespace UniversityMiniinstagram.Services
         }
 
         private readonly IImageService ImageServices;
-        private readonly IPostReposetry PostReposetry;
+        private readonly IPostRepository PostReposetry;
         private readonly IAccountService AccountService;
-        private readonly ICommentReposetry commentReposetry;
-        private readonly ILikeReposetry likeReposetry;
+        private readonly ICommentRepository commentReposetry;
+        private readonly ILikeRepository likeReposetry;
 
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
@@ -79,11 +79,11 @@ namespace UniversityMiniinstagram.Services
             await this.likeReposetry.Add(newLike);
             return newLike;
         }
-        public async Task<bool> IsLiked(string postId, string userId)
+        public bool IsLiked(string postId, string userId)
         {
             ICollection<Like> likes = this.likeReposetry.Get(postId);
             IEnumerable<Like> isLiked = likes.Where(like => like.UserId == userId);
-            return isLiked.Count() != 0;
+            return isLiked.Any();
         }
         public async Task RemoveLike(string postId, string userId)
         {
@@ -111,22 +111,11 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<Comment> GetComment(string commentId)
         {
-            Comment comment = await this.commentReposetry.Get(commentId);
-            return comment;
+            return await this.commentReposetry.Get(commentId);
         }
 
         public async Task DeletePost(Post post)
         {
-            for (var i = post.Comments.Count - 1; i >= 0; i--)
-            {
-                await this.commentReposetry.Remove(post.Comments.ElementAt(i));
-            }
-
-            for (var i = post.Likes.Count - 1; i >= 0; i--)
-            {
-                Like like = post.Likes.ElementAt(i);
-                await this.likeReposetry.Remove(like.PostId, like.UserId);
-            }
             await this.ImageServices.RemoveImage(post.Image);
             Post ppost = await this.PostReposetry.Get(post.Id);
             if (ppost != null)

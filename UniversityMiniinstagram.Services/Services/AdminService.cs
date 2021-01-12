@@ -10,14 +10,14 @@ namespace UniversityMiniinstagram.Services
 {
     public class AdminService : IAdminService
     {
-        public AdminService(IAdminReposetry adminReposetry, IPostService postService, IAccountService accountService)
+        public AdminService(IAdminRepository adminReposetry, IPostService postService, IAccountService accountService)
         {
             this.AdminReposetry = adminReposetry;
             this.PostService = postService;
             this.AccountService = accountService;
         }
 
-        private readonly IAdminReposetry AdminReposetry;
+        private readonly IAdminRepository AdminReposetry;
         private readonly IPostService PostService;
         private readonly IAccountService AccountService;
 
@@ -31,15 +31,15 @@ namespace UniversityMiniinstagram.Services
             await this.AdminReposetry.Add(new Report() { Id = Guid.NewGuid().ToString(), PostId = vm.PostId, UserId = vm.UserId, Date = DateTime.UtcNow });
         }
 
-        public async Task<ICollection<Report>> GetPostReports()
+        public ICollection<Report> GetPostReports()
         {
-            ICollection<Report> result = await this.AdminReposetry.GetPostReports();
+            ICollection<Report> result = this.AdminReposetry.GetPostReports();
             return result;
         }
 
         public async Task<ICollection<Report>> GetCommentReports()
         {
-            ICollection<Report> result = await this.AdminReposetry.GetCommentReports();
+            ICollection<Report> result = this.AdminReposetry.GetCommentReports();
             foreach (Report report in result)
             {
                 report.Comment = await this.PostService.GetComment(report.CommentId);

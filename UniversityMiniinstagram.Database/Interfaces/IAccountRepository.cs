@@ -6,7 +6,7 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface IAccountReposetry
+    public interface IAccountRepository
     {
         public Task<bool> IsExist(string mail);
         public Task<bool> IsInRole(ApplicationUser user, string role);
@@ -26,9 +26,9 @@ namespace UniversityMiniinstagram.Database.Interfaces
         public Task<bool> AddRole(string name);
         public Task<bool> UpdateUser(ApplicationUser oldUser, ApplicationUser user);
         public Task<IList<string>> GetRoleList(ApplicationUser user);
-        public Task<bool> SetRolesBeforeBan(ApplicationUser user, string roleName);
+        public Task<bool> SetRolesBeforeBan(ApplicationUser user, IEnumerable<string> roleList);
         public Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles);
-        public Task<IList<ApplicationUser>> GetAllUsers();
+        public IList<ApplicationUser> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
         public Task DeleteSavedRoles(string userId);
         public bool IsAdminCreated();

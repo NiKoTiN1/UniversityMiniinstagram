@@ -16,7 +16,7 @@ namespace UniversityMiniinstagram.Database
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
-            Database.Migrate();
+            Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,30 @@ namespace UniversityMiniinstagram.Database
                 .HasOne(e => e.Comment)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+            modelBuilder
+                .Entity<Comment>()
+                .HasOne(e => e.Post)
+                .WithMany(e => e.Comments)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Post>()
+                .HasMany(e => e.Comments)
+                .WithOne(e => e.Post)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder
+                .Entity<Like>()
+                .HasOne(e => e.Post)
+                .WithMany(e => e.Likes)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
 
             modelBuilder.Entity<Report>().HasIndex(e => e.PostId).IsUnique(false);
             modelBuilder.Entity<Report>().HasIndex(e => e.CommentId).IsUnique(false);

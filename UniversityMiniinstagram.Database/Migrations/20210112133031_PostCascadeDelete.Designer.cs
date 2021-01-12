@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniversityMiniinstagram.Database;
 
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210112133031_PostCascadeDelete")]
+    partial class PostCascadeDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,6 +241,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PostId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -248,7 +253,11 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("PostId")
+                        .IsUnique()
+                        .HasFilter("[PostId] IS NOT NULL");
+
+                    b.HasIndex("PostId1");
 
                     b.HasIndex("UserId");
 
@@ -282,12 +291,19 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PostId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("PostId")
+                        .IsUnique()
+                        .HasFilter("[PostId] IS NOT NULL");
+
+                    b.HasIndex("PostId1");
 
                     b.HasIndex("UserId");
 
@@ -439,9 +455,13 @@ namespace UniversityMiniinstagram.Database.Migrations
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Comment", b =>
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId")
+                        .WithOne()
+                        .HasForeignKey("UniversityMiniinstagram.Database.Models.Comment", "PostId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("UniversityMiniinstagram.Database.Models.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId1");
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()
@@ -451,9 +471,13 @@ namespace UniversityMiniinstagram.Database.Migrations
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Like", b =>
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
+                        .WithOne()
+                        .HasForeignKey("UniversityMiniinstagram.Database.Models.Like", "PostId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("UniversityMiniinstagram.Database.Models.Post", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId1");
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()

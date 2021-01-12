@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
@@ -11,13 +12,13 @@ namespace UniversityMiniinstagram.Services
 {
     public class AccountService : IAccountService
     {
-        public AccountService(IAccountReposetry accountReposetry, IImageService imageService)
+        public AccountService(IAccountRepository accountReposetry, IImageService imageService)
         {
             this.AccountReposetry = accountReposetry;
             this.ImageService = imageService;
         }
 
-        private readonly IAccountReposetry AccountReposetry;
+        private readonly IAccountRepository AccountReposetry;
         private readonly IImageService ImageService;
 
         public async Task<bool> Register(RegisterViewModel vm)
@@ -98,13 +99,7 @@ namespace UniversityMiniinstagram.Services
                 return true;
             }
             IList<string> roleList = await this.AccountReposetry.GetRoleList(user);
-            foreach (var role in roleList)
-            {
-                if (role != "User")
-                {
-                    await this.AccountReposetry.SetRolesBeforeBan(user, role);
-                }
-            }
+            await this.AccountReposetry.SetRolesBeforeBan(user, roleList.Except(new List<string>() { "User" }));
             var result = await this.AccountReposetry.RemoveRolesFromUser(user, roleList);
             return !result ? false : await this.AccountReposetry.AddRoleToUser(user, "Banned");
         }
@@ -156,7 +151,7 @@ namespace UniversityMiniinstagram.Services
         public async Task<ApplicationUser> GetUser(string userId)
         {
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
-            if (user.AvatarId != null)
+            if (string.IsNullOrEmpty(user.AvatarId))
             {
                 Image image = await this.ImageService.GetImage(user.AvatarId);
                 if (image != null)
@@ -171,25 +166,19 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<ApplicationUser> GetUserByEmail(string email)
         {
-            ApplicationUser user = await this.AccountReposetry.GetUserByEmail(email);
-            return user;
+            return await this.AccountReposetry.GetUserByEmail(email);
         }
 
 
         public async Task<bool> AddRole(string name)
         {
-            var result = await this.AccountReposetry.AddRole(name);
-            return result;
+            return await this.AccountReposetry.AddRole(name);
         }
 
         public async Task<bool> EditProfile(EditProfileViewModel vm)
         {
             Image image = null;
             ApplicationUser Ouser = await this.AccountReposetry.GetUser(vm.UserId);
-            if (vm.File != null)
-            {
-                image = await this.ImageService.Add(vm, vm.WebRootPath);
-            }
             if (vm.Password != null)
             {
                 var res = await this.AccountReposetry.ChangePassword(Ouser, vm.OldPassword, vm.Password);
@@ -197,6 +186,10 @@ namespace UniversityMiniinstagram.Services
                 {
                     return false;
                 }
+            }
+            if (vm.File != null)
+            {
+                image = await this.ImageService.Add(vm, vm.WebRootPath);
             }
             var user = new ApplicationUser()
             {
@@ -211,16 +204,15 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<ICollection<string>> GetUserRoles(ApplicationUser user)
         {
-            IList<string> roleList = await this.AccountReposetry.GetRoleList(user);
-            return roleList;
+            return await this.AccountReposetry.GetRoleList(user);
         }
 
         public async Task<IList<ApplicationUser>> GetAllUsers()
         {
-            IList<ApplicationUser> userList = await this.AccountReposetry.GetAllUsers();
+            IList<ApplicationUser> userList = this.AccountReposetry.GetAllUsers();
             foreach (ApplicationUser user in userList)
             {
-                if (user.AvatarId != null)
+                if (string.IsNullOrEmpty(user.AvatarId))
                 {
                     Image image = await this.ImageService.GetImage(user.AvatarId);
                     if (image != null)
@@ -244,12 +236,8 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> SetNonModerator(ApplicationUser user)
         {
-            var roles = new List<string>
-            {
-                "Moderator"
-            };
-            var result = await this.AccountReposetry.RemoveRolesFromUser(user, roles);
-            return result;
+            var roles = new List<string> { "Moderator" };
+            return await this.AccountReposetry.RemoveRolesFromUser(user, roles);
         }
         public bool IsAdminCreated()
         {

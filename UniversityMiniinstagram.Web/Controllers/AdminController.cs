@@ -53,7 +53,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             var vmList = new List<AdminPostReportsVeiwModel>();
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<Database.Models.Report> reports = await this.AdminService.GetPostReports();
+            ICollection<Database.Models.Report> reports = this.AdminService.GetPostReports();
             foreach (Database.Models.Report report in reports)
             {
                 report.Post = await this.PostService.GetPost(report.PostId);
