@@ -4,9 +4,9 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface IAdminReposetry : IBaseReposetry<Report>
+    public interface ILikeReposetry : IBaseReposetry<Like>
     {
-        public Task<ICollection<Report>> GetPostReports();
-        public Task<ICollection<Report>> GetCommentReports();
+        public new ICollection<Like> Get(string postId);
+        public Task Remove(string postId, string userId);
     }
 }

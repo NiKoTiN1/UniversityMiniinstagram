@@ -23,36 +23,36 @@ namespace UniversityMiniinstagram.Services
 
         public async Task ReportComment(SendReportViewModel vm)
         {
-            await this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), CommentId = vm.CommentId, UserId = vm.UserId });
+            await this.AdminReposetry.Add(new Report() { Id = Guid.NewGuid().ToString(), CommentId = vm.CommentId, UserId = vm.UserId, Date = DateTime.UtcNow });
         }
 
         public async Task ReportPost(SendReportViewModel vm)
         {
-            await this.AdminReposetry.AddReport(new Report() { Id = Guid.NewGuid(), PostId = vm.PostId, UserId = vm.UserId });
+            await this.AdminReposetry.Add(new Report() { Id = Guid.NewGuid().ToString(), PostId = vm.PostId, UserId = vm.UserId, Date = DateTime.UtcNow });
         }
 
-        public ICollection<Report> GetPostReports()
+        public async Task<ICollection<Report>> GetPostReports()
         {
-            ICollection<Report> result = this.AdminReposetry.GetPostReports();
+            ICollection<Report> result = await this.AdminReposetry.GetPostReports();
             return result;
         }
 
-        public ICollection<Report> GetCommentReports()
+        public async Task<ICollection<Report>> GetCommentReports()
         {
-            ICollection<Report> result = this.AdminReposetry.GetCommentReports();
+            ICollection<Report> result = await this.AdminReposetry.GetCommentReports();
             foreach (Report report in result)
             {
-                report.Comment = this.PostService.GetComment(report.CommentId.Value);
+                report.Comment = await this.PostService.GetComment(report.CommentId);
             }
             return result;
         }
 
-        public async Task<bool> RemoveReport(Guid reportId)
+        public async Task<bool> RemoveReport(string reportId)
         {
-            Report report = this.AdminReposetry.GetReport(reportId);
+            Report report = await this.AdminReposetry.Get(reportId);
             if (report != null)
             {
-                await this.AdminReposetry.RemoveReport(report);
+                await this.AdminReposetry.Remove(report);
                 return true;
             }
             return false;
@@ -60,12 +60,12 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
-            Report report = this.AdminReposetry.GetReport(vm.ReportId);
+            Report report = await this.AdminReposetry.Get(vm.ReportId);
             if (report == null)
             {
                 return false;
             }
-            Post post = await this.PostService.GetPost(report.PostId.Value);
+            Post post = await this.PostService.GetPost(report.PostId);
             if (post == null)
             {
                 return false;
@@ -96,12 +96,12 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
-            Report report = this.AdminReposetry.GetReport(vm.ReportId);
+            Report report = await this.AdminReposetry.Get(vm.ReportId);
             if (report == null)
             {
                 return false;
             }
-            Comment comment = this.PostService.GetComment(report.CommentId.Value);
+            Comment comment = await this.PostService.GetComment(report.CommentId);
             if (comment == null)
             {
                 return false;
@@ -121,7 +121,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsHideComment)
             {
-                var result = await this.PostService.HideComment(report.CommentId.Value);
+                var result = await this.PostService.HideComment(report.CommentId);
                 if (!result)
                 {
                     return false;
@@ -138,7 +138,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsDeleteComment)
             {
-                await this.PostService.RemoveComment(report.CommentId.Value);
+                await this.PostService.RemoveComment(report.CommentId);
             }
             if (vm.IsDeletePost)
             {
@@ -148,7 +148,7 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<List<UserRolesViewModel>> GetUsersAndRoles()
         {
-            IList<ApplicationUser> allUsers = this.AccountService.GetAllUsers();
+            IList<ApplicationUser> allUsers = await this.AccountService.GetAllUsers();
             var vmList = new List<UserRolesViewModel>();
             foreach (ApplicationUser user in allUsers)
             {

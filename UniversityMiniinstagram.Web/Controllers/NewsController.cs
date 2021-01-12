@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -97,7 +96,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("getPost")]
-        public async Task<IActionResult> GetPost([FromForm] Guid postId)
+        public async Task<IActionResult> GetPost([FromForm] string postId)
         {
             if (ModelState.IsValid && postId != null)
             {
@@ -134,12 +133,12 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedComment")]
-        public async Task<ActionResult> RemoveCommentPost([FromForm] Guid commentId)
+        public async Task<ActionResult> RemoveCommentPost([FromForm] string commentId)
         {
             if (ModelState.IsValid && commentId != null)
             {
-                Guid postId = await this.PostServices.RemoveComment(commentId);
-                if (postId != new Guid())
+                var postId = await this.PostServices.RemoveComment(commentId);
+                if (postId != null)
                 {
                     return Ok(postId);
                 }
@@ -149,14 +148,14 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addLike")]
-        public async Task<IActionResult> LikePost([FromForm] Guid postId)
+        public async Task<IActionResult> LikePost([FromForm] string postId)
         {
             if (ModelState.IsValid && postId != null)
             {
                 Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    var isLiked = await this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (!isLiked)
                     {
                         Database.Models.Like result = await this.PostServices.AddLike(postId, userIdClaim.Value);
@@ -172,14 +171,14 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removeLike")]
-        public async Task<IActionResult> RemoveLike([FromForm] Guid postId)
+        public async Task<IActionResult> RemoveLike([FromForm] string postId)
         {
             if (ModelState.IsValid && postId != null)
             {
                 Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    var isLiked = this.PostServices.IsLiked(postId, userIdClaim.Value);
+                    var isLiked = await this.PostServices.IsLiked(postId, userIdClaim.Value);
                     if (isLiked)
                     {
                         await this.PostServices.RemoveLike(postId, userIdClaim.Value);
@@ -192,7 +191,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedPost")]
-        public async Task<IActionResult> RemovePost([FromForm] Guid postId)
+        public async Task<IActionResult> RemovePost([FromForm] string postId)
         {
             if (ModelState.IsValid && postId != null)
             {

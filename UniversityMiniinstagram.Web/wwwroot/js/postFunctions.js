@@ -7,7 +7,7 @@
 
     $.ajax({
         type: 'POST',
-        url: '/report/send',
+        url: '/admin/report/send',
         data: { 'PostId': postId, },
         success: function (data) {
             thiselem.remove();

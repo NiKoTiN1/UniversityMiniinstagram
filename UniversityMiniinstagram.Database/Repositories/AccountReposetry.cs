@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
@@ -49,7 +50,7 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<bool> RemoveUser(string id)
         {
-            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id.ToString());
             IdentityResult result = await this.UserManager.DeleteAsync(user);
             return result.Succeeded;
         }
@@ -96,7 +97,7 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<ApplicationUser> GetUser(string id)
         {
-            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id.ToString());
             return user;
         }
 
@@ -154,9 +155,9 @@ namespace UniversityMiniinstagram.Database.Repositories
             return roleList;
         }
 
-        public IList<ApplicationUser> GetAllUsers()
+        public async Task<IList<ApplicationUser>> GetAllUsers()
         {
-            var allUsers = this.UserManager.Users.ToList();
+            List<ApplicationUser> allUsers = await this.UserManager.Users.ToListAsync();
             return allUsers;
         }
 
@@ -165,7 +166,7 @@ namespace UniversityMiniinstagram.Database.Repositories
             IdentityRole role = await this.RoleManager.FindByNameAsync(roleName);
             var beforeBan = new RolesBeforeBan()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Role = role,
                 User = user
             };

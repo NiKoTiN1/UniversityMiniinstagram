@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using UniversityMiniinstagram.Database.Interfaces;
 
 namespace UniversityMiniinstagram.Database.Models
 {
-    public class Post
+    public class Post : IEntity
     {
         [Required]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         [Required]
         public Image Image { get; set; }
-        public Guid ImageId { get; set; }
+        public string ImageId { get; set; }
         [Required]
         public DateTime UploadDate { get; set; }
         public Category CategoryPost { get; set; }

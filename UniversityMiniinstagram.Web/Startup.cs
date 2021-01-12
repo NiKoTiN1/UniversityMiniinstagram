@@ -33,9 +33,8 @@ namespace UniversityMiniinstagram
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>();
@@ -76,6 +75,9 @@ namespace UniversityMiniinstagram
             services.AddTransient<IAdminService, AdminService>();
 
             services.AddTransient<IViewRenderService, ViewRenderService>();
+            services.AddTransient<IImageReposetry, ImageReposetry>();
+            services.AddTransient<ILikeReposetry, LikeReposetry>();
+            services.AddTransient<ICommentReposetry, CommentReposetry>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 

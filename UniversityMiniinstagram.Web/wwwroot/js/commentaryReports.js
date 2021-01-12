@@ -31,7 +31,7 @@ $('.AcceptBtn').click(function () {
     var delCommId = '#DeleteComment' + accBtn;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/admin/comment/decision")',
+        url: '/admin/comment/decision',
         data: {
             'ReportId': accBtn,
             'IsBanUser': $(banId).is(':checked'),

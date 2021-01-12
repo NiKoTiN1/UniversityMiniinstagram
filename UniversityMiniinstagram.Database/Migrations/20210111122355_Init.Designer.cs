@@ -10,8 +10,8 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20201221121040_TableNamesChanges")]
-    partial class TableNamesChanges
+    [Migration("20210111122355_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -160,8 +160,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("AvatarId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("AvatarId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -227,9 +227,8 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Comment", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -237,8 +236,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -258,9 +257,8 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Image", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Path")
                         .IsRequired()
@@ -276,12 +274,11 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Like", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -297,9 +294,8 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Post", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CategoryPost")
                         .HasColumnType("int");
@@ -307,8 +303,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ImageId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ImageId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
@@ -330,18 +327,17 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Report", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("CommentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CommentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -359,9 +355,8 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.RolesBeforeBan", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -440,9 +435,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()
@@ -453,9 +446,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
                         .WithMany("Likes")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()

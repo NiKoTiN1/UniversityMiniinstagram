@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -26,7 +25,7 @@ namespace UniversityMiniinstagram.Services
         {
             if (vm.File != null)
             {
-                var imageGuid = Guid.NewGuid();
+                var imageGuid = Guid.NewGuid().ToString();
                 var ext = vm.File.FileName.Split(".").Last();
                 var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + ext;
 
@@ -40,7 +39,7 @@ namespace UniversityMiniinstagram.Services
                     Path = path,
                     UploadDate = DateTime.Now,
                 };
-                await this.ImageReposetry.AddImage(image);
+                await this.ImageReposetry.Add(image);
                 return image;
             }
             else
@@ -49,19 +48,19 @@ namespace UniversityMiniinstagram.Services
             }
         }
 
-        public Image GetImage(Guid imageId)
+        public async Task<Image> GetImage(string imageId)
         {
-            Image image = this.ImageReposetry.GetImage(imageId);
+            Image image = await this.ImageReposetry.Get(imageId);
             return image;
         }
 
-        public async Task RemoveImage(Image image, DatabaseContext db = null)
+        public async Task RemoveImage(Image image)
         {
             if (File.Exists("wwwroot/" + image.Path))
             {
                 File.Delete("wwwroot/" + image.Path);
             }
-            await this.ImageReposetry.RemoveImage(image, db);
+            await this.ImageReposetry.Remove(image);
         }
     }
 }

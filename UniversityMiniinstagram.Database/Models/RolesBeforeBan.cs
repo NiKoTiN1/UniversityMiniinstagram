@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-
+using UniversityMiniinstagram.Database.Interfaces;
 
 namespace UniversityMiniinstagram.Database.Models
 {
-    public class RolesBeforeBan
+    public class RolesBeforeBan : IEntity
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public IdentityRole Role { get; set; }

@@ -158,7 +158,7 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
             if (user.AvatarId != null)
             {
-                Image image = this.ImageService.GetImage(user.AvatarId.Value);
+                Image image = await this.ImageService.GetImage(user.AvatarId);
                 if (image != null)
                 {
                     user.Avatar = image;
@@ -185,7 +185,7 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> EditProfile(EditProfileViewModel vm)
         {
             Image image = null;
-            ApplicationUser Ouser = await this.AccountReposetry.GetUser(vm.Userid);
+            ApplicationUser Ouser = await this.AccountReposetry.GetUser(vm.UserId);
             if (vm.File != null)
             {
                 image = await this.ImageService.Add(vm, vm.WebRootPath);
@@ -200,7 +200,7 @@ namespace UniversityMiniinstagram.Services
             }
             var user = new ApplicationUser()
             {
-                Id = vm.Userid,
+                Id = vm.UserId,
                 Avatar = image,
                 Description = vm.Description,
                 UserName = vm.Username
@@ -215,14 +215,14 @@ namespace UniversityMiniinstagram.Services
             return roleList;
         }
 
-        public IList<ApplicationUser> GetAllUsers()
+        public async Task<IList<ApplicationUser>> GetAllUsers()
         {
-            IList<ApplicationUser> userList = this.AccountReposetry.GetAllUsers();
+            IList<ApplicationUser> userList = await this.AccountReposetry.GetAllUsers();
             foreach (ApplicationUser user in userList)
             {
                 if (user.AvatarId != null)
                 {
-                    Image image = this.ImageService.GetImage(user.AvatarId.Value);
+                    Image image = await this.ImageService.GetImage(user.AvatarId);
                     if (image != null)
                     {
                         user.Avatar = image;

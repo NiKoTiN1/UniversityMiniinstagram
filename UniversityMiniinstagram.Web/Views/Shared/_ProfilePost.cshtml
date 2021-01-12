@@ -34,7 +34,7 @@
             <hr style="width:95%;text-align:left;margin-left:0; color:black;border-top: 1px solid rgba(0,0,0);">
         </div>
         @{
-            var commArea = Model.Post.Id.ToString() + "content";
+            var commArea = Model.Post.Id + "content";
         }
         <div id="@commArea" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
             @foreach (var commentVm in Model.CommentVM)
@@ -72,7 +72,7 @@
                 <input type="button" value="@Model.Post.Id" hidden="hidden" class="Like">
             </label>
             @{
-                var textId = Model.Post.Id.ToString() + "text";
+                var textId = Model.Post.Id + "text";
             }
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">

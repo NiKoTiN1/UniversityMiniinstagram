@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Views;
 
@@ -21,7 +21,7 @@ namespace UniversityMiniinstagram.Web.Hubs
         private readonly IViewRenderService RenderService;
         private readonly IPostService PostService;
 
-        public async Task SendMessage(Guid postId, string text)
+        public async Task SendMessage(string postId, string text)
         {
             if (text != "" && text != "" && text != " ")
             {
@@ -31,7 +31,7 @@ namespace UniversityMiniinstagram.Web.Hubs
                     Text = text
                 };
                 Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                Database.Models.Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
+                Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
 
                 var commentViewModel = new CommentViewModel()
                 {

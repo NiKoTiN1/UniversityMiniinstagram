@@ -6,7 +6,7 @@
     var commentBtnId = '#' + label + 'Button';
     $.ajax({
         type: 'POST',
-        url: '/report/send',
+        url: '/admin/report/send',
         data: { 'CommentId': label },
         success: function (data) {
             elem.remove();

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniversityMiniinstagram.Database;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -12,16 +11,24 @@ namespace UniversityMiniinstagram.Services
 {
     public class PostService : IPostService
     {
-        public PostService(IImageService imageServices, IPostReposetry postReposetry, IAccountService accountService)
+        public PostService(IImageService imageServices,
+            IPostReposetry postReposetry,
+            IAccountService accountService,
+            ICommentReposetry commentReposetry,
+            ILikeReposetry likeReposetry)
         {
             this.ImageServices = imageServices;
             this.PostReposetry = postReposetry;
             this.AccountService = accountService;
+            this.commentReposetry = commentReposetry;
+            this.likeReposetry = likeReposetry;
         }
 
         private readonly IImageService ImageServices;
         private readonly IPostReposetry PostReposetry;
         private readonly IAccountService AccountService;
+        private readonly ICommentReposetry commentReposetry;
+        private readonly ILikeReposetry likeReposetry;
 
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
@@ -30,14 +37,15 @@ namespace UniversityMiniinstagram.Services
             {
                 var newPost = new Post()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.NewGuid().ToString(),
                     Description = vm.Description,
                     Image = image,
                     UploadDate = DateTime.Now,
                     UserId = userId,
-                    CategoryPost = vm.CategoryPost
+                    CategoryPost = vm.CategoryPost,
+                    IsShow = true
                 };
-                await this.PostReposetry.AddPost(newPost);
+                await this.PostReposetry.Add(newPost);
                 return newPost;
             }
             return null;
@@ -48,60 +56,62 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser user = await this.AccountService.GetUser(userId);
             var newComment = new Comment()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 Text = vm.Text,
                 UserId = userId,
                 PostId = vm.PostId,
-                User = user
+                User = user,
+                IsShow = true,
+                Date = DateTime.UtcNow
             };
-            await this.PostReposetry.AddComment(newComment);
+            await this.commentReposetry.Add(newComment);
             return newComment;
         }
 
-        public async Task<Like> AddLike(Guid postId, string userId)
+        public async Task<Like> AddLike(string postId, string userId)
         {
             var newLike = new Like()
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 PostId = postId,
                 UserId = userId,
             };
-            await this.PostReposetry.AddLike(newLike);
+            await this.likeReposetry.Add(newLike);
             return newLike;
         }
-        public bool IsLiked(Guid postId, string userId)
+        public async Task<bool> IsLiked(string postId, string userId)
         {
-            ICollection<Like> likes = this.PostReposetry.GetLikes(postId);
+            ICollection<Like> likes = this.likeReposetry.Get(postId);
             IEnumerable<Like> isLiked = likes.Where(like => like.UserId == userId);
             return isLiked.Count() != 0;
         }
-        public async Task RemoveLike(Guid postId, string userId, DatabaseContext db = null)
+        public async Task RemoveLike(string postId, string userId)
         {
-            await this.PostReposetry.RemoveLike(postId, userId, db);
+            await this.likeReposetry.Remove(postId, userId);
         }
 
         public async Task<ICollection<Post>> GetAllPosts()
         {
-            ICollection<Post> posts = this.PostReposetry.GetAllPosts();
+            ICollection<Post> posts = await this.PostReposetry.GetAll();
             foreach (Post post in posts)
             {
-                ICollection<Like> likes = this.PostReposetry.GetLikes(post.Id);
-                ICollection<Comment> coments = this.PostReposetry.GetComments(post.Id);
+                ICollection<Like> likes = this.likeReposetry.Get(post.Id);
+                ICollection<Comment> coments = this.commentReposetry.GetAll(post.Id);
                 foreach (Comment comment in coments)
                 {
                     comment.User = await this.AccountService.GetUser(comment.UserId);
                 }
                 post.Likes = likes;
-                post.Image = this.ImageServices.GetImage(post.ImageId);
+                post.Image = await this.ImageServices.GetImage(post.ImageId);
                 post.Comments = coments;
                 post.User = await this.AccountService.GetUser(post.UserId);
             }
             return posts.ToList();
         }
 
-        public Comment GetComment(Guid commentId)
+        public async Task<Comment> GetComment(string commentId)
         {
-            Comment comment = this.PostReposetry.GetComment(commentId);
+            Comment comment = await this.commentReposetry.Get(commentId);
             return comment;
         }
 
@@ -109,44 +119,44 @@ namespace UniversityMiniinstagram.Services
         {
             for (var i = post.Comments.Count - 1; i >= 0; i--)
             {
-                await this.PostReposetry.RemoveComment(post.Comments.ElementAt(i));
+                await this.commentReposetry.Remove(post.Comments.ElementAt(i));
             }
 
             for (var i = post.Likes.Count - 1; i >= 0; i--)
             {
                 Like like = post.Likes.ElementAt(i);
-                await this.PostReposetry.RemoveLike(like.PostId, like.UserId);
+                await this.likeReposetry.Remove(like.PostId, like.UserId);
             }
             await this.ImageServices.RemoveImage(post.Image);
-            Post ppost = this.PostReposetry.GetPost(post.Id);
+            Post ppost = await this.PostReposetry.Get(post.Id);
             if (ppost != null)
             {
-                await this.PostReposetry.DeletePost(ppost);
+                await this.PostReposetry.Remove(ppost);
             }
         }
 
-        public ICollection<Post> GetUserPosts(string userId)
+        public async Task<ICollection<Post>> GetUserPosts(string userId)
         {
             ICollection<Post> userPosts = this.PostReposetry.GetUserPosts(userId);
             foreach (Post post in userPosts)
             {
-                post.Image = this.ImageServices.GetImage(post.ImageId);
+                post.Image = await this.ImageServices.GetImage(post.ImageId);
             }
             return userPosts;
         }
 
-        public async Task<Post> GetPost(Guid postId)
+        public async Task<Post> GetPost(string postId)
         {
-            Post post = this.PostReposetry.GetPost(postId);
+            Post post = await this.PostReposetry.Get(postId);
             if (post != null)
             {
-                Image image = this.ImageServices.GetImage(post.ImageId);
+                Image image = await this.ImageServices.GetImage(post.ImageId);
                 if (image != null)
                 {
                     post.Image = image;
                 }
-                ICollection<Like> likes = this.PostReposetry.GetLikes(postId);
-                ICollection<Comment> comments = this.PostReposetry.GetComments(postId);
+                ICollection<Like> likes = this.likeReposetry.Get(postId);
+                ICollection<Comment> comments = this.commentReposetry.GetAll(postId);
                 foreach (Comment comment in comments)
                 {
                     comment.User = await this.AccountService.GetUser(comment.UserId);
@@ -159,16 +169,16 @@ namespace UniversityMiniinstagram.Services
             return post;
         }
 
-        public async Task<Guid> RemoveComment(Guid commentId)
+        public async Task<string> RemoveComment(string commentId)
         {
-            Comment comment = this.PostReposetry.GetComment(commentId);
-            Guid postId = comment.PostId;
+            Comment comment = await this.commentReposetry.Get(commentId);
+            var postId = comment.PostId;
             if (comment != null)
             {
-                await this.PostReposetry.RemoveComment(comment);
+                await this.commentReposetry.Remove(comment);
                 return postId;
             }
-            return new Guid();
+            return null;
         }
         public async Task<bool> IsDeleteRelated(ApplicationUser postHolder, string guestId)
         {
@@ -183,22 +193,22 @@ namespace UniversityMiniinstagram.Services
                 ? !await this.AccountService.IsInRole(new IsInRoleViewModel() { User = guest, RoleName = "Admin" })
                 : false;
         }
-        public async Task<bool> IsReportRelated(string postHolderId, string guestId, Guid postId = new Guid(), Guid commentId = new Guid())
+        public async Task<bool> IsReportRelated(string postHolderId, string guestId, string postId = null, string commentId = null)
         {
             if (postHolderId == guestId)
             {
                 return false;
             }
-            if (postId != new Guid())
+            if (postId != null)
             {
                 if (this.PostReposetry.IsPostReported(postId, guestId))
                 {
                     return false;
                 }
             }
-            if (commentId != new Guid())
+            if (commentId != null)
             {
-                if (this.PostReposetry.IsCommentReported(commentId, guestId))
+                if (this.commentReposetry.IsCommentReported(commentId, guestId))
                 {
                     return false;
                 }
@@ -212,27 +222,27 @@ namespace UniversityMiniinstagram.Services
             return !await this.AccountService.IsInRole(isInRolePostHolderVM);
         }
 
-        public async Task<bool> HidePost(Guid postId)
+        public async Task<bool> HidePost(string postId)
         {
-            Post post = this.PostReposetry.GetPost(postId);
+            Post post = await this.PostReposetry.Get(postId);
             if (post == null)
             {
                 return false;
             }
             post.IsShow = false;
-            await this.PostReposetry.UpdatePost(post);
+            await this.PostReposetry.Update(post);
             return true;
         }
 
-        public async Task<bool> HideComment(Guid commId)
+        public async Task<bool> HideComment(string commId)
         {
-            Comment comment = this.PostReposetry.GetComment(commId);
+            Comment comment = await this.commentReposetry.Get(commId);
             if (comment == null)
             {
                 return false;
             }
             comment.IsShow = false;
-            await this.PostReposetry.UpdateComment(comment);
+            await this.commentReposetry.Update(comment);
             return true;
         }
     }

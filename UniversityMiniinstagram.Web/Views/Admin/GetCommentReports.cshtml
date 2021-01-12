@@ -33,11 +33,11 @@
     <div id="accordion">
         @foreach (var elem in Model)
         {
-            var reportId = "Main" + elem.Report.Id.ToString();
+            var reportId = "Main" + elem.Report.Id;
             <div id="@reportId" class="card">
                 @{
-                    var heading = elem.Report.Id.ToString() + "Heading";
-                    var postIddd = "PostCollapse" + elem.Report.Id.ToString();
+                    var heading = elem.Report.Id + "Heading";
+                    var postIddd = "PostCollapse" + elem.Report.Id;
 
                 }
                 <div class="card-header" id="@heading">
@@ -70,12 +70,12 @@
                                                 <input class="form-control mb-2" name="Category" readonly="readonly" value="@elem.Report.Post.CategoryPost">
                                                 <textarea type="text" name="Description" id="Description" readonly="readonly" style="resize: none;" class="form-control mb-2">@elem.Report.Post.Description</textarea>
                                                 @{
-                                                    var commArea = elem.Report.Post.Id.ToString() + "commAreaa";
+                                                    var commArea = elem.Report.Post.Id + "commAreaa";
                                                 }
                                                 <div id="@commArea">
                                                     <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                                                     @{
-                                                        var contentId = elem.Report.Post.Id.ToString() + "content";
+                                                        var contentId = elem.Report.Post.Id + "content";
                                                         ViewBag.contentId = contentId;
                                                     }
                                                     <div id="@ViewBag.contentId">
@@ -88,13 +88,13 @@
                                             </div>
                                         </div>
                                         @{
-                                            var banID = "Ban" + elem.Report.Id.ToString();
-                                            var delPostID = "DeleteBBtn" + elem.Report.Id.ToString();
-                                            var hidePostId = "Hide" + elem.Report.Id.ToString();
-                                            var pardonId = "Pardon" + elem.Report.Id.ToString();
-                                            var acceptId = "Accept" + elem.Report.Id.ToString();
-                                            var hideCommentId = "HideCommnet" + elem.Report.Id.ToString();
-                                            var deleteCommentId = "DeleteComment" + elem.Report.Id.ToString();
+                                            var banID = "Ban" + elem.Report.Id;
+                                            var delPostID = "DeleteBBtn" + elem.Report.Id;
+                                            var hidePostId = "Hide" + elem.Report.Id;
+                                            var pardonId = "Pardon" + elem.Report.Id;
+                                            var acceptId = "Accept" + elem.Report.Id;
+                                            var hideCommentId = "HideCommnet" + elem.Report.Id;
+                                            var deleteCommentId = "DeleteComment" + elem.Report.Id;
 
                                         }
                                         <div class="col-5">

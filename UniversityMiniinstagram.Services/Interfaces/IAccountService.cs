@@ -26,7 +26,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> SetBanRole(ApplicationUser user);
         public Task<ICollection<string>> GetUserRoles(ApplicationUser user);
         public Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info);
-        public IList<ApplicationUser> GetAllUsers();
+        public Task<IList<ApplicationUser>> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
         public Task<bool> SetModerator(ApplicationUser user);
         public Task<bool> SetNonModerator(ApplicationUser user);

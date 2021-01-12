@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -34,7 +33,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 {
                     vm.UserId = userIdClaim.Value;
                 }
-                if (vm.CommentId != new Guid())
+                if (vm.CommentId != null)
                 {
                     await this.AdminService.ReportComment(vm);
                 }
@@ -54,10 +53,10 @@ namespace UniversityMiniinstagram.Web.Controllers
             var vmList = new List<AdminPostReportsVeiwModel>();
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<Database.Models.Report> reports = this.AdminService.GetPostReports();
+            ICollection<Database.Models.Report> reports = await this.AdminService.GetPostReports();
             foreach (Database.Models.Report report in reports)
             {
-                report.Post = await this.PostService.GetPost(report.PostId.Value);
+                report.Post = await this.PostService.GetPost(report.PostId);
                 if (report.Post.UserId != userIdClaim.Value)
                 {
                     var vm = new AdminPostReportsVeiwModel
@@ -90,7 +89,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             var vmList = new List<AdminPostReportsVeiwModel>();
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<Database.Models.Report> reports = this.AdminService.GetCommentReports();
+            ICollection<Database.Models.Report> reports = await this.AdminService.GetCommentReports();
             foreach (Database.Models.Report report in reports)
             {
                 report.Post = await this.PostService.GetPost(report.Comment.PostId);
@@ -142,7 +141,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
         [Route("pardon")]
-        public async Task<IActionResult> PardonPost(Guid reportId)
+        public async Task<IActionResult> PardonPost(string reportId)
         {
             var result = await this.AdminService.RemoveReport(reportId);
             return result ? Ok() : (IActionResult)BadRequest();

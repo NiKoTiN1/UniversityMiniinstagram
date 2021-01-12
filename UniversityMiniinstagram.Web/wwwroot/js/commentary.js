@@ -19,7 +19,6 @@ connection.on("SendCommentHub", function (data, postId, commentId) {
 });
 
 $('.SendComment').click(function () {
-    var div = $(this).parent().parent().children(1);
     var postId = $(this).attr("value");
     var textId = '#' + postId + 'text';
     var text = $(textId).val();

@@ -23,11 +23,53 @@ namespace UniversityMiniinstagram.Database
             base.OnModelCreating(modelBuilder);
             modelBuilder
                 .Entity<Report>()
-                .HasOne<Post>(e => e.Post)
+                .HasOne(e => e.Post)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder
+                .Entity<Report>()
+                .HasOne(e => e.Comment)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Report>().HasIndex(e => e.PostId).IsUnique(false);
             modelBuilder.Entity<Report>().HasIndex(e => e.CommentId).IsUnique(false);
+
+            modelBuilder
+                .Entity<Image>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<Post>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<ApplicationUser>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<Comment>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<Like>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<Report>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder
+                .Entity<RolesBeforeBan>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

@@ -58,13 +58,13 @@
                                 <input type="button" value="@post.Post.Id" hidden="hidden" class="Comment">
                                 <a value="0" hidden></a>
                                 @{
-                                    var countComm = post.Post.Id.ToString() + "count";
-                                    var postReportId = post.Post.Id.ToString() + "PostReport";
+                                    var countComm = post.Post.Id + "count";
+                                    var postReportId = post.Post.Id + "PostReport";
                                     <a id="@countComm" class="mr-2">@post.CommentVM.Count</a>
                                 }
                             </label>
                             @{
-                                var btnId = post.Post.Id.ToString() + "PostBtn";
+                                var btnId = post.Post.Id + "PostBtn";
                             }
                             @if (post.IsDeleteRelated || post.IsReportRelated)
                             {
@@ -91,12 +91,12 @@
                         </div>
 
                         @{
-                            var commArea = post.Post.Id.ToString() + "commAreaa";
+                            var commArea = post.Post.Id + "commAreaa";
                         }
                         <div id="@commArea" style="display:none;">
                             <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                             @{
-                                var contentId = post.Post.Id.ToString() + "content";
+                                var contentId = post.Post.Id + "content";
                                 ViewBag.contentId = contentId;
                             }
                             <div id="@ViewBag.contentId">
@@ -109,7 +109,7 @@
                             <div class="chat-module-bottom">
                                 <form class="customRow row">
                                     @{
-                                        var textId = post.Post.Id.ToString() + "text";
+                                        var textId = post.Post.Id + "text";
                                         ViewBag.textId = textId;
                                     }
                                     <textarea id="@ViewBag.textId" class="form-control col ml-2" placeholder="@VLocalizer["Comment"]" rows="1" style="resize: none;"></textarea>

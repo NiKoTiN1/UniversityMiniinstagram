@@ -40,7 +40,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (userIdClaim != null)
             {
                 ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
-                System.Collections.Generic.ICollection<Post> posts = this.PostService.GetUserPosts(user.Id);
+                System.Collections.Generic.ICollection<Post> posts = await this.PostService.GetUserPosts(user.Id);
                 user.Posts = posts;
                 ViewBag.isAdmin = true;
                 return View(user);
@@ -189,7 +189,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 return Unauthorized();
             }
-            vm.Userid = userIdClaim.Value;
+            vm.UserId = userIdClaim.Value;
             if (ModelState.IsValid && vm.Username != null)
             {
                 if (vm.Password != null)

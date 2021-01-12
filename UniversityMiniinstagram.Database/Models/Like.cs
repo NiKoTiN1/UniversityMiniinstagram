@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using UniversityMiniinstagram.Database.Interfaces;
 
 namespace UniversityMiniinstagram.Database.Models
 {
-    public class Like
+    public class Like : IEntity
     {
         [Required]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public Post Post { get; set; }
-        public Guid PostId { get; set; }
+        public string PostId { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@inject IViewLocalizer VLocalizer
 @model CommentViewModel
 @{
-    var contentId = Model.Comment.Id.ToString() + "content";
+    var contentId = Model.Comment.Id + "content";
     string color;
 }
 @if (Model.ShowReportColor)
@@ -49,7 +49,7 @@ else
                 <p style="margin-bottom: 4px;">@Model.Comment.Text</p>
             </div>
             @{
-                var dateId = "Date" + Model.Comment.Id.ToString();
+                var dateId = "Date" + Model.Comment.Id;
             }
             <p id="@dateId" class="DateElem" style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
         </div>

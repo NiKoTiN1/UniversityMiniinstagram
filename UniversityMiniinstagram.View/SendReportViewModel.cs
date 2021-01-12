@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace UniversityMiniinstagram.Views
+﻿namespace UniversityMiniinstagram.Views
 {
     public class SendReportViewModel
     {
         public string UserId { get; set; }
-        public Guid PostId { get; set; }
-        public Guid CommentId { get; set; }
+        public string PostId { get; set; }
+        public string CommentId { get; set; }
     }
 }

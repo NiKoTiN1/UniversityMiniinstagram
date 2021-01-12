@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
@@ -7,43 +7,26 @@ using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database.Repositories
 {
-    public class AdminReposetry : IAdminReposetry
+    public class AdminReposetry : BaseReposetry<Report>, IAdminReposetry
     {
         public AdminReposetry(DatabaseContext context)
+            : base(context)
         {
             this.Context = context;
         }
 
         private readonly DatabaseContext Context;
-        public async Task AddReport(Report report)
-        {
-            report.Date = DateTime.Now;
-            this.Context.Reports.Add(report);
-            await this.Context.SaveChangesAsync();
-        }
 
-        public ICollection<Report> GetPostReports()
+        public async Task<ICollection<Report>> GetPostReports()
         {
-            var result = this.Context.Reports.Where(report => report.PostId != null).OrderBy(report => report.Date).ToList();
+            List<Report> result = await this.Context.Reports.Where(report => report.PostId != null).OrderBy(report => report.Date).ToListAsync();
             return result;
         }
 
-        public ICollection<Report> GetCommentReports()
+        public async Task<ICollection<Report>> GetCommentReports()
         {
-            var result = this.Context.Reports.Where(report => report.CommentId != null).OrderBy(report => report.Date).ToList();
+            List<Report> result = await this.Context.Reports.Where(report => report.CommentId != null).OrderBy(report => report.Date).ToListAsync();
             return result;
-        }
-
-        public Report GetReport(Guid reportId)
-        {
-            Report report = this.Context.Reports.FirstOrDefault(report => report.Id == reportId);
-            return report;
-        }
-
-        public async Task RemoveReport(Report report)
-        {
-            this.Context.Reports.Remove(report);
-            await this.Context.SaveChangesAsync();
         }
     }
 }

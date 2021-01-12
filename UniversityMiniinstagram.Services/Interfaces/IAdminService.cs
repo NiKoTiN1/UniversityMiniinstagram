@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Views;
@@ -10,9 +9,9 @@ namespace UniversityMiniinstagram.Services.Interfaces
     {
         public Task ReportComment(SendReportViewModel vm);
         public Task ReportPost(SendReportViewModel vm);
-        public ICollection<Report> GetPostReports();
-        public ICollection<Report> GetCommentReports();
-        public Task<bool> RemoveReport(Guid reportId);
+        public Task<ICollection<Report>> GetPostReports();
+        public Task<ICollection<Report>> GetCommentReports();
+        public Task<bool> RemoveReport(string reportId);
         public Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm);
         public Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm);
         public Task<List<UserRolesViewModel>> GetUsersAndRoles();

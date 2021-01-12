@@ -25,7 +25,7 @@ $('.AcceptBtn').click(function () {
     var hideId = '#Hide' + accBtn;
     $.ajax({
         type: 'POST',
-        url: '@Url.Content("~/admin/post/decision")',
+        url: '/admin/post/decision',
         data: {
             'ReportId': accBtn,
             'IsBanUser': $(banId).is(':checked'),

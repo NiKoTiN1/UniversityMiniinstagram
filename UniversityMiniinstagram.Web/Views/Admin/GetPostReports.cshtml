@@ -34,11 +34,11 @@
     <div id="accordion">
         @foreach (var elem in Model)
         {
-            var reportId = "Main" + elem.Report.Id.ToString();
+            var reportId = "Main" + elem.Report.Id;
             <div id="@reportId" class="card">
                 @{
-                    var heading = elem.Report.Id.ToString() + "Heading";
-                    var postIddd = "PostCollapse" + elem.Report.Id.ToString();
+                    var heading = elem.Report.Id + "Heading";
+                    var postIddd = "PostCollapse" + elem.Report.Id;
 
                 }
                 <div class="card-header" id="@heading">
@@ -106,20 +106,20 @@
                                                         <input type="button" value="@elem.Report.Post.Id" hidden="hidden" class="Comment">
                                                         <a value="0" hidden></a>
                                                         @{
-                                                            var countComm = elem.Report.Post.Id.ToString() + "count";
-                                                            var postReportId = elem.Report.Post.Id.ToString() + "PostReport";
+                                                            var countComm = elem.Report.Post.Id + "count";
+                                                            var postReportId = elem.Report.Post.Id + "PostReport";
                                                             <a id="@countComm" class="mr-2">@elem.Report.Post.Comments.Count</a>
                                                         }
                                                     </label>
                                                 </div>
 
                                                 @{
-                                                    var commArea = elem.Report.Post.Id.ToString() + "commAreaa";
+                                                    var commArea = elem.Report.Post.Id + "commAreaa";
                                                 }
                                                 <div id="@commArea" style="display:none;">
                                                     <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                                                     @{
-                                                        var contentId = elem.Report.Post.Id.ToString() + "content";
+                                                        var contentId = elem.Report.Post.Id + "content";
                                                         ViewBag.contentId = contentId;
                                                     }
                                                     <div id="@ViewBag.contentId">
@@ -132,11 +132,11 @@
                                             </div>
                                         </div>
                                         @{
-                                            var banID = "Ban" + elem.Report.Id.ToString();
-                                            var delPostID = "DeleteBBtn" + elem.Report.Id.ToString();
-                                            var hidePostId = "Hide" + elem.Report.Id.ToString();
-                                            var pardonId = "Pardon" + elem.Report.Id.ToString();
-                                            var acceptId = "Accept" + elem.Report.Id.ToString();
+                                            var banID = "Ban" + elem.Report.Id;
+                                            var delPostID = "DeleteBBtn" + elem.Report.Id;
+                                            var hidePostId = "Hide" + elem.Report.Id;
+                                            var pardonId = "Pardon" + elem.Report.Id;
+                                            var acceptId = "Accept" + elem.Report.Id;
 
                                         }
                                         <div class="col-5">

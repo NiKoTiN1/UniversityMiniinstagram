@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UniversityMiniinstagram.Database.Migrations
 {
-    public partial class TableNamesChanges : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,7 +25,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "Images",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Path = table.Column<string>(nullable: false),
                     UploadDate = table.Column<DateTime>(nullable: false)
                 },
@@ -75,7 +75,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    AvatarId = table.Column<Guid>(nullable: true)
+                    AvatarId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -177,8 +177,8 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    ImageId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
+                    ImageId = table.Column<string>(nullable: false),
                     UploadDate = table.Column<DateTime>(nullable: false),
                     CategoryPost = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
@@ -206,7 +206,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "RolesBeforeBan",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
                     RoleId = table.Column<string>(nullable: true)
                 },
@@ -231,10 +231,10 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     Text = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: false),
+                    PostId = table.Column<string>(nullable: true),
                     IsShow = table.Column<bool>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false)
                 },
@@ -246,7 +246,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -259,9 +259,9 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "Likes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: false)
+                    PostId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -271,7 +271,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Likes_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -284,10 +284,10 @@ namespace UniversityMiniinstagram.Database.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    CommentId = table.Column<Guid>(nullable: true),
-                    PostId = table.Column<Guid>(nullable: true),
+                    CommentId = table.Column<string>(nullable: true),
+                    PostId = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
