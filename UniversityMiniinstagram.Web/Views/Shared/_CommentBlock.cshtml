@@ -21,7 +21,7 @@ else
                     @{
                         var buttonId = Model.Comment.Id + "Button";
                     }
-                    @if (Model.IsReportRelated || Model.IsDeleteRelated)
+                    @if (Model.IsReportAllowed || Model.IsDeleteAllowed)
                     {
                         <button class="btn" type="button" id="@buttonId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="box-shadow: none;">
                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -34,11 +34,11 @@ else
                             var deleteId = Model.Comment.Id + "Delete";
                             var reportId = Model.Comment.Id + "Report";
                         }
-                        @if (Model.IsDeleteRelated)
+                        @if (Model.IsDeleteAllowed)
                         {
                             <a class="dropdown-item dropdownDel" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
                         }
-                        @if (Model.IsReportRelated)
+                        @if (Model.IsReportAllowed)
                         {
                             <a class="dropdown-item dropdownRep" id="@reportId">@VLocalizer["ReportBtn"]</a>
                         }

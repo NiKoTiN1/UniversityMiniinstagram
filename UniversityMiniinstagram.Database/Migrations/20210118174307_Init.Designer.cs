@@ -10,7 +10,7 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210111122355_Init")]
+    [Migration("20210118174307_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,6 +155,7 @@ namespace UniversityMiniinstagram.Database.Migrations
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -228,6 +229,7 @@ namespace UniversityMiniinstagram.Database.Migrations
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Comment", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
@@ -238,6 +240,9 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ReportId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -255,26 +260,66 @@ namespace UniversityMiniinstagram.Database.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.CommentReport", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CommentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentReports");
+                });
+
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Image", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PostId")
+                        .IsUnique()
+                        .HasFilter("[PostId] IS NOT NULL");
+
                     b.ToTable("Images");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "00000000-0000-0000-0000-000000000000",
+                            Path = "/Images/noPhoto.png",
+                            UploadDate = new DateTime(2021, 1, 18, 17, 42, 56, 108, DateTimeKind.Utc).AddTicks(3655)
+                        });
                 });
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Like", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PostId")
@@ -295,6 +340,7 @@ namespace UniversityMiniinstagram.Database.Migrations
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Post", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("CategoryPost")
@@ -304,11 +350,13 @@ namespace UniversityMiniinstagram.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ReportId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
@@ -318,19 +366,15 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Report", b =>
+            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.PostReport", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CommentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
@@ -344,33 +388,11 @@ namespace UniversityMiniinstagram.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId");
-
                     b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.RolesBeforeBan", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RolesBeforeBan");
+                    b.ToTable("PostReports");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -435,18 +457,40 @@ namespace UniversityMiniinstagram.Database.Migrations
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.CommentReport", b =>
+                {
+                    b.HasOne("UniversityMiniinstagram.Database.Models.Comment", "Comment")
+                        .WithOne("Report")
+                        .HasForeignKey("UniversityMiniinstagram.Database.Models.CommentReport", "CommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Image", b =>
+                {
+                    b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
+                        .WithOne("Image")
+                        .HasForeignKey("UniversityMiniinstagram.Database.Models.Image", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Like", b =>
                 {
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
                         .WithMany("Likes")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()
@@ -455,38 +499,17 @@ namespace UniversityMiniinstagram.Database.Migrations
 
             modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Post", b =>
                 {
-                    b.HasOne("UniversityMiniinstagram.Database.Models.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.Report", b =>
+            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.PostReport", b =>
                 {
-                    b.HasOne("UniversityMiniinstagram.Database.Models.Comment", "Comment")
-                        .WithMany()
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("UniversityMiniinstagram.Database.Models.Post", "Post")
-                        .WithOne()
-                        .HasForeignKey("UniversityMiniinstagram.Database.Models.Report", "PostId")
+                        .WithOne("Report")
+                        .HasForeignKey("UniversityMiniinstagram.Database.Models.PostReport", "PostId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("UniversityMiniinstagram.Database.Models.RolesBeforeBan", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
 
                     b.HasOne("UniversityMiniinstagram.Database.Models.ApplicationUser", "User")
                         .WithMany()

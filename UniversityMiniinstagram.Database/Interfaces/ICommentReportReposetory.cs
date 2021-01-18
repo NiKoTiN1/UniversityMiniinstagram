@@ -2,8 +2,7 @@
 
 namespace UniversityMiniinstagram.Database.Interfaces
 {
-    public interface IAdminRepository : IBaseRepository<PostReport>
+    public interface ICommentReportReposetory : IBaseRepository<CommentReport>
     {
-
     }
 }

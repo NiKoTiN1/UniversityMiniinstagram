@@ -78,6 +78,7 @@ namespace UniversityMiniinstagram
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<ILikeRepository, LikeRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<ICommentReportReposetory, CommentReportReposetory>();
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 

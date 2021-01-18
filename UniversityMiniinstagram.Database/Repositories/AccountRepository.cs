@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -96,7 +95,7 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<ApplicationUser> GetUser(string id)
         {
-            ApplicationUser user = await this.UserManager.FindByIdAsync(id.ToString());
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
             return user;
         }
 
@@ -160,37 +159,13 @@ namespace UniversityMiniinstagram.Database.Repositories
             return allUsers;
         }
 
-        public async Task<bool> SetRolesBeforeBan(ApplicationUser user, IEnumerable<string> roleList)
-        {
-            var rolesBeforeBan = new List<RolesBeforeBan>();
-            foreach (var roleName in roleList)
-            {
-                IdentityRole role = await this.RoleManager.FindByNameAsync(roleName);
-                rolesBeforeBan.Add(new RolesBeforeBan()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Role = role,
-                    User = user
-                });
-            }
-
-            await this.Context.RolesBeforeBan.AddRangeAsync(rolesBeforeBan);
-            await this.Context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
-            await this.UserManager.UpdateSecurityStampAsync(user);
             IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, "Banned");
             await this.UserManager.AddToRoleAsync(user, "User");
+            await this.UserManager.UpdateSecurityStampAsync(user);
+            //await this.Context.SaveChangesAsync();
             return result.Succeeded;
-        }
-        public async Task DeleteSavedRoles(string userId)
-        {
-            var roles = this.Context.RolesBeforeBan.Where(role => role.UserId == userId).ToList();
-            this.Context.RolesBeforeBan.RemoveRange(roles);
-            await this.Context.SaveChangesAsync();
         }
         public bool IsAdminCreated()
         {

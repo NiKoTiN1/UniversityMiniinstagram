@@ -36,8 +36,8 @@ namespace UniversityMiniinstagram.Web.Hubs
                 var commentViewModel = new CommentViewModel()
                 {
                     Comment = commresult,
-                    IsDeleteRelated = await this.PostService.IsDeleteRelated(commresult.User, userIdClaim.Value),
-                    IsReportRelated = await this.PostService.IsReportRelated(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
+                    IsDeleteAllowed = await this.PostService.IsDeleteAllowed(commresult.User, userIdClaim.Value),
+                    IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                     ShowReportColor = false
                 };
                 var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);

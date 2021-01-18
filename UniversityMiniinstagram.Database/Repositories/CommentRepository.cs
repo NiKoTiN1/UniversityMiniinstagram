@@ -17,13 +17,13 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public ICollection<Comment> GetAll(string postId)
         {
-            ICollection<Comment> comments = this.dbContext.Comments.Where(comment => comment.PostId == postId).OrderBy(comment => comment.Date).ToList();
+            ICollection<Comment> comments = this.dbContext.Comments.Where(comment => comment.PostId == postId && comment.IsShow).OrderBy(comment => comment.Date).ToList();
             return comments;
         }
 
         public bool IsCommentReported(string commentId, string userId)
         {
-            var result = this.dbContext.Reports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
+            var result = this.dbContext.CommentReports.Where(report => report.CommentId == commentId && report.UserId == userId).ToList();
             return result.Count != 0;
         }
     }

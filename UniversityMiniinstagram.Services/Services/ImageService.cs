@@ -48,19 +48,13 @@ namespace UniversityMiniinstagram.Services
             }
         }
 
-        public async Task<Image> GetImage(string imageId)
-        {
-            Image image = await this.ImageReposetry.Get(imageId);
-            return image;
-        }
-
-        public async Task RemoveImage(Image image)
+        public void RemoveImage(Image image)
         {
             if (File.Exists("wwwroot/" + image.Path))
             {
                 File.Delete("wwwroot/" + image.Path);
             }
-            await this.ImageReposetry.Remove(image);
+            //await this.ImageReposetry.Remove(image);
         }
     }
 }

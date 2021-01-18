@@ -1,5 +1,5 @@
 ﻿@inject IViewLocalizer VLocalizer
-@model List<AdminPostReportsVeiwModel>
+@model List<AdminCommentReportsVeiwModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -51,7 +51,7 @@
                 <div id="@postIddd" class="collapse" aria-labelledby="@heading" data-parent="#accordion">
                     <div class="card-body" style="padding-top: 0;">
                         <div>
-                            <div class="my-4" id="@elem.Report.Post.Id">
+                            <div class="my-4" id="@elem.Report.Comment.PostId">
                                 <div class="flex-lg-grow-1">
                                     <div class="row" style="margin-right: 2px; margin-left: 2px;">
                                         <div class="card rounded-lg border-0 shadow-lg mb-6 lift col-7" style="
@@ -59,7 +59,7 @@
                                     padding:0;
                                     height: 100%;
                                     ">
-                                            <img src="@elem.Report.Post.Image.Path" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
+                                            <img src="@elem.Report.Comment.Post.Image.Path" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
                                         object-fit: cover;
                                         left: 0;
                                         top: 0;
@@ -67,15 +67,15 @@
                                         height: 100%;
                                         max-height: 400px;">
                                             <div class="card-body">
-                                                <input class="form-control mb-2" name="Category" readonly="readonly" value="@elem.Report.Post.CategoryPost">
-                                                <textarea type="text" name="Description" id="Description" readonly="readonly" style="resize: none;" class="form-control mb-2">@elem.Report.Post.Description</textarea>
+                                                <input class="form-control mb-2" name="Category" readonly="readonly" value="@elem.Report.Comment.Post.CategoryPost">
+                                                <textarea type="text" name="Description" id="Description" readonly="readonly" style="resize: none;" class="form-control mb-2">@elem.Report.Comment.Post.Description</textarea>
                                                 @{
-                                                    var commArea = elem.Report.Post.Id + "commAreaa";
+                                                    var commArea = elem.Report.Comment.Post.Id + "commAreaa";
                                                 }
                                                 <div id="@commArea">
                                                     <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                                                     @{
-                                                        var contentId = elem.Report.Post.Id + "content";
+                                                        var contentId = elem.Report.Comment.Post.Id + "content";
                                                         ViewBag.contentId = contentId;
                                                     }
                                                     <div id="@ViewBag.contentId">
@@ -151,5 +151,5 @@
     </div>
 </div>
 
-<script src="~/js/pardonReport.js"></script>
+<script src="~/js/pardonCommentReport.js"></script>
 <script src="~/js/commentaryReports.js"></script>

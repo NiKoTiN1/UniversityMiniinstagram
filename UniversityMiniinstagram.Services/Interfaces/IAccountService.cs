@@ -14,7 +14,6 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> Login(LoginViewModel vm);
         public Task Login(ApplicationUser user);
         public Task Logout();
-        public Task<bool> IsUserExist(string email);
         public AuthenticationProperties GoogleLogin(string url);
         public Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
         public Task<bool> ExternalLogin(ExternalLoginInfo info);
@@ -22,11 +21,11 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ApplicationUser> GetUserByEmail(string email);
         public Task<bool> EditProfile(EditProfileViewModel vm);
         public Task<bool> AddRole(string name);
-        public Task<bool> IsInRole(IsInRoleViewModel vm);
+        public Task<bool> IsInRole(ApplicationUser user, string roleName);
         public Task<bool> SetBanRole(ApplicationUser user);
         public Task<ICollection<string>> GetUserRoles(ApplicationUser user);
         public Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info);
-        public Task<IList<ApplicationUser>> GetAllUsers();
+        public IList<ApplicationUser> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
         public Task<bool> SetModerator(ApplicationUser user);
         public Task<bool> SetNonModerator(ApplicationUser user);

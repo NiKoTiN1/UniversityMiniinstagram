@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
@@ -10,46 +11,94 @@ namespace UniversityMiniinstagram.Services
 {
     public class AdminService : IAdminService
     {
-        public AdminService(IAdminRepository adminReposetry, IPostService postService, IAccountService accountService)
+        public AdminService(IAdminRepository adminReposetry,
+            IPostService postService,
+            IAccountService accountService,
+            ICommentReportReposetory commentReportReposetory)
         {
             this.AdminReposetry = adminReposetry;
             this.PostService = postService;
             this.AccountService = accountService;
+            this.commentReportReposetory = commentReportReposetory;
         }
 
         private readonly IAdminRepository AdminReposetry;
         private readonly IPostService PostService;
         private readonly IAccountService AccountService;
+        private readonly ICommentReportReposetory commentReportReposetory;
 
         public async Task ReportComment(SendReportViewModel vm)
         {
-            await this.AdminReposetry.Add(new Report() { Id = Guid.NewGuid().ToString(), CommentId = vm.CommentId, UserId = vm.UserId, Date = DateTime.UtcNow });
+            await this.commentReportReposetory.Add(new CommentReport() { Id = Guid.NewGuid().ToString(), CommentId = vm.CommentId, UserId = vm.UserId, Date = DateTime.UtcNow });
         }
 
         public async Task ReportPost(SendReportViewModel vm)
         {
-            await this.AdminReposetry.Add(new Report() { Id = Guid.NewGuid().ToString(), PostId = vm.PostId, UserId = vm.UserId, Date = DateTime.UtcNow });
+            await this.AdminReposetry.Add(new PostReport() { Id = Guid.NewGuid().ToString(), PostId = vm.PostId, UserId = vm.UserId, Date = DateTime.UtcNow });
         }
 
-        public ICollection<Report> GetPostReports()
+        public async Task<ICollection<AdminPostReportsVeiwModel>> GetPostReports(string userId)
         {
-            ICollection<Report> result = this.AdminReposetry.GetPostReports();
-            return result;
-        }
-
-        public async Task<ICollection<Report>> GetCommentReports()
-        {
-            ICollection<Report> result = this.AdminReposetry.GetCommentReports();
-            foreach (Report report in result)
+            var vmList = new List<AdminPostReportsVeiwModel>();
+            ICollection<PostReport> result = await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" });
+            foreach (PostReport report in result)
             {
-                report.Comment = await this.PostService.GetComment(report.CommentId);
+                report.Post = await this.PostService.GetPost(report.PostId);
+                if (report.Post.UserId != userId)
+                {
+                    var vm = new AdminPostReportsVeiwModel
+                    {
+                        Report = report,
+                        CommentViewModel = new List<CommentViewModel>()
+                    };
+                    foreach (Comment comment in report.Post.Comments)
+                    {
+                        var commVm = new CommentViewModel()
+                        {
+                            Comment = comment,
+                            IsDeleteAllowed = false,
+                            IsReportAllowed = false,
+                            ShowReportColor = false
+                        };
+                        vm.CommentViewModel.Add(commVm);
+                    }
+                    vmList.Add(vm);
+                }
             }
-            return result;
+            return vmList;
         }
 
-        public async Task<bool> RemoveReport(string reportId)
+        public async Task<List<AdminCommentReportsVeiwModel>> GetCommentReports(string userId)
         {
-            Report report = await this.AdminReposetry.Get(reportId);
+            ApplicationUser curUser = await this.AccountService.GetUser(userId);
+            var isCurUserModerator = await this.AccountService.IsInRole(curUser, "Moderator");
+            ICollection<CommentReport> commentReports = await this.commentReportReposetory.Get(rep => (rep.Comment.UserId != userId), new string[] { "Comment.Post.Comments", "User", "Comment.User" });
+            var commentReportsVM = new List<AdminCommentReportsVeiwModel>();
+            foreach (CommentReport report in commentReports)
+            {
+                var isRepUserModerator = await this.AccountService.IsInRole(report.Comment.User, "Moderator");
+                if (!(isCurUserModerator && isRepUserModerator))
+                {
+                    var commentReportVM = new AdminCommentReportsVeiwModel()
+                    {
+                        Report = report,
+                        CommentViewModel = report.Comment.Post.Comments.Select(comment => new CommentViewModel()
+                        {
+                            Comment = comment,
+                            IsDeleteAllowed = false,
+                            IsReportAllowed = false,
+                            ShowReportColor = report.CommentId == comment.Id
+                        }).ToList()
+                    };
+                    commentReportsVM.Add(commentReportVM);
+                }
+            }
+            return commentReportsVM.ToList();
+        }
+
+        public async Task<bool> RemovePostReport(string reportId)
+        {
+            PostReport report = (await this.AdminReposetry.Get(report => report.Id == reportId)).SingleOrDefault();
             if (report != null)
             {
                 await this.AdminReposetry.Remove(report);
@@ -58,30 +107,27 @@ namespace UniversityMiniinstagram.Services
             return false;
         }
 
+        public async Task<bool> RemoveCommentReport(string reportId)
+        {
+            CommentReport report = (await this.commentReportReposetory.Get(report => report.Id == reportId)).SingleOrDefault();
+            if (report != null)
+            {
+                await this.commentReportReposetory.Remove(report);
+                return true;
+            }
+            return false;
+        }
+
         public async Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
-            Report report = await this.AdminReposetry.Get(vm.ReportId);
-            if (report == null)
+            PostReport report = (await this.AdminReposetry.Get(report => report.Id == vm.ReportId, new string[] { "Post.User" })).SingleOrDefault();
+            if (report == null || report.Post == null)
             {
                 return false;
-            }
-            Post post = await this.PostService.GetPost(report.PostId);
-            if (post == null)
-            {
-                return false;
-            }
-            if (vm.IsHidePost)
-            {
-                var result = await this.PostService.HidePost(post.Id);
-                if (!result)
-                {
-                    return false;
-                }
             }
             if (vm.IsBanUser)
             {
-                ApplicationUser user = await this.AccountService.GetUser(report.Post.UserId);
-                var result = await this.AccountService.SetBanRole(user);
+                var result = await this.AccountService.SetBanRole(report.Post.User);
                 if (!result)
                 {
                     return false;
@@ -89,43 +135,26 @@ namespace UniversityMiniinstagram.Services
             }
             if (vm.IsDeletePost)
             {
-                await this.PostService.DeletePost(post);
+                await this.PostService.DeletePost(report.Post);
+                return true;
+            }
+            if (vm.IsHidePost)
+            {
+                var result = await this.PostService.HidePost(report.Post.Id);
+                if (!result)
+                {
+                    return false;
+                }
             }
             return true;
         }
 
         public async Task<bool> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
-            Report report = await this.AdminReposetry.Get(vm.ReportId);
-            if (report == null)
+            CommentReport report = (await this.commentReportReposetory.Get(report => report.Id == vm.ReportId, new string[] { "Comment", "Comment.Post" })).SingleOrDefault();
+            if (report == null || report.Comment == null || report.Comment.Post == null)
             {
                 return false;
-            }
-            Comment comment = await this.PostService.GetComment(report.CommentId);
-            if (comment == null)
-            {
-                return false;
-            }
-            Post post = await this.PostService.GetPost(comment.PostId);
-            if (post == null)
-            {
-                return false;
-            }
-            if (vm.IsHidePost)
-            {
-                var result = await this.PostService.HidePost(post.Id);
-                if (!result)
-                {
-                    return false;
-                }
-            }
-            if (vm.IsHideComment)
-            {
-                var result = await this.PostService.HideComment(report.CommentId);
-                if (!result)
-                {
-                    return false;
-                }
             }
             if (vm.IsBanUser)
             {
@@ -136,23 +165,41 @@ namespace UniversityMiniinstagram.Services
                     return false;
                 }
             }
+            if (vm.IsDeletePost)
+            {
+                await this.PostService.DeletePost(report.Comment.Post);
+                return true;
+            }
+            if (vm.IsHidePost)
+            {
+                var result = await this.PostService.HidePost(report.Comment.Post.Id);
+                if (!result)
+                {
+                    return false;
+                }
+            }
             if (vm.IsDeleteComment)
             {
                 await this.PostService.RemoveComment(report.CommentId);
+                return true;
             }
-            if (vm.IsDeletePost)
+            if (vm.IsHideComment)
             {
-                await this.PostService.DeletePost(post);
+                var result = await this.PostService.HideComment(report.CommentId);
+                if (!result)
+                {
+                    return false;
+                }
             }
             return true;
         }
         public async Task<List<UserRolesViewModel>> GetUsersAndRoles()
         {
-            IList<ApplicationUser> allUsers = await this.AccountService.GetAllUsers();
+            IList<ApplicationUser> allUsers = this.AccountService.GetAllUsers();
             var vmList = new List<UserRolesViewModel>();
             foreach (ApplicationUser user in allUsers)
             {
-                if (!await this.AccountService.IsInRole(new IsInRoleViewModel() { User = user, RoleName = "Admin" }))
+                if (!await this.AccountService.IsInRole(user, "Admin"))
                 {
                     ICollection<string> userRoles = await this.AccountService.GetUserRoles(user);
                     var vm = new UserRolesViewModel()
@@ -185,14 +232,6 @@ namespace UniversityMiniinstagram.Services
             }
             var result = await this.AccountService.SetNonModerator(user);
             return result;
-        }
-        public async Task<bool> IsModerateAllowed(string curUserId, string reportUserId)
-        {
-            ApplicationUser curUser = await this.AccountService.GetUser(curUserId);
-            ApplicationUser reportUser = await this.AccountService.GetUser(reportUserId);
-            var result1 = await this.AccountService.IsInRole(new IsInRoleViewModel() { User = curUser, RoleName = "Moderator" });
-            var result2 = await this.AccountService.IsInRole(new IsInRoleViewModel() { User = reportUser, RoleName = "Moderator" });
-            return !(result1 && result2);
         }
     }
 }

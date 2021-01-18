@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database
@@ -10,8 +11,8 @@ namespace UniversityMiniinstagram.Database
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Like> Likes { get; set; }
-        public DbSet<RolesBeforeBan> RolesBeforeBan { get; set; }
-        public DbSet<Report> Reports { get; set; }
+        public DbSet<PostReport> PostReports { get; set; }
+        public DbSet<CommentReport> CommentReports { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
@@ -22,30 +23,59 @@ namespace UniversityMiniinstagram.Database
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder
-                .Entity<Report>()
+                    .Entity<Image>().HasData(new Image()
+                    {
+                        Id = new Guid().ToString(),
+                        Path = "/Images/noPhoto.png",
+                        UploadDate = DateTime.UtcNow
+                    });
+            //modelBuilder
+            //    .Entity<IdentityRole>().HasData(new IdentityRole()
+            //    {
+            //        Name = "Admin"
+            //    });
+            //modelBuilder
+            //    .Entity<IdentityRole>().HasData(new IdentityRole()
+            //    {
+            //        Name = "User"
+            //    });
+            //modelBuilder
+            //    .Entity<IdentityRole>().HasData(new IdentityRole()
+            //    {
+            //        Name = "Moderator"
+            //    });
+            //modelBuilder
+            //    .Entity<IdentityRole>().HasData(new IdentityRole()
+            //    {
+            //        Name = "Banned"
+            //    });
+
+
+            modelBuilder
+                .Entity<PostReport>()
                 .HasOne(e => e.Post)
-                .WithOne()
+                .WithOne(e => e.Report)
+                .HasForeignKey<PostReport>(key => key.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
-                .Entity<Report>()
+                .Entity<CommentReport>()
                 .HasOne(e => e.Comment)
-                .WithOne()
+                .WithOne(e => e.Report)
+                .HasForeignKey<CommentReport>(key => key.CommentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-
+            modelBuilder
+                .Entity<Image>()
+                .HasOne(e => e.Post)
+                .WithOne(e => e.Image)
+                .HasForeignKey<Image>(c => c.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
                 .Entity<Comment>()
                 .HasOne(e => e.Post)
                 .WithMany(e => e.Comments)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder
-                .Entity<Post>()
-                .HasMany(e => e.Comments)
-                .WithOne(e => e.Post)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder
@@ -54,11 +84,9 @@ namespace UniversityMiniinstagram.Database
                 .WithMany(e => e.Likes)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-
-
-            modelBuilder.Entity<Report>().HasIndex(e => e.PostId).IsUnique(false);
-            modelBuilder.Entity<Report>().HasIndex(e => e.CommentId).IsUnique(false);
+            modelBuilder.Entity<PostReport>().HasIndex(e => e.PostId).IsUnique(false);
+            modelBuilder.Entity<CommentReport>().HasIndex(e => e.CommentId).IsUnique(false);
+            modelBuilder.Entity<CommentReport>().HasIndex(e => e.CommentId).IsUnique(false);
 
             modelBuilder
                 .Entity<Image>()
@@ -86,12 +114,7 @@ namespace UniversityMiniinstagram.Database
                 .ValueGeneratedOnAdd();
 
             modelBuilder
-                .Entity<Report>()
-                .Property(e => e.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder
-                .Entity<RolesBeforeBan>()
+                .Entity<PostReport>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
         }

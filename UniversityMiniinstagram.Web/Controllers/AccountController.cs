@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             if (userIdClaim != null)
             {
                 ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
-                System.Collections.Generic.ICollection<Post> posts = await this.PostService.GetUserPosts(user.Id);
+                ICollection<Post> posts = await this.PostService.GetUserPosts(user.Id);
                 user.Posts = posts;
                 ViewBag.isAdmin = true;
                 return View(user);
@@ -244,12 +245,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
-            var vm = new IsInRoleViewModel()
-            {
-                User = user,
-                RoleName = "User"
-            };
-            var isBanned = !await this.AccountService.IsInRole(vm);
+            var isBanned = !await this.AccountService.IsInRole(user, "User");
             return isBanned ? RedirectToAction("BanPage") : (IActionResult)View();
         }
 

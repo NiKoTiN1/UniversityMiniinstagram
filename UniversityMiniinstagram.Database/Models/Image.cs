@@ -10,6 +10,8 @@ namespace UniversityMiniinstagram.Database.Models
         public string Id { get; set; }
         [Required]
         public string Path { get; set; }
+        public Post Post { get; set; }
+        public string? PostId { get; set; }
         public DateTime UploadDate { get; set; }
     }
 }

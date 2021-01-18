@@ -7,7 +7,7 @@ namespace UniversityMiniinstagram.Views
     {
         public Post Post { get; set; }
         public ICollection<CommentViewModel> CommentVM { get; set; }
-        public bool IsReportRelated { get; set; }
-        public bool IsDeleteRelated { get; set; }
+        public bool IsReportAllowed { get; set; }
+        public bool IsDeleteAllowed { get; set; }
     }
 }

@@ -50,34 +50,9 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("reports/posts")]
         public async Task<ActionResult> GetPostReports()
         {
-            var vmList = new List<AdminPostReportsVeiwModel>();
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<Database.Models.Report> reports = this.AdminService.GetPostReports();
-            foreach (Database.Models.Report report in reports)
-            {
-                report.Post = await this.PostService.GetPost(report.PostId);
-                if (report.Post.UserId != userIdClaim.Value)
-                {
-                    var vm = new AdminPostReportsVeiwModel
-                    {
-                        Report = report,
-                        CommentViewModel = new List<CommentViewModel>()
-                    };
-                    foreach (Database.Models.Comment comment in report.Post.Comments)
-                    {
-                        var commVm = new CommentViewModel()
-                        {
-                            Comment = comment,
-                            IsDeleteRelated = false,
-                            IsReportRelated = false,
-                            ShowReportColor = false
-                        };
-                        vm.CommentViewModel.Add(commVm);
-                    }
-                    vmList.Add(vm);
-                }
-            }
+            ICollection<AdminPostReportsVeiwModel> vmList = await this.AdminService.GetPostReports(userIdClaim.Value);
             return View(vmList);
         }
 
@@ -86,39 +61,9 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("reports/comments")]
         public async Task<ActionResult> GetCommentReports()
         {
-            var vmList = new List<AdminPostReportsVeiwModel>();
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<Database.Models.Report> reports = await this.AdminService.GetCommentReports();
-            foreach (Database.Models.Report report in reports)
-            {
-                report.Post = await this.PostService.GetPost(report.Comment.PostId);
-                var isModerateAllowed = await this.AdminService.IsModerateAllowed(userIdClaim.Value, report.Comment.UserId);
-                if ((report.Comment.UserId != userIdClaim.Value) && isModerateAllowed)
-                {
-                    var vm = new AdminPostReportsVeiwModel
-                    {
-                        Report = report,
-                        CommentViewModel = new List<CommentViewModel>()
-                    };
-                    foreach (Database.Models.Comment comment in report.Post.Comments)
-                    {
-                        var commVm = new CommentViewModel()
-                        {
-                            Comment = comment,
-                            IsDeleteRelated = false,
-                            IsReportRelated = false,
-                        };
-                        if (report.CommentId == comment.Id)
-                        {
-                            commVm.ShowReportColor = true;
-                        }
-                        vm.CommentViewModel.Add(commVm);
-                    }
-                    vmList.Add(vm);
-                }
-            }
-            return View(vmList);
+            return View(await this.AdminService.GetCommentReports(userIdClaim.Value));
         }
 
         [HttpGet]
@@ -140,10 +85,19 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Moderator")]
-        [Route("pardon")]
+        [Route("pardon/post")]
         public async Task<IActionResult> PardonPost(string reportId)
         {
-            var result = await this.AdminService.RemoveReport(reportId);
+            var result = await this.AdminService.RemovePostReport(reportId);
+            return result ? Ok() : (IActionResult)BadRequest();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Moderator")]
+        [Route("pardon/comment")]
+        public async Task<IActionResult> PardonComment(string reportId)
+        {
+            var result = await this.AdminService.RemoveCommentReport(reportId);
             return result ? Ok() : (IActionResult)BadRequest();
         }
 

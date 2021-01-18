@@ -4,7 +4,7 @@
     var mainId = '#Main' + btnId;
     $.ajax({
         type: 'POST',
-        url: '/admin/pardon',
+        url: '/admin/pardon/post',
         data: { 'reportId': btnId },
         success: function (data) {
             $(mainId).remove();

@@ -34,36 +34,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 var postsViewModels = new List<PostsViewModel>();
                 ViewBag.UserId = userIdClaim.Value;
-                ICollection<Database.Models.Post> posts = await this.PostServices.GetAllPosts();
-                foreach (Database.Models.Post post in posts)
-                {
-                    if (post.IsShow)
-                    {
-                        var postVm = new PostsViewModel()
-                        {
-                            Post = post,
-                            IsReportRelated = await this.PostServices.IsReportRelated(post.UserId, userIdClaim.Value, postId: post.Id),
-                            IsDeleteRelated = await this.PostServices.IsDeleteRelated(post.User, userIdClaim.Value),
-                            CommentVM = new List<CommentViewModel>()
-                        };
-                        foreach (Database.Models.Comment comment in post.Comments)
-                        {
-                            if (comment.IsShow)
-                            {
-                                var commVm = new CommentViewModel
-                                {
-                                    Comment = comment,
-                                    IsDeleteRelated = await this.PostServices.IsDeleteRelated(comment.User, userIdClaim.Value),
-                                    IsReportRelated = await this.PostServices.IsReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
-                                    ShowReportColor = false
-                                };
-                                postVm.CommentVM.Add(commVm);
-                            }
-                        }
-                        postsViewModels.Add(postVm);
-                    }
-                }
-                return View(postsViewModels);
+                return View(await this.PostServices.GetAllPosts(userIdClaim.Value));
             }
             return Unauthorized();
         }
@@ -108,7 +79,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                     var postVm = new PostsViewModel()
                     {
                         Post = post,
-                        IsReportRelated = await this.PostServices.IsReportRelated(post.UserId, userIdClaim.Value, postId: postId),
+                        IsReportAllowed = await this.PostServices.IsReportAllowed(post.UserId, userIdClaim.Value, postId: postId),
                         CommentVM = new List<CommentViewModel>()
                     };
                     foreach (Database.Models.Comment comment in post.Comments)
@@ -118,8 +89,8 @@ namespace UniversityMiniinstagram.Web.Controllers
                             var commVm = new CommentViewModel()
                             {
                                 Comment = comment,
-                                IsDeleteRelated = await this.PostServices.IsDeleteRelated(comment.User, userIdClaim.Value),
-                                IsReportRelated = await this.PostServices.IsReportRelated(comment.UserId, userIdClaim.Value, commentId: comment.Id),
+                                IsDeleteAllowed = await this.PostServices.IsDeleteAllowed(comment.User, userIdClaim.Value),
+                                IsReportAllowed = await this.PostServices.IsReportAllowed(comment.UserId, userIdClaim.Value, commentId: comment.Id),
                                 ShowReportColor = false
                             };
                             postVm.CommentVM.Add(commVm);

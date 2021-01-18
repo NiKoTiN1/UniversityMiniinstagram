@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
@@ -26,7 +26,7 @@ namespace UniversityMiniinstagram.Services
             var isExist = await this.AccountReposetry.IsExist(vm.Email);
             if (isExist)
             {
-                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username };
+                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
                 var isCreated = await this.AccountReposetry.CreateUser(user, vm.Password);
                 if (isCreated)
                 {
@@ -43,6 +43,7 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<bool> Register(ApplicationUser user)
         {
+            user.AvatarId = new Guid().ToString();
             var result = await this.AccountReposetry.CreateUser(user);
             if (result)
             {
@@ -57,18 +58,12 @@ namespace UniversityMiniinstagram.Services
             return false;
         }
 
-
-        public async Task<bool> IsUserExist(string email)
-        {
-            var result = await this.AccountReposetry.IsExist(email);
-            return result;
-        }
         public async Task<bool> RegisterAdmin(RegisterViewModel vm)
         {
             var isExist = await this.AccountReposetry.IsExist(vm.Email);
             if (isExist)
             {
-                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username };
+                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
                 var isCreated = await this.AccountReposetry.CreateUser(user, vm.Password);
                 if (isCreated)
                 {
@@ -85,10 +80,9 @@ namespace UniversityMiniinstagram.Services
             return false;
         }
 
-        public async Task<bool> IsInRole(IsInRoleViewModel vm)
+        public async Task<bool> IsInRole(ApplicationUser user, string roleName)
         {
-            var isInRole = await this.AccountReposetry.IsInRole(vm.User, vm.RoleName);
-            return isInRole;
+            return await this.AccountReposetry.IsInRole(user, roleName);
         }
 
         public async Task<bool> SetBanRole(ApplicationUser user)
@@ -99,7 +93,6 @@ namespace UniversityMiniinstagram.Services
                 return true;
             }
             IList<string> roleList = await this.AccountReposetry.GetRoleList(user);
-            await this.AccountReposetry.SetRolesBeforeBan(user, roleList.Except(new List<string>() { "User" }));
             var result = await this.AccountReposetry.RemoveRolesFromUser(user, roleList);
             return !result ? false : await this.AccountReposetry.AddRoleToUser(user, "Banned");
         }
@@ -118,7 +111,6 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
             await this.AccountReposetry.UnBanUser(user);
-            await this.AccountReposetry.DeleteSavedRoles(user.Id);
             return true;
         }
 
@@ -151,16 +143,6 @@ namespace UniversityMiniinstagram.Services
         public async Task<ApplicationUser> GetUser(string userId)
         {
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
-            if (string.IsNullOrEmpty(user.AvatarId))
-            {
-                Image image = await this.ImageService.GetImage(user.AvatarId);
-                if (image != null)
-                {
-                    user.Avatar = image;
-                    return user;
-                }
-            }
-            user.Avatar = new Image() { Path = "/Images/noPhoto.png" };
             return user;
         }
 
@@ -207,24 +189,9 @@ namespace UniversityMiniinstagram.Services
             return await this.AccountReposetry.GetRoleList(user);
         }
 
-        public async Task<IList<ApplicationUser>> GetAllUsers()
+        public IList<ApplicationUser> GetAllUsers()
         {
             IList<ApplicationUser> userList = this.AccountReposetry.GetAllUsers();
-            foreach (ApplicationUser user in userList)
-            {
-                if (string.IsNullOrEmpty(user.AvatarId))
-                {
-                    Image image = await this.ImageService.GetImage(user.AvatarId);
-                    if (image != null)
-                    {
-                        user.Avatar = image;
-                    }
-                }
-                else
-                {
-                    user.Avatar = new Image() { Path = "/Images/noPhoto.png" };
-                }
-            }
             return userList;
         }
 
