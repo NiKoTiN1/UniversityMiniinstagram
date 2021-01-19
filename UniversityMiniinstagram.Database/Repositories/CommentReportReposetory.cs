@@ -8,9 +8,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         public CommentReportReposetory(DatabaseContext context)
             : base(context)
         {
-            this.dbContext = context;
-        }
 
-        private readonly DatabaseContext dbContext;
+        }
     }
 }

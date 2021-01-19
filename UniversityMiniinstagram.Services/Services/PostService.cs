@@ -15,13 +15,17 @@ namespace UniversityMiniinstagram.Services
             IPostRepository postReposetry,
             IAccountService accountService,
             ICommentRepository commentReposetry,
-            ILikeRepository likeReposetry)
+            ILikeRepository likeReposetry,
+            IAdminRepository adminRepository,
+            ICommentReportReposetory commentReportReposetory)
         {
             this.ImageServices = imageServices;
             this.PostReposetry = postReposetry;
             this.AccountService = accountService;
             this.commentReposetry = commentReposetry;
             this.likeReposetry = likeReposetry;
+            this.adminRepository = adminRepository;
+            this.commentReportReposetory = commentReportReposetory;
         }
 
         private readonly IImageService ImageServices;
@@ -29,6 +33,8 @@ namespace UniversityMiniinstagram.Services
         private readonly IAccountService AccountService;
         private readonly ICommentRepository commentReposetry;
         private readonly ILikeRepository likeReposetry;
+        private readonly IAdminRepository adminRepository;
+        private readonly ICommentReportReposetory commentReportReposetory;
 
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
@@ -79,20 +85,19 @@ namespace UniversityMiniinstagram.Services
             await this.likeReposetry.Add(newLike);
             return newLike;
         }
-        public bool IsLiked(string postId, string userId)
+        public async Task<bool> IsLiked(string postId, string userId)
         {
-            ICollection<Like> likes = this.likeReposetry.Get(postId);
-            IEnumerable<Like> isLiked = likes.Where(like => like.UserId == userId);
-            return isLiked.Any();
+            return (await this.likeReposetry.Get(like => like.PostId == postId && like.UserId == userId)).Any();
         }
         public async Task RemoveLike(string postId, string userId)
         {
-            await this.likeReposetry.Remove(postId, userId);
+            Like like = (await this.likeReposetry.Get(li => li.PostId == postId && li.UserId == userId)).SingleOrDefault();
+            await this.likeReposetry.Remove(like);
         }
 
         public async Task<List<PostsViewModel>> GetAllPosts(string userId)
         {
-            IEnumerable<Post> posts = await this.PostReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" });
+            IEnumerable<Post> posts = (await this.PostReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" })).OrderBy(post => post.UploadDate);
             var postsVM = new List<PostsViewModel>();
             foreach (Post post in posts)
             {
@@ -103,7 +108,7 @@ namespace UniversityMiniinstagram.Services
                     IsReportAllowed = await IsReportAllowed(post.UserId, userId, post.Id),
                     CommentVM = new List<CommentViewModel>()
                 };
-                foreach (Comment comment in post.Comments)
+                foreach (Comment comment in post.Comments.OrderBy(comment => comment.Date))
                 {
                     postVM.CommentVM.Add(new CommentViewModel()
                     {
@@ -129,13 +134,14 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<ICollection<Post>> GetUserPosts(string userId)
         {
-            IEnumerable<Post> userPosts = await this.PostReposetry.Get(post => post.UserId == userId);
+            IEnumerable<Post> userPosts = (await this.PostReposetry.Get(post => post.UserId == userId)).OrderBy(post => post.UploadDate);
             return userPosts.ToList();
         }
 
         public async Task<Post> GetPost(string postId)
         {
-            Post post = (await this.PostReposetry.Get(post => post.Id == postId)).SingleOrDefault();
+            Post post = (await this.PostReposetry.Get(post => post.Id == postId, new string[] { "Comments.User", "Likes" })).SingleOrDefault();
+            post.Comments = post.Comments.OrderBy(comment => comment.Date).ToList();
             return post;
         }
 
@@ -171,14 +177,14 @@ namespace UniversityMiniinstagram.Services
             }
             if (string.IsNullOrEmpty(postId))
             {
-                if (this.PostReposetry.IsPostReported(postId, guestId))
+                if ((await this.adminRepository.Get(report => report.PostId == postId && report.UserId == guestId)).Any())
                 {
                     return false;
                 }
             }
             if (string.IsNullOrEmpty(commentId))
             {
-                if (this.commentReposetry.IsCommentReported(commentId, guestId))
+                if ((await this.commentReportReposetory.Get(report => report.CommentId == commentId && report.UserId == guestId)).Any())
                 {
                     return false;
                 }

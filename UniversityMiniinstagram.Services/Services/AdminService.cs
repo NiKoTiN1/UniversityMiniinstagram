@@ -40,7 +40,7 @@ namespace UniversityMiniinstagram.Services
         public async Task<ICollection<AdminPostReportsVeiwModel>> GetPostReports(string userId)
         {
             var vmList = new List<AdminPostReportsVeiwModel>();
-            ICollection<PostReport> result = await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" });
+            var result = (await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" })).OrderBy(report => report.Date).ToList();
             foreach (PostReport report in result)
             {
                 report.Post = await this.PostService.GetPost(report.PostId);
@@ -51,7 +51,7 @@ namespace UniversityMiniinstagram.Services
                         Report = report,
                         CommentViewModel = new List<CommentViewModel>()
                     };
-                    foreach (Comment comment in report.Post.Comments)
+                    foreach (Comment comment in report.Post.Comments.OrderBy(comment => comment.Date))
                     {
                         var commVm = new CommentViewModel()
                         {
@@ -72,7 +72,7 @@ namespace UniversityMiniinstagram.Services
         {
             ApplicationUser curUser = await this.AccountService.GetUser(userId);
             var isCurUserModerator = await this.AccountService.IsInRole(curUser, "Moderator");
-            ICollection<CommentReport> commentReports = await this.commentReportReposetory.Get(rep => (rep.Comment.UserId != userId), new string[] { "Comment.Post.Comments", "User", "Comment.User" });
+            var commentReports = (await this.commentReportReposetory.Get(rep => (rep.Comment.UserId != userId), new string[] { "Comment.Post.Comments", "User", "Comment.User" })).OrderBy(report => report.Date).ToList();
             var commentReportsVM = new List<AdminCommentReportsVeiwModel>();
             foreach (CommentReport report in commentReports)
             {

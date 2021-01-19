@@ -8,9 +8,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         public ImageRepository(DatabaseContext context)
             : base(context)
         {
-            this.Context = context;
-        }
 
-        private readonly DatabaseContext Context;
+        }
     }
 }
