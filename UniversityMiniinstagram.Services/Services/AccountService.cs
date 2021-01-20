@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
@@ -80,13 +82,21 @@ namespace UniversityMiniinstagram.Services
             return false;
         }
 
-        public async Task<bool> IsInRole(ApplicationUser user, string roleName)
+        public async Task<bool> IsInRole(string userId, string roleName, ApplicationUser user = null)
         {
+            if (user == null)
+            {
+                user = await this.AccountReposetry.GetUser(userId);
+            }
             return await this.AccountReposetry.IsInRole(user, roleName);
         }
 
-        public async Task<bool> SetBanRole(ApplicationUser user)
+        public async Task<bool> SetBanRole(string userId, ApplicationUser user = null)
         {
+            if (user == null)
+            {
+                user = await this.AccountReposetry.GetUser(userId);
+            }
             var isBanned = await this.AccountReposetry.IsInRole(user, "Banned");
             if (isBanned)
             {
@@ -108,10 +118,10 @@ namespace UniversityMiniinstagram.Services
             await this.AccountReposetry.Logout();
         }
 
-        public async Task<bool> UnBanUser(ApplicationUser user)
+        public async Task<bool> UnBanUser(string userId)
         {
-            await this.AccountReposetry.UnBanUser(user);
-            return true;
+            ApplicationUser user = await this.AccountReposetry.GetUser(userId);
+            return await this.AccountReposetry.UnBanUser(user);
         }
 
         public async Task<bool> Login(LoginViewModel vm)
@@ -131,13 +141,30 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
-            ExternalLoginInfo info = await this.AccountReposetry.GetExternalLoginInfoAsync();
-            return info;
+            return await this.AccountReposetry.GetExternalLoginInfoAsync();
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            var result = await this.AccountReposetry.ExternalLogin(info);
-            return result;
+            var isExist = await this.AccountReposetry.ExternalLogin(info);
+            if (!isExist)
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                ApplicationUser user = await this.AccountReposetry.GetUserByEmail(email);
+                if (user == null)
+                {
+                    user = new ApplicationUser()
+                    {
+                        Email = email,
+                        UserName = email.Split("@").First()
+                    };
+                    if (!await Register(user) || !await this.AccountReposetry.AddLoginToUser(user, info))
+                    {
+                        return false;
+                    }
+                    await this.AccountReposetry.Login(user);
+                }
+            }
+            return true;
         }
 
         public async Task<ApplicationUser> GetUser(string userId)
@@ -145,12 +172,6 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
             return user;
         }
-
-        public async Task<ApplicationUser> GetUserByEmail(string email)
-        {
-            return await this.AccountReposetry.GetUserByEmail(email);
-        }
-
 
         public async Task<bool> AddRole(string name)
         {
@@ -206,9 +227,24 @@ namespace UniversityMiniinstagram.Services
             var roles = new List<string> { "Moderator" };
             return await this.AccountReposetry.RemoveRolesFromUser(user, roles);
         }
-        public bool IsAdminCreated()
+        public async Task<bool> CreateAdmin()
         {
-            return this.AccountReposetry.IsAdminCreated();
+            if (!this.AccountReposetry.IsAdminCreated())
+            {
+                await this.AccountReposetry.AddRole("Admin");
+                await this.AccountReposetry.AddRole("User");
+                await this.AccountReposetry.AddRole("Moderator");
+                await this.AccountReposetry.AddRole("Banned");
+                var vm = new RegisterViewModel()
+                {
+                    Email = "Admin@mail.ru",
+                    Description = "AdminAcc",
+                    Password = "Admin_1",
+                    Username = "Admin",
+                };
+                return await RegisterAdmin(vm);
+            }
+            return false;
         }
     }
 }

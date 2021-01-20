@@ -55,8 +55,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim != null)
                 {
-                    Database.Models.Post result = await this.PostServices.AddPost(vm, this.AppEnvironment.WebRootPath, userIdClaim.Value);
-                    if (result != null)
+                    if (await this.PostServices.AddPost(vm, this.AppEnvironment.WebRootPath, userIdClaim.Value) != null)
                     {
                         return RedirectToAction("GetAllPosts");
                     }
@@ -71,33 +70,9 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    Database.Models.Post post = await this.PostServices.GetPost(postId);
-                    ViewBag.UserId = post.User.Id;
-                    var postVm = new PostsViewModel()
-                    {
-                        Post = post,
-                        IsReportAllowed = await this.PostServices.IsReportAllowed(post.UserId, userIdClaim.Value, postId: postId),
-                        CommentVM = new List<CommentViewModel>()
-                    };
-                    foreach (Database.Models.Comment comment in post.Comments)
-                    {
-                        if (comment.IsShow)
-                        {
-                            var commVm = new CommentViewModel()
-                            {
-                                Comment = comment,
-                                IsDeleteAllowed = await this.PostServices.IsDeleteAllowed(comment.User, userIdClaim.Value),
-                                IsReportAllowed = await this.PostServices.IsReportAllowed(comment.UserId, userIdClaim.Value, commentId: comment.Id),
-                                ShowReportColor = false
-                            };
-                            postVm.CommentVM.Add(commVm);
-                        }
-                    }
-                    return PartialView("_ProfilePost", postVm);
-                }
+                PostsViewModel postVm = await this.PostServices.GetProfilePost(postId);
+                ViewBag.UserId = postVm.Post.User.Id;
+                return PartialView("_ProfilePost", postVm);
             }
             return Unauthorized();
         }
@@ -166,8 +141,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             if (ModelState.IsValid && postId != null)
             {
-                Database.Models.Post post = await this.PostServices.GetPost(postId);
-                await this.PostServices.DeletePost(post);
+                await this.PostServices.DeletePost(postId);
                 return Ok();
             }
             return Unauthorized();

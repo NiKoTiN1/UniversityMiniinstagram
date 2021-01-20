@@ -112,8 +112,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
-            ExternalLoginInfo info = await this.SignInManager.GetExternalLoginInfoAsync();
-            return info;
+            return await this.SignInManager.GetExternalLoginInfoAsync();
         }
 
         public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)

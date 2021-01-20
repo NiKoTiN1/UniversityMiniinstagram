@@ -62,8 +62,8 @@ namespace UniversityMiniinstagram
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
 
-            services.AddTransient<IPostRepository, PostRepository>();
-            services.AddTransient<IPostService, PostService>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
 
             services.AddTransient<IImageRepository, ImageRepository>();
             services.AddTransient<IImageService, ImageService>();

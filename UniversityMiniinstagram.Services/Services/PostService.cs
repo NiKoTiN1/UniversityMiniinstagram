@@ -123,8 +123,12 @@ namespace UniversityMiniinstagram.Services
             return postsVM;
         }
 
-        public async Task DeletePost(Post post)
+        public async Task DeletePost(string postId, Post post = null)
         {
+            if (post == null)
+            {
+                post = await GetPost(postId);
+            }
             this.ImageServices.RemoveImage(post.Image);
             if (post != null)
             {
@@ -132,10 +136,11 @@ namespace UniversityMiniinstagram.Services
             }
         }
 
-        public async Task<ICollection<Post>> GetUserPosts(string userId)
+        public async Task<ApplicationUser> GetUserPosts(string userId)
         {
-            IEnumerable<Post> userPosts = (await this.PostReposetry.Get(post => post.UserId == userId)).OrderBy(post => post.UploadDate);
-            return userPosts.ToList();
+            ApplicationUser user = await this.AccountService.GetUser(userId);
+            user.Posts = (await this.PostReposetry.Get(post => post.UserId == userId)).OrderBy(post => post.UploadDate).ToList();
+            return user;
         }
 
         public async Task<Post> GetPost(string postId)
@@ -143,6 +148,33 @@ namespace UniversityMiniinstagram.Services
             Post post = (await this.PostReposetry.Get(post => post.Id == postId, new string[] { "Comments.User", "Likes" })).SingleOrDefault();
             post.Comments = post.Comments.OrderBy(comment => comment.Date).ToList();
             return post;
+        }
+
+        public async Task<PostsViewModel> GetProfilePost(string postId)
+        {
+            Post post = await GetPost(postId);
+            var postVm = new PostsViewModel()
+            {
+                Post = post,
+                IsReportAllowed = false,
+                IsDeleteAllowed = false,
+                CommentVM = new List<CommentViewModel>()
+            };
+            foreach (Comment comment in post.Comments)
+            {
+                if (comment.IsShow)
+                {
+                    var commVm = new CommentViewModel()
+                    {
+                        Comment = comment,
+                        IsDeleteAllowed = await IsDeleteAllowed(comment.User, post.UserId),
+                        IsReportAllowed = await IsReportAllowed(comment.UserId, post.UserId, commentId: comment.Id),
+                        ShowReportColor = false
+                    };
+                    postVm.CommentVM.Add(commVm);
+                }
+            }
+            return postVm;
         }
 
         public async Task<string> RemoveComment(string commentId)
@@ -162,11 +194,10 @@ namespace UniversityMiniinstagram.Services
             {
                 return true;
             }
-            ApplicationUser guest = await this.AccountService.GetUser(guestId);
-            return await this.AccountService.IsInRole(guest, "Admin")
+            return await this.AccountService.IsInRole(guestId, "Admin")
                 ? true
-                : await this.AccountService.IsInRole(guest, "Moderator")
-                ? !await this.AccountService.IsInRole(guest, "Admin")
+                : await this.AccountService.IsInRole(guestId, "Moderator")
+                ? !await this.AccountService.IsInRole(guestId, "Admin")
                 : false;
         }
         public async Task<bool> IsReportAllowed(string postHolderId, string guestId, string postId = null, string commentId = null)
@@ -189,8 +220,7 @@ namespace UniversityMiniinstagram.Services
                     return false;
                 }
             }
-            ApplicationUser postHolderUser = await this.AccountService.GetUser(postHolderId);
-            return !await this.AccountService.IsInRole(postHolderUser, "Admin");
+            return !await this.AccountService.IsInRole(postHolderId, "Admin");
         }
 
         public async Task<bool> HidePost(string postId)

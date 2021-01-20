@@ -18,18 +18,17 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
         public Task<bool> ExternalLogin(ExternalLoginInfo info);
         public Task<ApplicationUser> GetUser(string userId);
-        public Task<ApplicationUser> GetUserByEmail(string email);
         public Task<bool> EditProfile(EditProfileViewModel vm);
         public Task<bool> AddRole(string name);
-        public Task<bool> IsInRole(ApplicationUser user, string roleName);
-        public Task<bool> SetBanRole(ApplicationUser user);
+        public Task<bool> IsInRole(string userId, string roleName, ApplicationUser user = null);
+        public Task<bool> SetBanRole(string userId, ApplicationUser user = null);
         public Task<ICollection<string>> GetUserRoles(ApplicationUser user);
         public Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info);
         public IList<ApplicationUser> GetAllUsers();
-        public Task<bool> UnBanUser(ApplicationUser user);
+        public Task<bool> UnBanUser(string userId);
         public Task<bool> SetModerator(ApplicationUser user);
         public Task<bool> SetNonModerator(ApplicationUser user);
-        public bool IsAdminCreated();
+        public Task<bool> CreateAdmin();
         public Task<bool> RegisterAdmin(RegisterViewModel vm);
     }
 }

@@ -13,7 +13,7 @@ namespace UniversityMiniinstagram.Tests
         public async void IsBadReqResult()
         {
             var accountS = new Mock<IAccountService>();
-            accountS.Setup(service => service.IsAdminCreated());
+            accountS.Setup(service => service.CreateAdmin());
             var postS = new Mock<IPostService>();
             var host = new Mock<IWebHostEnvironment>();
             var accountController = new AccountController(accountS.Object, postS.Object, host.Object);

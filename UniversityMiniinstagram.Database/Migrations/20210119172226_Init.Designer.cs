@@ -10,7 +10,7 @@ using UniversityMiniinstagram.Database;
 namespace UniversityMiniinstagram.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210118174307_Init")]
+    [Migration("20210119172226_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,7 +312,7 @@ namespace UniversityMiniinstagram.Database.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000000",
                             Path = "/Images/noPhoto.png",
-                            UploadDate = new DateTime(2021, 1, 18, 17, 42, 56, 108, DateTimeKind.Utc).AddTicks(3655)
+                            UploadDate = new DateTime(2021, 1, 19, 17, 22, 15, 246, DateTimeKind.Utc).AddTicks(9387)
                         });
                 });
 

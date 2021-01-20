@@ -32,17 +32,18 @@ namespace UniversityMiniinstagram.Web.Controllers
                 if (userIdClaim != null)
                 {
                     vm.UserId = userIdClaim.Value;
-                }
-                if (vm.CommentId != null)
-                {
-                    await this.AdminService.ReportComment(vm);
-                }
-                else
-                {
-                    await this.AdminService.ReportPost(vm);
+                    if (vm.CommentId != null)
+                    {
+                        await this.AdminService.ReportComment(vm);
+                    }
+                    else
+                    {
+                        await this.AdminService.ReportPost(vm);
+                    }
+                    return Ok();
                 }
             }
-            return Ok();
+            return BadRequest();
         }
 
         [HttpGet]
@@ -88,8 +89,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("pardon/post")]
         public async Task<IActionResult> PardonPost(string reportId)
         {
-            var result = await this.AdminService.RemovePostReport(reportId);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.RemovePostReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -97,8 +97,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("pardon/comment")]
         public async Task<IActionResult> PardonComment(string reportId)
         {
-            var result = await this.AdminService.RemoveCommentReport(reportId);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.RemoveCommentReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -106,8 +105,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("post/decision")]
         public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
-            var result = await this.AdminService.PostReportDecision(vm);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.PostReportDecision(vm) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -115,8 +113,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("comment/decision")]
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
-            var result = await this.AdminService.CommentReportDecision(vm);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.CommentReportDecision(vm) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -124,8 +121,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("set-moder-roots")]
         public async Task<IActionResult> AddModerator(string userId)
         {
-            var result = await this.AdminService.AddModeratorRoots(userId);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.AddModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -133,8 +129,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("set-user-roots")]
         public async Task<IActionResult> RemoveModerator(string userId)
         {
-            var result = await this.AdminService.RemoveModeratorRoots(userId);
-            return result ? Ok() : (IActionResult)BadRequest();
+            return await this.AdminService.RemoveModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }
     }
 }

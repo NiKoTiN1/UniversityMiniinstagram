@@ -235,7 +235,7 @@ namespace UniversityMiniinstagram.Database.Migrations
             migrationBuilder.InsertData(
                 table: "Images",
                 columns: new[] { "Id", "Path", "PostId", "UploadDate" },
-                values: new object[] { "00000000-0000-0000-0000-000000000000", "/Images/noPhoto.png", null, new DateTime(2021, 1, 18, 17, 42, 56, 108, DateTimeKind.Utc).AddTicks(3655) });
+                values: new object[] { "00000000-0000-0000-0000-000000000000", "/Images/noPhoto.png", null, new DateTime(2021, 1, 19, 17, 22, 15, 246, DateTimeKind.Utc).AddTicks(9387) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
