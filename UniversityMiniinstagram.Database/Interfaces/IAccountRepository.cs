@@ -29,7 +29,6 @@ namespace UniversityMiniinstagram.Database.Interfaces
         public Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles);
         public IList<ApplicationUser> GetAllUsers();
         public Task<bool> UnBanUser(ApplicationUser user);
-        public bool IsAdminCreated();
         public Task<bool> ChangePassword(ApplicationUser user, string oldPass, string newPass);
     }
 }

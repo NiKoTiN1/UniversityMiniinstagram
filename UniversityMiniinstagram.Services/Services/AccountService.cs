@@ -56,26 +56,6 @@ namespace UniversityMiniinstagram.Services
             return false;
         }
 
-        public async Task<bool> RegisterAdmin(RegisterViewModel vm)
-        {
-            if (await this.AccountReposetry.IsExist(vm.Email))
-            {
-                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
-                if (await this.AccountReposetry.CreateUser(user, vm.Password))
-                {
-                    var isAdminRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "Admin");
-                    var isModeratorRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "Moderator");
-                    var isUserRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "User");
-                    if (isAdminRoleAdded && isModeratorRoleAdded && isUserRoleAdded)
-                    {
-                        return true;
-                    }
-                    await this.AccountReposetry.RemoveUser(user.Id);
-                }
-            }
-            return false;
-        }
-
         public async Task<bool> IsInRole(string userId, string roleName, ApplicationUser user = null)
         {
             if (user == null)
@@ -194,25 +174,6 @@ namespace UniversityMiniinstagram.Services
         {
             var roles = new List<string> { "Moderator" };
             return await this.AccountReposetry.RemoveRolesFromUser(user, roles);
-        }
-        public async Task<bool> CreateAdmin()
-        {
-            if (!this.AccountReposetry.IsAdminCreated())
-            {
-                await this.AccountReposetry.AddRole("Admin");
-                await this.AccountReposetry.AddRole("User");
-                await this.AccountReposetry.AddRole("Moderator");
-                await this.AccountReposetry.AddRole("Banned");
-                var vm = new RegisterViewModel()
-                {
-                    Email = "Admin@mail.ru",
-                    Description = "AdminAcc",
-                    Password = "Admin_1",
-                    Username = "Admin",
-                };
-                return await RegisterAdmin(vm);
-            }
-            return false;
         }
     }
 }

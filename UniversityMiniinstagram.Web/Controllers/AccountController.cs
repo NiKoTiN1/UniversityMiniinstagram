@@ -163,15 +163,6 @@ namespace UniversityMiniinstagram.Web.Controllers
             return RedirectToAction("EditProfile");
         }
 
-
-        [HttpGet]
-        [Route("add-role")]
-        public async Task<IActionResult> CreateRolePost()
-        {
-            return await this.AccountService.CreateAdmin() ? BadRequest() : (IActionResult)RedirectToAction("Profile");
-        }
-
-
         [HttpGet]
         [Authorize]
         [Route("AccessDenied")]

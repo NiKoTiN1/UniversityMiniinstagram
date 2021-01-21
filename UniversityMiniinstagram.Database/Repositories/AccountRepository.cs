@@ -161,12 +161,7 @@ namespace UniversityMiniinstagram.Database.Repositories
             IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, "Banned");
             await this.UserManager.AddToRoleAsync(user, "User");
             await this.UserManager.UpdateSecurityStampAsync(user);
-            //await this.Context.SaveChangesAsync();
             return result.Succeeded;
-        }
-        public bool IsAdminCreated()
-        {
-            return this.RoleManager.Roles.Any();
         }
     }
 }

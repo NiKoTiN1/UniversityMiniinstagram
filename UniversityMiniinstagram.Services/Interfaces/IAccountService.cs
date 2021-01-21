@@ -25,7 +25,5 @@ namespace UniversityMiniinstagram.Services.Interfaces
         public Task<bool> UnBanUser(string userId);
         public Task<bool> SetModerator(ApplicationUser user);
         public Task<bool> SetNonModerator(ApplicationUser user);
-        public Task<bool> CreateAdmin();
-        public Task<bool> RegisterAdmin(RegisterViewModel vm);
     }
 }
