@@ -40,8 +40,8 @@ namespace UniversityMiniinstagram.Services
         public async Task<ICollection<AdminPostReportsVeiwModel>> GetPostReports(string userId)
         {
             var vmList = new List<AdminPostReportsVeiwModel>();
-            var result = (await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" })).OrderBy(report => report.Date).ToList();
-            foreach (PostReport report in result)
+            var reports = (await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" })).OrderBy(report => report.Date).ToList();
+            foreach (PostReport report in reports)
             {
                 report.Post = await this.PostService.GetPost(report.PostId);
                 if (report.Post.UserId != userId)
@@ -213,23 +213,13 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> AddModeratorRoots(string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
-            if (user == null)
-            {
-                return false;
-            }
-            var result = await this.AccountService.SetModerator(user);
-            return result;
+            return user == null ? false : await this.AccountService.SetModerator(user);
         }
 
         public async Task<bool> RemoveModeratorRoots(string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
-            if (user == null)
-            {
-                return false;
-            }
-            var result = await this.AccountService.SetNonModerator(user);
-            return result;
+            return user == null ? false : await this.AccountService.SetNonModerator(user);
         }
     }
 }

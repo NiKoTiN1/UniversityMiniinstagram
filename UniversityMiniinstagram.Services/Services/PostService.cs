@@ -180,11 +180,10 @@ namespace UniversityMiniinstagram.Services
         public async Task<string> RemoveComment(string commentId)
         {
             Comment comment = (await this.commentReposetry.Get(comment => comment.Id == commentId)).SingleOrDefault();
-            var postId = comment.PostId;
             if (comment != null)
             {
                 await this.commentReposetry.Remove(comment);
-                return postId;
+                return comment.PostId;
             }
             return null;
         }

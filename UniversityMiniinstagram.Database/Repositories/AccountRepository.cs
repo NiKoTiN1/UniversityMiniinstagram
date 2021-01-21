@@ -10,18 +10,16 @@ namespace UniversityMiniinstagram.Database.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        public AccountRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager, DatabaseContext context)
+        public AccountRepository(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<ApplicationUser> signInManager)
         {
             this.UserManager = userManager;
             this.RoleManager = roleManager;
             this.SignInManager = signInManager;
-            this.Context = context;
         }
 
         private readonly UserManager<ApplicationUser> UserManager;
         private readonly RoleManager<IdentityRole> RoleManager;
         private readonly SignInManager<ApplicationUser> SignInManager;
-        private readonly DatabaseContext Context;
 
         public async Task<bool> CreateUser(ApplicationUser user, string password)
         {

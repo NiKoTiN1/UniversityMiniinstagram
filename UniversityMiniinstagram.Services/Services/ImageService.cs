@@ -26,8 +26,7 @@ namespace UniversityMiniinstagram.Services
             if (vm.File != null)
             {
                 var imageGuid = Guid.NewGuid().ToString();
-                var ext = vm.File.FileName.Split(".").Last();
-                var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + ext;
+                var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + vm.File.FileName.Split(".").Last();
 
                 using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
                 {
@@ -54,7 +53,6 @@ namespace UniversityMiniinstagram.Services
             {
                 File.Delete("wwwroot/" + image.Path);
             }
-            //await this.ImageReposetry.Remove(image);
         }
     }
 }

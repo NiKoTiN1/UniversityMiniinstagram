@@ -29,8 +29,7 @@ namespace UniversityMiniinstagram.Services
             if (isExist)
             {
                 var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
-                var isCreated = await this.AccountReposetry.CreateUser(user, vm.Password);
-                if (isCreated)
+                if (await this.AccountReposetry.CreateUser(user, vm.Password))
                 {
                     var isRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "User");
 
@@ -46,12 +45,9 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> Register(ApplicationUser user)
         {
             user.AvatarId = new Guid().ToString();
-            var result = await this.AccountReposetry.CreateUser(user);
-            if (result)
+            if (await this.AccountReposetry.CreateUser(user))
             {
-                var isRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "User");
-
-                if (isRoleAdded)
+                if (await this.AccountReposetry.AddRoleToUser(user, "User"))
                 {
                     return true;
                 }
@@ -62,17 +58,15 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> RegisterAdmin(RegisterViewModel vm)
         {
-            var isExist = await this.AccountReposetry.IsExist(vm.Email);
-            if (isExist)
+            if (await this.AccountReposetry.IsExist(vm.Email))
             {
                 var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
-                var isCreated = await this.AccountReposetry.CreateUser(user, vm.Password);
-                if (isCreated)
+                if (await this.AccountReposetry.CreateUser(user, vm.Password))
                 {
-                    var isRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "Admin");
-                    var isRoleAddedtemp1 = await this.AccountReposetry.AddRoleToUser(user, "Moderator");
-                    var isRoleAddedtemp2 = await this.AccountReposetry.AddRoleToUser(user, "User");
-                    if (isRoleAdded && isRoleAddedtemp1 && isRoleAddedtemp2)
+                    var isAdminRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "Admin");
+                    var isModeratorRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "Moderator");
+                    var isUserRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "User");
+                    if (isAdminRoleAdded && isModeratorRoleAdded && isUserRoleAdded)
                     {
                         return true;
                     }
@@ -103,14 +97,7 @@ namespace UniversityMiniinstagram.Services
                 return true;
             }
             IList<string> roleList = await this.AccountReposetry.GetRoleList(user);
-            var result = await this.AccountReposetry.RemoveRolesFromUser(user, roleList);
-            return !result ? false : await this.AccountReposetry.AddRoleToUser(user, "Banned");
-        }
-
-        public async Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info)
-        {
-            var result = await this.AccountReposetry.AddLoginToUser(user, info);
-            return result;
+            return await this.AccountReposetry.RemoveRolesFromUser(user, roleList) ? await this.AccountReposetry.AddRoleToUser(user, "Banned") : false;
         }
 
         public async Task Logout()
@@ -123,21 +110,13 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
             return await this.AccountReposetry.UnBanUser(user);
         }
-
         public async Task<bool> Login(LoginViewModel vm)
         {
-            var result = await this.AccountReposetry.Login(vm.Email, vm.Password);
-            return result;
+            return await this.AccountReposetry.Login(vm.Email, vm.Password);
         }
-        public async Task Login(ApplicationUser user)
-        {
-            await this.AccountReposetry.Login(user);
-        }
-
         public AuthenticationProperties GoogleLogin(string url)
         {
-            AuthenticationProperties res = this.AccountReposetry.GoogleLogin(url);
-            return res;
+            return this.AccountReposetry.GoogleLogin(url);
         }
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
@@ -145,8 +124,7 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            var isExist = await this.AccountReposetry.ExternalLogin(info);
-            if (!isExist)
+            if (!await this.AccountReposetry.ExternalLogin(info))
             {
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 ApplicationUser user = await this.AccountReposetry.GetUserByEmail(email);
@@ -169,13 +147,7 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<ApplicationUser> GetUser(string userId)
         {
-            ApplicationUser user = await this.AccountReposetry.GetUser(userId);
-            return user;
-        }
-
-        public async Task<bool> AddRole(string name)
-        {
-            return await this.AccountReposetry.AddRole(name);
+            return await this.AccountReposetry.GetUser(userId);
         }
 
         public async Task<bool> EditProfile(EditProfileViewModel vm)
@@ -184,8 +156,7 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser Ouser = await this.AccountReposetry.GetUser(vm.UserId);
             if (vm.Password != null)
             {
-                var res = await this.AccountReposetry.ChangePassword(Ouser, vm.OldPassword, vm.Password);
-                if (!res)
+                if (!await this.AccountReposetry.ChangePassword(Ouser, vm.OldPassword, vm.Password))
                 {
                     return false;
                 }
@@ -201,8 +172,7 @@ namespace UniversityMiniinstagram.Services
                 Description = vm.Description,
                 UserName = vm.Username
             };
-            var result = await this.AccountReposetry.UpdateUser(Ouser, user);
-            return result;
+            return await this.AccountReposetry.UpdateUser(Ouser, user);
         }
 
         public async Task<ICollection<string>> GetUserRoles(ApplicationUser user)
@@ -212,14 +182,12 @@ namespace UniversityMiniinstagram.Services
 
         public IList<ApplicationUser> GetAllUsers()
         {
-            IList<ApplicationUser> userList = this.AccountReposetry.GetAllUsers();
-            return userList;
+            return this.AccountReposetry.GetAllUsers();
         }
 
         public async Task<bool> SetModerator(ApplicationUser user)
         {
-            var result = await this.AccountReposetry.AddRoleToUser(user, "Moderator");
-            return result;
+            return await this.AccountReposetry.AddRoleToUser(user, "Moderator");
         }
 
         public async Task<bool> SetNonModerator(ApplicationUser user)
