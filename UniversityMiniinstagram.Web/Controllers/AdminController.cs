@@ -26,24 +26,23 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("report/send")]
         public async Task<ActionResult> SendReport([FromForm] SendReportViewModel vm)
         {
-            if (ModelState.IsValid && vm != null)
+            if (!ModelState.IsValid && vm == null)
             {
-                Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
-                {
-                    vm.UserId = userIdClaim.Value;
-                    if (vm.CommentId != null)
-                    {
-                        await this.AdminService.ReportComment(vm);
-                    }
-                    else
-                    {
-                        await this.AdminService.ReportPost(vm);
-                    }
-                    return Ok();
-                }
+                return BadRequest();
             }
-            return BadRequest();
+            Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return BadRequest();
+            }
+            vm.UserId = userIdClaim.Value;
+            if (vm.CommentId != null)
+            {
+                await this.AdminService.ReportComment(vm);
+                return Ok();
+            }
+            await this.AdminService.ReportPost(vm);
+            return Ok();
         }
 
         [HttpGet]
