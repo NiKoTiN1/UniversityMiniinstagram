@@ -23,36 +23,35 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<Image> Add(ImageViewModel vm, string rootPath)
         {
-            if (vm.File != null)
-            {
-                var imageGuid = Guid.NewGuid().ToString();
-                var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + vm.File.FileName.Split(".").Last();
-
-                using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
-                {
-                    await vm.File.CopyToAsync(fileStream);
-                }
-                var image = new Image()
-                {
-                    Id = imageGuid,
-                    Path = path,
-                    UploadDate = DateTime.Now,
-                };
-                await this.ImageReposetry.Add(image);
-                return image;
-            }
-            else
+            if (vm.File == null)
             {
                 return null;
             }
+            var imageGuid = Guid.NewGuid().ToString();
+            var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + vm.File.FileName.Split(".").Last();
+
+            using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
+            {
+                await vm.File.CopyToAsync(fileStream);
+            }
+            var image = new Image()
+            {
+                Id = imageGuid,
+                Path = path,
+                UploadDate = DateTime.Now,
+            };
+            await this.ImageReposetry.Add(image);
+            return image;
         }
 
         public void RemoveImage(Image image)
         {
-            if (File.Exists("wwwroot/" + image.Path))
+            var path = "wwwroot/" + image.Path;
+            if (!File.Exists(path))
             {
-                File.Delete("wwwroot/" + image.Path);
+                return;
             }
+            File.Delete(path);
         }
     }
 }

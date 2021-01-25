@@ -25,35 +25,35 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> Register(RegisterViewModel vm)
         {
-            var isExist = await this.AccountReposetry.IsExist(vm.Email);
-            if (isExist)
+            if (!await this.AccountReposetry.IsExist(vm.Email))
             {
-                var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
-                if (await this.AccountReposetry.CreateUser(user, vm.Password))
-                {
-                    var isRoleAdded = await this.AccountReposetry.AddRoleToUser(user, "User");
-
-                    if (isRoleAdded)
-                    {
-                        return true;
-                    }
-                    await this.AccountReposetry.RemoveUser(user.Id);
-                }
+                return false;
             }
-            return false;
+            var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
+            if (!await this.AccountReposetry.CreateUser(user, vm.Password))
+            {
+                return false;
+            }
+            if (!await this.AccountReposetry.AddRoleToUser(user, "User"))
+            {
+                await this.AccountReposetry.RemoveUser(user.Id);
+                return false;
+            }
+            return true;
         }
         public async Task<bool> Register(ApplicationUser user)
         {
             user.AvatarId = new Guid().ToString();
-            if (await this.AccountReposetry.CreateUser(user))
+            if (!await this.AccountReposetry.CreateUser(user))
             {
-                if (await this.AccountReposetry.AddRoleToUser(user, "User"))
-                {
-                    return true;
-                }
+                return false;
             }
-            await this.AccountReposetry.RemoveUser(user.Id);
-            return false;
+            if (!await this.AccountReposetry.AddRoleToUser(user, "User"))
+            {
+                await this.AccountReposetry.RemoveUser(user.Id);
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> IsInRole(string userId, string roleName, ApplicationUser user = null)
@@ -104,24 +104,25 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            if (!await this.AccountReposetry.ExternalLogin(info))
+            if (await this.AccountReposetry.ExternalLogin(info))
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                ApplicationUser user = await this.AccountReposetry.GetUserByEmail(email);
-                if (user == null)
+                return false;
+            }
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await this.AccountReposetry.GetUserByEmail(email);
+            if (user == null)
+            {
+                user = new ApplicationUser()
                 {
-                    user = new ApplicationUser()
-                    {
-                        Email = email,
-                        UserName = email.Split("@").First()
-                    };
-                    if (!await Register(user) || !await this.AccountReposetry.AddLoginToUser(user, info))
-                    {
-                        return false;
-                    }
-                    await this.AccountReposetry.Login(user);
+                    Email = email,
+                    UserName = email.Split("@").First()
+                };
+                if (!await Register(user) || !await this.AccountReposetry.AddLoginToUser(user, info))
+                {
+                    return false;
                 }
             }
+            await this.AccountReposetry.Login(user);
             return true;
         }
 

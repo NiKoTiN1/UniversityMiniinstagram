@@ -23,26 +23,30 @@ namespace UniversityMiniinstagram.Web.Hubs
 
         public async Task SendMessage(string postId, string text)
         {
-            if (text != "" && text != "" && text != " ")
+            if (text == "" && text == "" && text == " ")
             {
-                var vm = new SendCommentViewModel()
-                {
-                    PostId = postId,
-                    Text = text
-                };
-                Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-                Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
-
-                var commentViewModel = new CommentViewModel()
-                {
-                    Comment = commresult,
-                    IsDeleteAllowed = await this.PostService.IsDeleteAllowed(commresult.User, userIdClaim.Value),
-                    IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
-                    ShowReportColor = false
-                };
-                var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);
-                await Clients.All.SendAsync("SendCommentHub", res, postId, commentViewModel.Comment.Id.ToString());
+                return;
             }
+            var vm = new SendCommentViewModel()
+            {
+                PostId = postId,
+                Text = text
+            };
+            Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
+            if (commresult == null)
+            {
+                return;
+            }
+            var commentViewModel = new CommentViewModel()
+            {
+                Comment = commresult,
+                IsDeleteAllowed = await this.PostService.IsDeleteAllowed(commresult.User, userIdClaim.Value),
+                IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
+                ShowReportColor = false
+            };
+            var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);
+            await Clients.All.SendAsync("SendCommentHub", res, postId, commentViewModel.Comment.Id.ToString());
         }
     }
 }

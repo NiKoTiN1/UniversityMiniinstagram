@@ -39,27 +39,31 @@ namespace UniversityMiniinstagram.Services
         public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
         {
             Image image = await this.ImageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
-            if (image != null)
+            if (image == null)
             {
-                var newPost = new Post()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Description = vm.Description,
-                    Image = image,
-                    UploadDate = DateTime.Now,
-                    UserId = userId,
-                    CategoryPost = vm.CategoryPost,
-                    IsShow = true
-                };
-                await this.PostReposetry.Add(newPost);
-                return newPost;
+                return null;
             }
-            return null;
+            var newPost = new Post()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Description = vm.Description,
+                Image = image,
+                UploadDate = DateTime.Now,
+                UserId = userId,
+                CategoryPost = vm.CategoryPost,
+                IsShow = true
+            };
+            await this.PostReposetry.Add(newPost);
+            return newPost;
         }
 
         public async Task<Comment> AddComment(SendCommentViewModel vm, string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
+            if (user == null)
+            {
+                return null;
+            }
             var newComment = new Comment()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -73,7 +77,6 @@ namespace UniversityMiniinstagram.Services
             await this.commentReposetry.Add(newComment);
             return newComment;
         }
-
         public async Task<Like> AddLike(string postId, string userId)
         {
             var newLike = new Like()
@@ -162,17 +165,18 @@ namespace UniversityMiniinstagram.Services
             };
             foreach (Comment comment in post.Comments)
             {
-                if (comment.IsShow)
+                if (!comment.IsShow)
                 {
-                    var commVm = new CommentViewModel()
-                    {
-                        Comment = comment,
-                        IsDeleteAllowed = await IsDeleteAllowed(comment.User, post.UserId),
-                        IsReportAllowed = await IsReportAllowed(comment.UserId, post.UserId, commentId: comment.Id),
-                        ShowReportColor = false
-                    };
-                    postVm.CommentVM.Add(commVm);
+                    continue;
                 }
+                var commVm = new CommentViewModel()
+                {
+                    Comment = comment,
+                    IsDeleteAllowed = await IsDeleteAllowed(comment.User, post.UserId),
+                    IsReportAllowed = await IsReportAllowed(comment.UserId, post.UserId, commentId: comment.Id),
+                    ShowReportColor = false
+                };
+                postVm.CommentVM.Add(commVm);
             }
             return postVm;
         }
@@ -180,12 +184,12 @@ namespace UniversityMiniinstagram.Services
         public async Task<string> RemoveComment(string commentId)
         {
             Comment comment = (await this.commentReposetry.Get(comment => comment.Id == commentId)).SingleOrDefault();
-            if (comment != null)
+            if (comment == null)
             {
-                await this.commentReposetry.Remove(comment);
-                return comment.PostId;
+                return null;
             }
-            return null;
+            await this.commentReposetry.Remove(comment);
+            return comment.PostId;
         }
         public async Task<bool> IsDeleteAllowed(ApplicationUser postHolder, string guestId)
         {
@@ -205,14 +209,14 @@ namespace UniversityMiniinstagram.Services
             {
                 return false;
             }
-            if (string.IsNullOrEmpty(postId))
+            if (!string.IsNullOrEmpty(postId))
             {
                 if ((await this.adminRepository.Get(report => report.PostId == postId && report.UserId == guestId)).Any())
                 {
                     return false;
                 }
             }
-            if (string.IsNullOrEmpty(commentId))
+            if (!string.IsNullOrEmpty(commentId))
             {
                 if ((await this.commentReportReposetory.Get(report => report.CommentId == commentId && report.UserId == guestId)).Any())
                 {

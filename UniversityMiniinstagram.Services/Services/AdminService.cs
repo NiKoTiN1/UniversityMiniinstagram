@@ -44,26 +44,27 @@ namespace UniversityMiniinstagram.Services
             foreach (PostReport report in reports)
             {
                 report.Post = await this.PostService.GetPost(report.PostId);
-                if (report.Post.UserId != userId)
+                if (report.Post.UserId == userId)
                 {
-                    var vm = new AdminPostReportsVeiwModel
-                    {
-                        Report = report,
-                        CommentViewModel = new List<CommentViewModel>()
-                    };
-                    foreach (Comment comment in report.Post.Comments.OrderBy(comment => comment.Date))
-                    {
-                        var commVm = new CommentViewModel()
-                        {
-                            Comment = comment,
-                            IsDeleteAllowed = false,
-                            IsReportAllowed = false,
-                            ShowReportColor = false
-                        };
-                        vm.CommentViewModel.Add(commVm);
-                    }
-                    vmList.Add(vm);
+                    continue;
                 }
+                var vm = new AdminPostReportsVeiwModel
+                {
+                    Report = report,
+                    CommentViewModel = new List<CommentViewModel>()
+                };
+                foreach (Comment comment in report.Post.Comments.OrderBy(comment => comment.Date))
+                {
+                    var commVm = new CommentViewModel()
+                    {
+                        Comment = comment,
+                        IsDeleteAllowed = false,
+                        IsReportAllowed = false,
+                        ShowReportColor = false
+                    };
+                    vm.CommentViewModel.Add(commVm);
+                }
+                vmList.Add(vm);
             }
             return vmList;
         }
@@ -76,21 +77,22 @@ namespace UniversityMiniinstagram.Services
             foreach (CommentReport report in commentReports)
             {
                 var isRepUserModerator = await this.AccountService.IsInRole(report.Comment.User.Id, "Moderator", report.Comment.User);
-                if (!(isCurUserModerator && isRepUserModerator))
+                if ((isCurUserModerator && isRepUserModerator))
                 {
-                    var commentReportVM = new AdminCommentReportsVeiwModel()
-                    {
-                        Report = report,
-                        CommentViewModel = report.Comment.Post.Comments.Select(comment => new CommentViewModel()
-                        {
-                            Comment = comment,
-                            IsDeleteAllowed = false,
-                            IsReportAllowed = false,
-                            ShowReportColor = report.CommentId == comment.Id
-                        }).ToList()
-                    };
-                    commentReportsVM.Add(commentReportVM);
+                    continue;
                 }
+                var commentReportVM = new AdminCommentReportsVeiwModel()
+                {
+                    Report = report,
+                    CommentViewModel = report.Comment.Post.Comments.Select(comment => new CommentViewModel()
+                    {
+                        Comment = comment,
+                        IsDeleteAllowed = false,
+                        IsReportAllowed = false,
+                        ShowReportColor = report.CommentId == comment.Id
+                    }).ToList()
+                };
+                commentReportsVM.Add(commentReportVM);
             }
             return commentReportsVM.ToList();
         }
@@ -98,23 +100,23 @@ namespace UniversityMiniinstagram.Services
         public async Task<bool> RemovePostReport(string reportId)
         {
             PostReport report = (await this.AdminReposetry.Get(report => report.Id == reportId)).SingleOrDefault();
-            if (report != null)
+            if (report == null)
             {
-                await this.AdminReposetry.Remove(report);
-                return true;
+                return false;
             }
-            return false;
+            await this.AdminReposetry.Remove(report);
+            return true;
         }
 
         public async Task<bool> RemoveCommentReport(string reportId)
         {
             CommentReport report = (await this.commentReportReposetory.Get(report => report.Id == reportId)).SingleOrDefault();
-            if (report != null)
+            if (report == null)
             {
-                await this.commentReportReposetory.Remove(report);
-                return true;
+                return false;
             }
-            return false;
+            await this.commentReportReposetory.Remove(report);
+            return true;
         }
 
         public async Task<bool> PostReportDecision(AdminPostReportDecisionViewModel vm)
@@ -197,16 +199,17 @@ namespace UniversityMiniinstagram.Services
             var vmList = new List<UserRolesViewModel>();
             foreach (ApplicationUser user in allUsers)
             {
-                if (!await this.AccountService.IsInRole(user.Id, "Admin", user))
+                if (await this.AccountService.IsInRole(user.Id, "Admin", user))
                 {
-                    ICollection<string> userRoles = await this.AccountService.GetUserRoles(user);
-                    var vm = new UserRolesViewModel()
-                    {
-                        User = user,
-                        UserRoles = userRoles
-                    };
-                    vmList.Add(vm);
+                    continue;
                 }
+                ICollection<string> userRoles = await this.AccountService.GetUserRoles(user);
+                var vm = new UserRolesViewModel()
+                {
+                    User = user,
+                    UserRoles = userRoles
+                };
+                vmList.Add(vm);
             }
             return vmList;
         }
