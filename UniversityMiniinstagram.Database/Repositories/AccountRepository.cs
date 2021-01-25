@@ -60,16 +60,17 @@ namespace UniversityMiniinstagram.Database.Repositories
         public async Task<bool> Login(string email, string password)
         {
             ApplicationUser user = await this.UserManager.FindByEmailAsync(email);
-            if (user != null)
+            if (user == null)
             {
-                PasswordVerificationResult result = this.UserManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-                if (result != PasswordVerificationResult.Failed)
-                {
-                    await this.SignInManager.SignInAsync(user, false);
-                    return true;
-                }
+                return false;
             }
-            return false;
+            PasswordVerificationResult result = this.UserManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return false;
+            }
+            await this.SignInManager.SignInAsync(user, false);
+            return true;
         }
         public async Task Login(ApplicationUser user)
         {
@@ -82,8 +83,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
         public AuthenticationProperties GoogleLogin(string url)
         {
-            AuthenticationProperties prop = this.SignInManager.ConfigureExternalAuthenticationProperties("Google", url);
-            return prop;
+            return this.SignInManager.ConfigureExternalAuthenticationProperties("Google", url);
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
@@ -136,7 +136,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         public async Task<bool> IsExist(string mail)
         {
             ApplicationUser result = await this.UserManager.FindByEmailAsync(mail);
-            return (result == null);
+            return result == null;
         }
 
         public async Task<bool> IsInRole(ApplicationUser user, string role)
@@ -146,14 +146,12 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<IList<string>> GetRoleList(ApplicationUser user)
         {
-            IList<string> roleList = await this.UserManager.GetRolesAsync(user);
-            return roleList;
+            return await this.UserManager.GetRolesAsync(user);
         }
 
         public IList<ApplicationUser> GetAllUsers()
         {
-            var allUsers = this.UserManager.Users.ToList();
-            return allUsers;
+            return this.UserManager.Users.ToList();
         }
 
         public async Task<bool> UnBanUser(ApplicationUser user)
