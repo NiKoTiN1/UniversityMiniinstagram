@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
+using UniversityMiniinstagram.Services.Attrebutes;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
-    [Authorize(Roles = "User")]
+    [AuthorizeEnum(Roles.User)]
     [Route("admin")]
     public class AdminController : Controller
     {
@@ -46,7 +47,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("reports/posts")]
         public async Task<ActionResult> GetPostReports()
         {
@@ -57,7 +58,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("reports/comments")]
         public async Task<ActionResult> GetCommentReports()
         {
@@ -67,7 +68,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [AuthorizeEnum(Roles.Admin)]
         [Route("roles")]
         public async Task<ActionResult> SetDeleteRoles()
         {
@@ -76,7 +77,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [AuthorizeEnum(Roles.Admin)]
         [Route("appeals")]
         public ActionResult Appeals()
         {
@@ -84,7 +85,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("pardon/post")]
         public async Task<IActionResult> PardonPost(string reportId)
         {
@@ -92,7 +93,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("pardon/comment")]
         public async Task<IActionResult> PardonComment(string reportId)
         {
@@ -100,7 +101,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("post/decision")]
         public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
@@ -108,7 +109,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("comment/decision")]
         public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
@@ -116,7 +117,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AuthorizeEnum(Roles.Admin)]
         [Route("set-moder-roots")]
         public async Task<IActionResult> AddModerator(string userId)
         {
@@ -124,7 +125,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AuthorizeEnum(Roles.Admin)]
         [Route("set-user-roots")]
         public async Task<IActionResult> RemoveModerator(string userId)
         {

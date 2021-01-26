@@ -104,7 +104,7 @@ namespace UniversityMiniinstagram.Services
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            if (await this.AccountReposetry.ExternalLogin(info))
+            if (!await this.AccountReposetry.ExternalLogin(info))
             {
                 return false;
             }

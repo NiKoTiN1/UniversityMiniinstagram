@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Models;
+using UniversityMiniinstagram.Services.Attrebutes;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
     [ApiController]
-    [Authorize(Roles = "User")]
+    [AuthorizeEnum(Roles.User)]
     [Route("news")]
     public class NewsController : Controller
     {

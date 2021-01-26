@@ -9,7 +9,9 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Models;
+using UniversityMiniinstagram.Services.Attrebutes;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Views;
 
@@ -30,7 +32,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         private readonly IWebHostEnvironment AppEnvironment;
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Moderator, User")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
         [Route("profile")]
         public async Task<IActionResult> Profile()
         {
@@ -45,7 +47,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, Moderator, User")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
         [Route("profile/edit")]
         public async Task<ViewResult> EditProfile()
         {
@@ -100,7 +102,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator, User")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
         [Route("set-language")]
         public IActionResult SetLanguage(string culture)
         {
@@ -142,7 +144,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator, User")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
         [Route("profile/edited")]
         public async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
         {
@@ -173,7 +175,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Banned")]
+        [AuthorizeEnum(Roles.Banned)]
         [Route("banned")]
         public IActionResult BanPage()
         {
@@ -181,7 +183,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("ban")]
         public async Task<IActionResult> BanUser(string userId)
         {
@@ -189,7 +191,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator")]
+        [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("unban")]
         public async Task<IActionResult> UnBanUser(string userId)
         {
