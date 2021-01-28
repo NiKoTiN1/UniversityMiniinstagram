@@ -5,7 +5,7 @@ namespace UniversityMiniinstagram.Tests
     public class AccountControllerTests
     {
         [Fact]
-        public async void IsBadReqResult()
+        public void IsBadReqResult()
         {
             //var accountS = new Mock<IAccountService>();
             //accountS.Setup(service => service.CreateAdmin());

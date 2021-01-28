@@ -1,18 +1,18 @@
 ﻿@inject IViewLocalizer VLocalizer
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
 }
 
 <div class="centered" style="margin-top: 40px;">
-    <form asp-controller="News" asp-action="AddPost" method="post" enctype="multipart/form-data">
+    <form mvc-action="@MVC.News.AddPost()" method="post" enctype="multipart/form-data">
         <div class="flex-lg-row" style="height:100%; max-width:100%">
             <div class="flex-lg-grow-1">
                 <div class="card rounded-lg border-0 shadow-lg mb-6 lift" style="
                 width: 500px;
                 height: auto;">
                     <label id="imageButton" class="text-center">
-                        <img src="~/Images/add.png" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
+                        <img mvc-src="@Links.Images.add_png" alt="Image" id="Image" class="rounded-top mb-1 mx-auto" style="
                         object-fit: cover;
                         left: 0;
                         top: 0;
@@ -40,4 +40,4 @@
         </div>
     </form>
 </div>
-<script src="~/js/imageLoad.js"></script>
+<script mvc-src="@Links.js.imageLoad_js"></script>

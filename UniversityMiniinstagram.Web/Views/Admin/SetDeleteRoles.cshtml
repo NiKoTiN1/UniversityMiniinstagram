@@ -1,7 +1,7 @@
 ﻿@inject IViewLocalizer VLocalizer
 @model List<UserRolesViewModel>
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
 }
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block shadow-sm" style="margin-top: 40px; width: 190px; height: 100%;
     position: fixed;
@@ -9,17 +9,17 @@
     <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column" style="background-color:white;">
             <li class="nav-item">
-                <a class="nav-link active" style="color:black;" asp-controller="Admin" asp-action="GetPostReports">
+                <a class="nav-link active" style="color:black;" mvc-action="@MVC.Admin.GetPostReports()">
                     @VLocalizer["PostReports"] <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item" style="background-color:white;">
-                <a class="nav-link" style="color: black;" asp-controller="Admin" asp-action="GetCommentReports">
+                <a class="nav-link" style="color: black;" mvc-action="@MVC.Admin.GetCommentReports()">
                     @VLocalizer["CommentReports"]
                 </a>
             </li>
             <li class="nav-item" style="background-color:#343a40;">
-                <a class="nav-link" style="color: white;" asp-controller="Admin" asp-action="SetDeleteRoles">
+                <a class="nav-link" style="color: white;" mvc-action="@MVC.Admin.SetDeleteRoles()">
                     @VLocalizer["Roles"]
                 </a>
             </li>
@@ -30,8 +30,8 @@
 <div class="centeredSt" style="padding-left: 200px; min-width: 90%;">
     @foreach (var elem in Model)
     {
-        @await Component.InvokeAsync("RoleLine", new { vm = elem })
+        @await Component.InvokeAsync(R4MvcExtensions.RoleLine, new { vm = elem })
     }
 </div>
-<script src="~/js/addRemoveModerRoots.js"></script>
-<script src="~/js/banUnban.js"></script>
+<script mvc-src="@Links.js.addRemoveModerRoots_js"></script>
+<script mvc-src="@Links.js.banUnban_js"></script>

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 
@@ -156,8 +158,8 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
-            IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, "Banned");
-            await this.UserManager.AddToRoleAsync(user, "User");
+            IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Banned));
+            await this.UserManager.AddToRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Admin));
             await this.UserManager.UpdateSecurityStampAsync(user);
             return result.Succeeded;
         }

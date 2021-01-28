@@ -13,10 +13,10 @@
                             max-width: 50px;">
                 </div>
                 @{
-                    var unModerId = "UnModer" + Model.User.Id;
-                    var ModerId = "Moder" + Model.User.Id;
-                    var BanID = "AddBan" + Model.User.Id;
-                    var UnBanID = "UnBan" + Model.User.Id;
+                    var unModerId = R4MvcExtensions.UnModer + Model.User.Id;
+                    var ModerId = R4MvcExtensions.Moder + Model.User.Id;
+                    var BanID = R4MvcExtensions.AddBan + Model.User.Id;
+                    var UnBanID = R4MvcExtensions.UnBan + Model.User.Id;
                 }
                 <h4 class="col-7">@Model.User.UserName</h4>
                 @if (Model.UserRoles.Contains("Banned"))

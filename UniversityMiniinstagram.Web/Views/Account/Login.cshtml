@@ -3,8 +3,8 @@
 
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Login";
+    Layout = MVC.Shared.Views._Layout;
+    ViewBag.Title = R4MvcExtensions.LoginTitle;
     var vm = new LoginViewModel();
 }
 
@@ -19,13 +19,15 @@
                 <input type="password" name="Password" id="inputPassword" class="form-control" placeholder="@VLocalizer["Password"]" required="">
                 <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
                 <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["LoginBtn"]</button>
-                <a class="text-center" asp-controller="Account" asp-action="Registration">@VLocalizer["RegisterRedir"]</a>
+                <a class="text-center" mvc-action="@MVC.Account.Registration()">@VLocalizer["RegisterRedir"]</a>
             </form>
         </div>
         <div class="row" style="justify-content: center;">
-            <form method="get">
-                <input type="image" src="~/Images/btn_google_signin_light_normal_web.png" alt="Google authentication" asp-controller="Account"
-                       asp-action="GoogleLogin">
+            <form method="get" mvc-action="@MVC.Account.GoogleLogin()">
+                <label style="cursor:pointer;">
+                    <button type="submit" hidden="hidden"></button>
+                    <img mvc-src="@Links.Images.btn_google_signin_light_normal_web_png" alt="Google authentication">
+                </label>
             </form>
         </div>
     </div>

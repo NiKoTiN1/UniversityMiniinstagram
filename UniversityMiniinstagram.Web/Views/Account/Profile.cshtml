@@ -3,7 +3,7 @@
 
 @model ApplicationUser
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
     ViewBag.Title = Model.UserName;
     List<List<Post>> a = new List<List<Post>>();
     List<Post> b = new List<Post>();
@@ -53,7 +53,7 @@
                 <h3>@Model.Description</h3>
             </div>
             <div class="col-0 align-items-center pt-5 pl-5">
-                <a asp-action="EditProfile" class="btn btn-outline-secondary py-2 px-3 mt-3 mt-sm-0 ml-sm-3" onclick="ga('send', 'event', 'Examples', 'Hero', 'Download');">@VLocalizer["EditBtn"]</a>
+                <a mvc-action="@MVC.Account.EditProfile()" class="btn btn-outline-secondary py-2 px-3 mt-3 mt-sm-0 ml-sm-3" onclick="ga('send', 'event', 'Examples', 'Hero', 'Download');">@VLocalizer["EditBtn"]</a>
             </div>
         </div>
         @foreach (var line in a)
@@ -78,4 +78,4 @@
         }
     </div>
 </div>
-<script src="~/js/profilePost.js"></script>
+<script mvc-src="@Links.js.profilePost_js"></script>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +8,18 @@ namespace UniversityMiniinstagram.Web.Controllers
 {
     [Authorize]
     [Route("settings")]
-    public class SettingsController : Controller
+    public partial class SettingsController : Controller
     {
         [HttpGet]
         [Route("")]
-        public ViewResult GetSettings()
+        public virtual IActionResult GetSettings()
         {
             return View();
         }
 
         [HttpPost]
         [Route("language")]
-        public IActionResult SetLanguage(string culture)
+        public virtual IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,

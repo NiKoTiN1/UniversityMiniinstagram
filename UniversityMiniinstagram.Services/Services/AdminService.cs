@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -71,12 +72,12 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<List<AdminCommentReportsVeiwModel>> GetCommentReports(string userId)
         {
-            var isCurUserModerator = await this.AccountService.IsInRole(userId, "Moderator");
+            var isCurUserModerator = await this.AccountService.IsInRole(userId, Enum.GetName(typeof(Roles), Roles.Moderator));
             var commentReports = (await this.commentReportReposetory.Get(rep => (rep.Comment.UserId != userId), new string[] { "Comment.Post.Comments", "User", "Comment.User" })).OrderBy(report => report.Date).ToList();
             var commentReportsVM = new List<AdminCommentReportsVeiwModel>();
             foreach (CommentReport report in commentReports)
             {
-                var isRepUserModerator = await this.AccountService.IsInRole(report.Comment.User.Id, "Moderator", report.Comment.User);
+                var isRepUserModerator = await this.AccountService.IsInRole(report.Comment.User.Id, Enum.GetName(typeof(Roles), Roles.Moderator), report.Comment.User);
                 if ((isCurUserModerator && isRepUserModerator))
                 {
                     continue;
@@ -199,7 +200,7 @@ namespace UniversityMiniinstagram.Services
             var vmList = new List<UserRolesViewModel>();
             foreach (ApplicationUser user in allUsers)
             {
-                if (await this.AccountService.IsInRole(user.Id, "Admin", user))
+                if (await this.AccountService.IsInRole(user.Id, Enum.GetName(typeof(Roles), Roles.Admin), user))
                 {
                     continue;
                 }

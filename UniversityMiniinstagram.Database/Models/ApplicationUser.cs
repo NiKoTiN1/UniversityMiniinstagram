@@ -24,6 +24,7 @@ namespace UniversityMiniinstagram.Database.Models
             get => this.lazyLoader.Load(this, ref this.avatar);
             set => this.avatar = value;
         }
+    #nullable enable
         public string? AvatarId { get; set; }
         public ICollection<Post> Posts { get; set; }
     }

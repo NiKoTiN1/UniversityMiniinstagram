@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -197,10 +198,10 @@ namespace UniversityMiniinstagram.Services
             {
                 return true;
             }
-            return await this.AccountService.IsInRole(guestId, "Admin")
+            return await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin))
                 ? true
-                : await this.AccountService.IsInRole(guestId, "Moderator")
-                ? !await this.AccountService.IsInRole(guestId, "Admin")
+                : await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Moderator))
+                ? !await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin))
                 : false;
         }
         public async Task<bool> IsReportAllowed(string postHolderId, string guestId, string postId = null, string commentId = null)
@@ -223,7 +224,7 @@ namespace UniversityMiniinstagram.Services
                     return false;
                 }
             }
-            return !await this.AccountService.IsInRole(postHolderId, "Admin");
+            return !await this.AccountService.IsInRole(postHolderId, Enum.GetName(typeof(Roles), Roles.Admin));
         }
 
         public async Task<bool> HidePost(string postId)

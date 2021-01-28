@@ -42,7 +42,7 @@
 <body>
     <header>
         <div class="navbar navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand" asp-controller="News" asp-action="GetAllPosts">University Miniinstagram</a>
+            <a class="navbar-brand" mvc-action="@MVC.News.GetAllPosts()">University Miniinstagram</a>
 
             @if (User.Identity.IsAuthenticated)
             {
@@ -50,7 +50,7 @@
                 {
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" mvc-action="@MVC.News.AddPost()">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
                         </li>
                     </ul>
 
@@ -59,10 +59,10 @@
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">@VLocalizer["ProfileBtn"]</a>
-                            <a class="dropdown-item" asp-controller="Admin" asp-action="GetPostReports" >@VLocalizer["AdminPageBtn"]</a>
-                            <a class="dropdown-item" asp-controller="Settings" asp-action="GetSettings" >@VLocalizer["SettingsBtn"]</a>
-                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">@VLocalizer["LogoutBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Account.Profile()">@VLocalizer["ProfileBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Admin.GetPostReports()" >@VLocalizer["AdminPageBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Settings.GetSettings()" >@VLocalizer["SettingsBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Account.Logout()">@VLocalizer["LogoutBtn"]</a>
                         </div>
                     </div>
                 }
@@ -70,7 +70,7 @@
                 {
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" asp-controller="News" asp-action="AddPost">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" mvc-action="@MVC.News.AddPost()">@VLocalizer["AddPostBtn"] <span class="sr-only">(current)</span></a>
                         </li>
                     </ul>
 
@@ -79,9 +79,9 @@
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" asp-controller="Account" asp-action="Profile">@VLocalizer["ProfileBtn"]</a>
-                            <a class="dropdown-item" asp-controller="Settings" asp-action="GetSettings" >@VLocalizer["SettingsBtn"]</a>
-                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">@VLocalizer["LogoutBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Account.Profile()">@VLocalizer["ProfileBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Settings.GetSettings()" >@VLocalizer["SettingsBtn"]</a>
+                            <a class="dropdown-item" mvc-action="@MVC.Account.Logout()">@VLocalizer["LogoutBtn"]</a>
                         </div>
                     </div>
                 }
@@ -93,8 +93,8 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" asp-controller="Account" asp-action="Login">@VLocalizer["LoginBtn"]</a>
-                        <a class="dropdown-item" asp-controller="Account" asp-action="Register">@VLocalizer["RegisterBtn"]</a>
+                        <a class="dropdown-item" mvc-action="@MVC.Account.Login()">@VLocalizer["LoginBtn"]</a>
+                        <a class="dropdown-item" mvc-action="@MVC.Account.Registration()">@VLocalizer["RegisterBtn"]</a>
                     </div>
                 </div>
             }

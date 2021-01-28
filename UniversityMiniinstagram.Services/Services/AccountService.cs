@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
@@ -34,7 +35,7 @@ namespace UniversityMiniinstagram.Services
             {
                 return false;
             }
-            if (!await this.AccountReposetry.AddRoleToUser(user, "User"))
+            if (!await this.AccountReposetry.AddRoleToUser(user, Enum.GetName(typeof(Roles), Roles.User)))
             {
                 await this.AccountReposetry.RemoveUser(user.Id);
                 return false;
@@ -48,7 +49,7 @@ namespace UniversityMiniinstagram.Services
             {
                 return false;
             }
-            if (!await this.AccountReposetry.AddRoleToUser(user, "User"))
+            if (!await this.AccountReposetry.AddRoleToUser(user, Enum.GetName(typeof(Roles), Roles.User)))
             {
                 await this.AccountReposetry.RemoveUser(user.Id);
                 return false;
@@ -71,13 +72,13 @@ namespace UniversityMiniinstagram.Services
             {
                 user = await this.AccountReposetry.GetUser(userId);
             }
-            var isBanned = await this.AccountReposetry.IsInRole(user, "Banned");
+            var isBanned = await this.AccountReposetry.IsInRole(user, Enum.GetName(typeof(Roles), Roles.Banned));
             if (isBanned)
             {
                 return true;
             }
             IList<string> roleList = await this.AccountReposetry.GetRoleList(user);
-            return await this.AccountReposetry.RemoveRolesFromUser(user, roleList) ? await this.AccountReposetry.AddRoleToUser(user, "Banned") : false;
+            return await this.AccountReposetry.RemoveRolesFromUser(user, roleList) ? await this.AccountReposetry.AddRoleToUser(user, Enum.GetName(typeof(Roles), Roles.Banned)) : false;
         }
 
         public async Task Logout()
@@ -168,12 +169,12 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> SetModerator(ApplicationUser user)
         {
-            return await this.AccountReposetry.AddRoleToUser(user, "Moderator");
+            return await this.AccountReposetry.AddRoleToUser(user, Enum.GetName(typeof(Roles), Roles.Moderator));
         }
 
         public async Task<bool> SetNonModerator(ApplicationUser user)
         {
-            var roles = new List<string> { "Moderator" };
+            var roles = new List<string> { Enum.GetName(typeof(Roles), Roles.Moderator) };
             return await this.AccountReposetry.RemoveRolesFromUser(user, roles);
         }
     }

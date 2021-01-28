@@ -11,6 +11,7 @@ namespace UniversityMiniinstagram.Database.Models
         [Required]
         public string Path { get; set; }
         public Post Post { get; set; }
+    #nullable enable
         public string? PostId { get; set; }
         public DateTime UploadDate { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace UniversityMiniinstagram.Web.Controllers
     [ApiController]
     [AuthorizeEnum(Roles.User)]
     [Route("news")]
-    public class NewsController : Controller
+    public partial class NewsController : Controller
     {
         public NewsController(IPostService postServices, IWebHostEnvironment appEnvironment)
         {
@@ -29,7 +29,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Route("all")]
-        public async Task<IActionResult> GetAllPosts()
+        public async virtual Task<IActionResult> GetAllPosts()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -43,14 +43,14 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Route("addPost")]
-        public IActionResult AddPost()
+        public virtual IActionResult AddPost()
         {
             return View();
         }
 
         [HttpPost]
         [Route("addPost")]
-        public async Task<IActionResult> AddPost([FromForm] CreatePostViewModel vm)
+        public async virtual Task<IActionResult> AddPost([FromForm] CreatePostViewModel vm)
         {
             if (!ModelState.IsValid && vm == null)
             {
@@ -70,7 +70,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("getPost")]
-        public async Task<IActionResult> GetPost([FromForm] string postId)
+        public async virtual Task<IActionResult> GetPost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -83,7 +83,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedComment")]
-        public async Task<ActionResult> RemoveCommentPost([FromForm] string commentId)
+        public async virtual Task<ActionResult> RemoveCommentPost([FromForm] string commentId)
         {
             if (!ModelState.IsValid && commentId == null)
             {
@@ -99,7 +99,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addLike")]
-        public async Task<IActionResult> LikePost([FromForm] string postId)
+        public async virtual Task<IActionResult> LikePost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -125,7 +125,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removeLike")]
-        public async Task<IActionResult> RemoveLike([FromForm] string postId)
+        public async virtual Task<IActionResult> RemoveLike([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -146,7 +146,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedPost")]
-        public async Task<IActionResult> RemovePost([FromForm] string postId)
+        public async virtual Task<IActionResult> RemovePost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {

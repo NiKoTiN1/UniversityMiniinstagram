@@ -3,12 +3,12 @@
 
 @model ApplicationUser
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = Model.UserName + " profile editor";
+    Layout = MVC.Shared.Views._Layout;
+    ViewBag.Title = Model.UserName + R4MvcExtensions.EditPofileTitle;
 }
 
 <div class="centeredSt" style="margin-top:100px;">
-    <form asp-action="EditProfilePost" method="post" enctype="multipart/form-data">
+    <form mvc-action="@MVC.Account.EditProfilePost()" method="post" enctype="multipart/form-data">
         <div class="row mb-5 mx-auto" style=" width: 200px; height: 200px;">
             <label class="mx-auto">
                 <img src="@Model.Avatar.Path" id="Image" class="mx-auto img-fluid rounded-circle mb-2 border border-dark" style="
@@ -55,4 +55,4 @@
         <button class="btn btn-primary btn-lg btn-block" type="submit">@VLocalizer["EditProfileBtn"]</button>
     </form>
 </div>
-<script src="~/js/imageLoad.js"></script>
+<script mvc-src="@Links.js.imageLoad_js"></script>

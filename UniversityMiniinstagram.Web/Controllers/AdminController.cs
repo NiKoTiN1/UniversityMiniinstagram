@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -12,7 +12,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 {
     [AuthorizeEnum(Roles.User)]
     [Route("admin")]
-    public class AdminController : Controller
+    public partial class AdminController : Controller
     {
         public AdminController(IAdminService adminService, IPostService postService)
         {
@@ -25,7 +25,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("report/send")]
-        public async Task<ActionResult> SendReport([FromForm] SendReportViewModel vm)
+        public async virtual Task<ActionResult> SendReport([FromForm] SendReportViewModel vm)
         {
             if (!ModelState.IsValid && vm == null)
             {
@@ -49,7 +49,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("reports/posts")]
-        public async Task<ActionResult> GetPostReports()
+        public async virtual Task<ActionResult> GetPostReports()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
@@ -60,7 +60,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("reports/comments")]
-        public async Task<ActionResult> GetCommentReports()
+        public async virtual Task<ActionResult> GetCommentReports()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
@@ -70,7 +70,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         [AuthorizeEnum(Roles.Admin)]
         [Route("roles")]
-        public async Task<ActionResult> SetDeleteRoles()
+        public async virtual Task<ActionResult> SetDeleteRoles()
         {
             List<UserRolesViewModel> vm = await this.AdminService.GetUsersAndRoles();
             return View(vm);
@@ -79,7 +79,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpGet]
         [AuthorizeEnum(Roles.Admin)]
         [Route("appeals")]
-        public ActionResult Appeals()
+        public virtual ActionResult Appeals()
         {
             return View();
         }
@@ -87,7 +87,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("pardon/post")]
-        public async Task<IActionResult> PardonPost(string reportId)
+        public async virtual Task<IActionResult> PardonPost(string reportId)
         {
             return await this.AdminService.RemovePostReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
@@ -95,7 +95,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("pardon/comment")]
-        public async Task<IActionResult> PardonComment(string reportId)
+        public async virtual Task<IActionResult> PardonComment(string reportId)
         {
             return await this.AdminService.RemoveCommentReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
@@ -103,7 +103,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("post/decision")]
-        public async Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
+        public async virtual Task<IActionResult> PostReportDecision(AdminPostReportDecisionViewModel vm)
         {
             return await this.AdminService.PostReportDecision(vm) ? Ok() : (IActionResult)BadRequest();
         }
@@ -111,7 +111,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator)]
         [Route("comment/decision")]
-        public async Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
+        public async virtual Task<IActionResult> CommentReportDecision(AdminCommentReportDecisionViewModel vm)
         {
             return await this.AdminService.CommentReportDecision(vm) ? Ok() : (IActionResult)BadRequest();
         }
@@ -119,7 +119,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin)]
         [Route("set-moder-roots")]
-        public async Task<IActionResult> AddModerator(string userId)
+        public async virtual Task<IActionResult> AddModerator(string userId)
         {
             return await this.AdminService.AddModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }
@@ -127,7 +127,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [HttpPost]
         [AuthorizeEnum(Roles.Admin)]
         [Route("set-user-roots")]
-        public async Task<IActionResult> RemoveModerator(string userId)
+        public async virtual Task<IActionResult> RemoveModerator(string userId)
         {
             return await this.AdminService.RemoveModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Models;
 
 namespace UniversityMiniinstagram.Database
@@ -14,10 +15,10 @@ namespace UniversityMiniinstagram.Database
             {
                 return;
             }
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-            await roleManager.CreateAsync(new IdentityRole("User"));
-            await roleManager.CreateAsync(new IdentityRole("Moderator"));
-            await roleManager.CreateAsync(new IdentityRole("Banned"));
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Admin)));
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.User)));
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Moderator)));
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Banned)));
         }
         public static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
         {
@@ -33,9 +34,9 @@ namespace UniversityMiniinstagram.Database
                 AvatarId = new Guid().ToString()
             };
             await userManager.CreateAsync(admin, "Admin_1");
-            await userManager.AddToRoleAsync(admin, "Admin");
-            await userManager.AddToRoleAsync(admin, "Moderator");
-            await userManager.AddToRoleAsync(admin, "User");
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Admin));
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Moderator));
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.User));
         }
     }
 }

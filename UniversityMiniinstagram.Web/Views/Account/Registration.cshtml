@@ -1,11 +1,11 @@
 ﻿@inject IViewLocalizer VLocalizer
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
 }
 
 <div class="centered">
-    <form class="form-signin text-center" asp-controller="Account" asp-action="RegistrationPost" method="post">
+    <form class="form-signin text-center" mvc-action="@MVC.Account.RegistrationPost()" method="post">
         <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["RegisterLbl"]</h1>
         <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="@VLocalizer["Email"]">
 
@@ -17,6 +17,6 @@
         <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
 
         <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["RegisterBtn"]</button>
-        <a class="text-center" asp-controller="Account" asp-action="Login">@VLocalizer["LoginRedir"]</a>
+        <a class="text-center" mvc-action="@MVC.Account.Login()">@VLocalizer["LoginRedir"]</a>
     </form>
 </div>

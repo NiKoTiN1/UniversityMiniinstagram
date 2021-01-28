@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Localization
 @inject IViewLocalizer VLocalizer
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var curCulture = requestCulture.RequestCulture.Culture.Name;
 }
@@ -37,4 +37,4 @@
             }
     }
 </div>
-<script src="~/js/setLanguage.js"></script>
+<script mvc-src="@Links.js.setLanguage_js"></script>

@@ -29,27 +29,6 @@ namespace UniversityMiniinstagram.Database
                         Path = "/Images/noPhoto.png",
                         UploadDate = DateTime.UtcNow
                     });
-            //modelBuilder
-            //    .Entity<IdentityRole>().HasData(new IdentityRole()
-            //    {
-            //        Name = "Admin"
-            //    });
-            //modelBuilder
-            //    .Entity<IdentityRole>().HasData(new IdentityRole()
-            //    {
-            //        Name = "User"
-            //    });
-            //modelBuilder
-            //    .Entity<IdentityRole>().HasData(new IdentityRole()
-            //    {
-            //        Name = "Moderator"
-            //    });
-            //modelBuilder
-            //    .Entity<IdentityRole>().HasData(new IdentityRole()
-            //    {
-            //        Name = "Banned"
-            //    });
-
 
             modelBuilder
                 .Entity<PostReport>()

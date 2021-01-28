@@ -1,7 +1,7 @@
 ﻿@inject IViewLocalizer VLocalizer
 @model CommentViewModel
 @{
-    var contentId = Model.Comment.Id + "content";
+    var contentId = Model.Comment.Id + R4MvcExtensions.Content;
     string color;
 }
 @if (Model.ShowReportColor)
@@ -19,7 +19,7 @@ else
                 <span class="col-9 font-weight-bold" data-filter-by="text">@Model.Comment.User.UserName</span>
                 <div class="dropleft col">
                     @{
-                        var buttonId = Model.Comment.Id + "Button";
+                        var buttonId = Model.Comment.Id + R4MvcExtensions.Button;
                     }
                     @if (Model.IsReportAllowed || Model.IsDeleteAllowed)
                     {
@@ -31,8 +31,8 @@ else
                     }
                     <div class="dropdown-menu" aria-labelledby="@buttonId">
                         @{
-                            var deleteId = Model.Comment.Id + "Delete";
-                            var reportId = Model.Comment.Id + "Report";
+                            var deleteId = Model.Comment.Id + R4MvcExtensions.Delete;
+                            var reportId = Model.Comment.Id + R4MvcExtensions.Report;
                         }
                         @if (Model.IsDeleteAllowed)
                         {
@@ -49,7 +49,7 @@ else
                 <p style="margin-bottom: 4px;">@Model.Comment.Text</p>
             </div>
             @{
-                var dateId = "Date" + Model.Comment.Id;
+                var dateId = R4MvcExtensions.Date + Model.Comment.Id;
             }
             <p id="@dateId" class="DateElem" style=" font-size: 10px; color: #8e8e8e;">@Model.Comment.Date.ToString("MM.dd.yyyy HH:mm")<p>
         </div>

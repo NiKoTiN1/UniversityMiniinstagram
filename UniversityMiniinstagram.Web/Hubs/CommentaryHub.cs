@@ -45,7 +45,7 @@ namespace UniversityMiniinstagram.Web.Hubs
                 IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                 ShowReportColor = false
             };
-            var res = await this.RenderService.RenderToStringAsync("_CommentBlock", commentViewModel);
+            var res = await this.RenderService.RenderToStringAsync(MVC.Shared.Views._CommentBlock, commentViewModel);
             await Clients.All.SendAsync("SendCommentHub", res, postId, commentViewModel.Comment.Id.ToString());
         }
     }

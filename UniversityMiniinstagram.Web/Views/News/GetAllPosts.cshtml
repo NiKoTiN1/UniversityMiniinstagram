@@ -2,7 +2,7 @@
 @inject IViewLocalizer VLocalizer
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
 }
 <div class="centeredSt">
     @foreach (var post in Model)
@@ -58,13 +58,13 @@
                                 <input type="button" value="@post.Post.Id" hidden="hidden" class="Comment">
                                 <a value="0" hidden></a>
                                 @{
-                                    var countComm = post.Post.Id + "count";
-                                    var postReportId = post.Post.Id + "PostReport";
+                                    var countComm = post.Post.Id + R4MvcExtensions.Count;
+                                    var postReportId = post.Post.Id + R4MvcExtensions.PostReport;
                                     <a id="@countComm" class="mr-2">@post.CommentVM.Count</a>
                                 }
                             </label>
                             @{
-                                var btnId = post.Post.Id + "PostBtn";
+                                var btnId = post.Post.Id + R4MvcExtensions.PostBtn;
                             }
                             @if (post.IsDeleteAllowed || post.IsReportAllowed)
                             {
@@ -76,40 +76,40 @@
                             }
                             <div class="dropdown-menu" aria-labelledby="@btnId">
                                 @{
-                                    var deleteId = post.Post.Id + "DeletePostBtn";
-                                    var reportId = post.Post.Id + "ReportPostBtn";
+                                    var deleteId = post.Post.Id + R4MvcExtensions.DeletePostBtn;
+                                    var reportId = post.Post.Id + R4MvcExtensions.ReportPostBtn;
                                 }
                                 @if (post.IsDeleteAllowed)
                                 {
-                                <a class="dropdown-item dropdownDelPostEl" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
+                                    <a class="dropdown-item dropdownDelPostEl" id="@deleteId">@VLocalizer["DeleteBtn"]</a>
                                 }
                                 @if (post.IsReportAllowed)
                                 {
-                            <a class="dropdown-item dropdownRepPostEl" id="@reportId">@VLocalizer["ReportBtn"]</a>
+                                    <a class="dropdown-item dropdownRepPostEl" id="@reportId">@VLocalizer["ReportBtn"]</a>
                                 }
                             </div>
                         </div>
 
                         @{
-                            var commArea = post.Post.Id + "commAreaa";
+                            var commArea = post.Post.Id + R4MvcExtensions.CommArea;
                         }
                         <div id="@commArea" style="display:none;">
                             <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                             @{
-                                var contentId = post.Post.Id + "content";
+                                var contentId = post.Post.Id + R4MvcExtensions.Content;
                                 ViewBag.contentId = contentId;
                             }
                             <div id="@ViewBag.contentId">
                                 @foreach (var commentVm in post.CommentVM)
                                 {
-                                    @await Component.InvokeAsync("Comment", new { vm = commentVm })
+                                    @await Component.InvokeAsync(R4MvcExtensions.Comment, new { vm = commentVm })
                                 }
                             </div>
 
                             <div class="chat-module-bottom">
                                 <form class="customRow row">
                                     @{
-                                        var textId = post.Post.Id + "text";
+                                        var textId = post.Post.Id + R4MvcExtensions.Text;
                                         ViewBag.textId = textId;
                                     }
                                     <textarea id="@ViewBag.textId" class="form-control col ml-2" placeholder="@VLocalizer["Comment"]" rows="1" style="resize: none;"></textarea>
@@ -129,12 +129,12 @@
     }
 </div>
 
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-<script src="~/js/commentary.js"></script>
-<script src="~/js/like.js"></script>
-<script src="~/js/commentArea.js"></script>
-<script src="~/js/postFunctions.js"></script>
-<script src="~/js/dropdownDeleteCommentary.js"></script>
-<script src="~/js/dropdownReportCommentary.js"></script>
-<script src="~/js/commentaryDateSetup.js"></script>
+<script mvc-src="@Links.js.signalr.dist.browser.signalr_js"></script>
+<script mvc-src="@Links.js.signalr.dist.browser.signalr_min_js"></script>
+<script mvc-src="@Links.js.commentary_js"></script>
+<script mvc-src="@Links.js.like_js"></script>
+<script mvc-src="@Links.js.commentArea_js"></script>
+<script mvc-src="@Links.js.postFunctions_js"></script>
+<script mvc-src="@Links.js.dropdownDeleteCommentary_js"></script>
+<script mvc-src="@Links.js.dropdownReportCommentary_js"></script>
+<script mvc-src="@Links.js.commentaryDateSetup_js"></script>

@@ -1,7 +1,7 @@
 ﻿@inject IViewLocalizer VLocalizer
 @model List<AdminPostReportsVeiwModel>
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = MVC.Shared.Views._Layout;
 }
 
 <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block shadow-sm" style="margin-top: 40px; width: 190px; height: 100%;
@@ -10,19 +10,19 @@
     <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column" style="background-color:#343a40;">
             <li class="nav-item">
-                <a class="nav-link active" style="color:white;" asp-controller="Admin" asp-action="GetPostReports">
+                <a class="nav-link active" style="color:white;" mvc-action="@MVC.Admin.GetPostReports()">
                     @VLocalizer["PostReports"] <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item" style="background-color:white;">
-                <a class="nav-link" style="color: black;" asp-controller="Admin" asp-action="GetCommentReports">
+                <a class="nav-link" style="color: black;" mvc-action="@MVC.Admin.GetCommentReports()">
                     @VLocalizer["CommentReports"]
                 </a>
             </li>
             @if (User.IsInRole("Admin"))
             {
                 <li class="nav-item" style="background-color:white;">
-                    <a class="nav-link" style="color: black; " asp-controller="Admin" asp-action="SetDeleteRoles">
+                    <a class="nav-link" style="color: black; " mvc-action="@MVC.Admin.SetDeleteRoles()">
                         @VLocalizer["Roles"]
                     </a>
                 </li>
@@ -34,11 +34,11 @@
     <div id="accordion">
         @foreach (var elem in Model)
         {
-            var reportId = "Main" + elem.Report.Id;
+            var reportId = R4MvcExtensions.Main + elem.Report.Id;
             <div id="@reportId" class="card">
                 @{
-                    var heading = elem.Report.Id + "Heading";
-                    var postIddd = "PostCollapse" + elem.Report.Id;
+                    var heading = elem.Report.Id + R4MvcExtensions.Heading;
+                    var postIddd = R4MvcExtensions.PostCollapse + elem.Report.Id;
 
                 }
                 <div class="card-header" id="@heading">
@@ -106,37 +106,37 @@
                                                         <input type="button" value="@elem.Report.Post.Id" hidden="hidden" class="Comment">
                                                         <a value="0" hidden></a>
                                                         @{
-                                                            var countComm = elem.Report.Post.Id + "count";
-                                                            var postReportId = elem.Report.Post.Id + "PostReport";
+                                                            var countComm = elem.Report.Post.Id + R4MvcExtensions.Count;
+                                                            var postReportId = elem.Report.Post.Id + R4MvcExtensions.PostReport;
                                                             <a id="@countComm" class="mr-2">@elem.Report.Post.Comments.Count</a>
                                                         }
                                                     </label>
                                                 </div>
 
                                                 @{
-                                                    var commArea = elem.Report.Post.Id + "commAreaa";
+                                                    var commArea = elem.Report.Post.Id + R4MvcExtensions.CommArea;
                                                 }
                                                 <div id="@commArea" style="display:none;">
                                                     <hr align="center" width="auto" color="#E2E2E2" class="mt-0" />
                                                     @{
-                                                        var contentId = elem.Report.Post.Id + "content";
+                                                        var contentId = elem.Report.Post.Id + R4MvcExtensions.Content;
                                                         ViewBag.contentId = contentId;
                                                     }
                                                     <div id="@ViewBag.contentId">
                                                         @foreach (var commentVm in elem.CommentViewModel)
                                                         {
-                                                            @await Component.InvokeAsync("Comment", new { vm = commentVm })
+                                                            @await Component.InvokeAsync(R4MvcExtensions.Comment, new { vm = commentVm })
                                                         }
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         @{
-                                            var banID = "Ban" + elem.Report.Id;
-                                            var delPostID = "DeleteBBtn" + elem.Report.Id;
-                                            var hidePostId = "Hide" + elem.Report.Id;
-                                            var pardonId = "Pardon" + elem.Report.Id;
-                                            var acceptId = "Accept" + elem.Report.Id;
+                                            var banID = R4MvcExtensions.Ban + elem.Report.Id;
+                                            var delPostID = R4MvcExtensions.DeleteBtn + elem.Report.Id;
+                                            var hidePostId = R4MvcExtensions.Hide + elem.Report.Id;
+                                            var pardonId = R4MvcExtensions.Pardon + elem.Report.Id;
+                                            var acceptId = R4MvcExtensions.Accept + elem.Report.Id;
 
                                         }
                                         <div class="col-5">
@@ -181,7 +181,7 @@
     </div>
 </div>
 
-<script src="~/js/like.js"></script>
-<script src="~/js/commentArea.js"></script>
-<script src="~/js/pardonPostReport.js"></script>
-<script src="~/js/postReports.js"></script>
+<script mvc-src="@Links.js.like_js"></script>
+<script mvc-src="@Links.js.commentArea_js"></script>
+<script mvc-src="@Links.js.pardonPostReport_js"></script>
+<script mvc-src="@Links.js.postReports_js"></script>

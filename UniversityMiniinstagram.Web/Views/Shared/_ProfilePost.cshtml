@@ -34,12 +34,12 @@
             <hr style="width:95%;text-align:left;margin-left:0; color:black;border-top: 1px solid rgba(0,0,0);">
         </div>
         @{
-            var commArea = Model.Post.Id + "content";
+            var commArea = Model.Post.Id + R4MvcExtensions.Content;
         }
         <div id="@commArea" class="row-auto overflow-auto" style="max-height: 410px; overflow-x: hidden;">
             @foreach (var commentVm in Model.CommentVM)
             {
-                @await Component.InvokeAsync("Comment", new { vm = commentVm })
+                @await Component.InvokeAsync(R4MvcExtensions.Comment, new { vm = commentVm })
             }
         </div>
         <div class="row" style=" position: absolute; bottom: 45px; margin-left: auto; width: 90%;">
@@ -72,7 +72,7 @@
                 <input type="button" value="@Model.Post.Id" hidden="hidden" class="Like">
             </label>
             @{
-                var textId = Model.Post.Id + "text";
+                var textId = Model.Post.Id + R4MvcExtensions.Text;
             }
         </div>
         <div class="row" style=" position: absolute; bottom: 5px; margin-left: auto; width: inherit;">
@@ -89,9 +89,9 @@
     </div>
 </div>
 
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
-<script src="~/js/commentary.js"></script>
-<script src="~/js/like.js"></script>
-<script src="~/js/dropdownDeleteCommentary.js"></script>
-<script src="~/js/commentaryDateSetup.js"></script>
+<script mvc-src="@Links.js.signalr.dist.browser.signalr_js"></script>
+<script mvc-src="@Links.js.signalr.dist.browser.signalr_min_js"></script>
+<script mvc-src="@Links.js.commentary_js"></script>
+<script mvc-src="@Links.js.like_js"></script>
+<script mvc-src="@Links.js.dropdownDeleteCommentary_js"></script>
+<script mvc-src="@Links.js.commentaryDateSetup_js"></script>
