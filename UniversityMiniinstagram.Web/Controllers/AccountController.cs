@@ -13,7 +13,6 @@ using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Attrebutes;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
@@ -43,7 +42,7 @@ namespace UniversityMiniinstagram.Web.Controllers
                 ApplicationUser user = await this.PostService.GetUserPosts(userIdClaim.Value);
                 return View(user);
             }
-            return RedirectToAction("GetAllPosts", "News");
+            return RedirectToAction(MVC.News.GetAllPosts());
         }
 
         [HttpGet]
@@ -80,7 +79,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         public virtual async Task<IActionResult> GoogleResponse()
         {
             ExternalLoginInfo info = await this.AccountService.GetExternalLoginInfoAsync();
-            return await this.AccountService.ExternalLogin(info) ? RedirectToAction("Profile") : RedirectToAction("Login");
+            return await this.AccountService.ExternalLogin(info) ? RedirectToAction(MVC.Account.Profile()) : RedirectToAction(MVC.Account.Login());
         }
 
         [HttpGet]
@@ -98,7 +97,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             await this.AccountService.Logout();
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-            return RedirectToAction("Login");
+            return RedirectToAction(MVC.Account.Login());
         }
 
         [HttpPost]
@@ -117,13 +116,13 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("registered")]
-        public virtual async Task<IActionResult> RegistrationPost(RegisterViewModel model)
+        public virtual async Task<IActionResult> RegistrationPost(string email, string username, string password, string description = null)
         {
             if (ModelState.IsValid)
             {
-                if (await this.AccountService.Register(model))
+                if (await this.AccountService.Register(email, description, username, password))
                 {
-                    return RedirectToAction("Login");
+                    return RedirectToAction(MVC.Account.Login());
                 }
             }
             return RedirectToAction("Registration");
@@ -131,38 +130,38 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("authorized")]
-        public virtual async Task<IActionResult> LoginPost(LoginViewModel vm)
+        public virtual async Task<IActionResult> LoginPost(string email, string password, string returnUrl = null)
         {
-            if (ModelState.IsValid && vm.Email != null && vm.Password != null)
+            if (ModelState.IsValid && email != null && password != null)
             {
-                if (await this.AccountService.Login(vm))
+                if (await this.AccountService.Login(email, password))
                 {
-                    return vm.ReturnUrl != null ? Redirect(vm.ReturnUrl) : (IActionResult)RedirectToAction("Profile");
+                    return returnUrl != null ? Redirect(returnUrl) : (IActionResult)RedirectToAction(MVC.Account.Profile());
                 }
             }
-            return RedirectToAction("Login");
+            return RedirectToAction(MVC.Account.Login());
         }
 
         [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
         [Route("profile/edited")]
-        public virtual async Task<IActionResult> EditProfilePost([FromForm] EditProfileViewModel vm)
+        public virtual async Task<IActionResult> EditProfilePost([FromForm] string username, string userId, string description = null, string password = null, string oldPassword = null, IFormFile file = null)
         {
-            vm.WebRootPath = this.AppEnvironment.WebRootPath;
+            var webRootPath = this.AppEnvironment.WebRootPath;
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            vm.UserId = userIdClaim.Value;
-            if (ModelState.IsValid && vm.Username != null)
+            userId = userIdClaim.Value;
+            if (ModelState.IsValid && username != null)
             {
-                if (vm.Password != null && vm.OldPassword == null)
+                if (password != null && oldPassword == null)
                 {
-                    return RedirectToAction("EditProfile");
+                    return RedirectToAction(MVC.Account.EditProfile());
                 }
-                if (await this.AccountService.EditProfile(vm))
+                if (await this.AccountService.EditProfile(username, description, password, userId, oldPassword, file, webRootPath))
                 {
-                    return RedirectToAction("Profile");
+                    return RedirectToAction(MVC.Account.Profile());
                 }
             }
-            return RedirectToAction("EditProfile");
+            return RedirectToAction(MVC.Account.EditProfile());
         }
 
         [HttpGet]
@@ -171,7 +170,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         public virtual async Task<IActionResult> AccessDenied()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            return await this.AccountService.IsInRole(userIdClaim.Value, Enum.GetName(typeof(Roles), Roles.User)) ? (IActionResult)View() : RedirectToAction("BanPage");
+            return await this.AccountService.IsInRole(userIdClaim.Value, Enum.GetName(typeof(Roles), Roles.User)) ? (IActionResult)View() : RedirectToAction(MVC.Account.BanPage());
         }
 
         [HttpGet]

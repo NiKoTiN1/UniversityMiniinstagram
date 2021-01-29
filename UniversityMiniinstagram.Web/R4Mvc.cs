@@ -30,4 +30,6 @@ public static class R4MvcExtensions
     public static readonly string Delete = "Delete";
     public static readonly string Report = "Report";
     public static readonly string Date = "Date";
+    public static readonly string SendCommentHub = "SendCommentHub";
+    public static readonly string _CommentBlock = "_CommentBlock";
 }

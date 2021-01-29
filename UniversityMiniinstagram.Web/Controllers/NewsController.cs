@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -29,14 +28,13 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpGet]
         [Route("all")]
-        public async virtual Task<IActionResult> GetAllPosts()
+        public virtual async Task<IActionResult> GetAllPosts()
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized();
             }
-            var postsViewModels = new List<PostsViewModel>();
             ViewBag.UserId = userIdClaim.Value;
             return View(await this.PostServices.GetAllPosts(userIdClaim.Value));
         }
@@ -50,9 +48,9 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addPost")]
-        public async virtual Task<IActionResult> AddPost([FromForm] CreatePostViewModel vm)
+        public virtual async Task<IActionResult> AddPost([FromForm] IFormFile file, Category categoryPost, string description)
         {
-            if (!ModelState.IsValid && vm == null)
+            if (!ModelState.IsValid)
             {
                 return Unauthorized();
             }
@@ -61,16 +59,16 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 return Unauthorized();
             }
-            if (await this.PostServices.AddPost(vm, this.AppEnvironment.WebRootPath, userIdClaim.Value) == null)
+            if (await this.PostServices.AddPost(file, this.AppEnvironment.WebRootPath, userIdClaim.Value, description, categoryPost) == null)
             {
                 return Unauthorized();
             }
-            return RedirectToAction("GetAllPosts");
+            return RedirectToAction(MVC.News.GetAllPosts());
         }
 
         [HttpPost]
         [Route("getPost")]
-        public async virtual Task<IActionResult> GetPost([FromForm] string postId)
+        public virtual async Task<IActionResult> GetPost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -78,12 +76,12 @@ namespace UniversityMiniinstagram.Web.Controllers
             }
             PostsViewModel postVm = await this.PostServices.GetProfilePost(postId);
             ViewBag.UserId = postVm.Post.User.Id;
-            return PartialView("_ProfilePost", postVm);
+            return PartialView(MVC.Shared.Views._ProfilePost, postVm);
         }
 
         [HttpDelete]
         [Route("removedComment")]
-        public async virtual Task<ActionResult> RemoveCommentPost([FromForm] string commentId)
+        public virtual async Task<ActionResult> RemoveCommentPost([FromForm] string commentId)
         {
             if (!ModelState.IsValid && commentId == null)
             {
@@ -99,7 +97,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpPost]
         [Route("addLike")]
-        public async virtual Task<IActionResult> LikePost([FromForm] string postId)
+        public virtual async Task<IActionResult> LikePost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -125,7 +123,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removeLike")]
-        public async virtual Task<IActionResult> RemoveLike([FromForm] string postId)
+        public virtual async Task<IActionResult> RemoveLike([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {
@@ -146,7 +144,7 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [HttpDelete]
         [Route("removedPost")]
-        public async virtual Task<IActionResult> RemovePost([FromForm] string postId)
+        public virtual async Task<IActionResult> RemovePost([FromForm] string postId)
         {
             if (!ModelState.IsValid && postId == null)
             {

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Database.Repositories;
 using UniversityMiniinstagram.Services;
 using UniversityMiniinstagram.Services.Interfaces;
+using UniversityMiniinstagram.Web;
 using UniversityMiniinstagram.Web.Hubs;
 
 
@@ -61,6 +63,14 @@ namespace UniversityMiniinstagram
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
                 });
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostService, PostService>();

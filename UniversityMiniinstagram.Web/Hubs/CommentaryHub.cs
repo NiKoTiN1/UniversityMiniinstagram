@@ -23,7 +23,7 @@ namespace UniversityMiniinstagram.Web.Hubs
 
         public async Task SendMessage(string postId, string text)
         {
-            if (text == "" && text == "" && text == " ")
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
@@ -45,8 +45,8 @@ namespace UniversityMiniinstagram.Web.Hubs
                 IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                 ShowReportColor = false
             };
-            var res = await this.RenderService.RenderToStringAsync(MVC.Shared.Views._CommentBlock, commentViewModel);
-            await Clients.All.SendAsync("SendCommentHub", res, postId, commentViewModel.Comment.Id.ToString());
+            var res = await this.RenderService.RenderToStringAsync(R4MvcExtensions._CommentBlock, commentViewModel);
+            await Clients.All.SendAsync(R4MvcExtensions.SendCommentHub, res, postId, commentViewModel.Comment.Id.ToString());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,9 +38,9 @@ namespace UniversityMiniinstagram.Services
         private readonly IAdminRepository adminRepository;
         private readonly ICommentReportReposetory commentReportReposetory;
 
-        public async Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId)
+        public async Task<Post> AddPost(IFormFile file, string rootPath, string userId, string description, Category categoryPost)
         {
-            Image image = await this.ImageServices.Add(new ImageViewModel() { File = vm.File }, rootPath);
+            Image image = await this.ImageServices.Add(file, rootPath);
             if (image == null)
             {
                 return null;
@@ -47,11 +48,11 @@ namespace UniversityMiniinstagram.Services
             var newPost = new Post()
             {
                 Id = Guid.NewGuid().ToString(),
-                Description = vm.Description,
+                Description = description,
                 Image = image,
                 UploadDate = DateTime.Now,
                 UserId = userId,
-                CategoryPost = vm.CategoryPost,
+                CategoryPost = categoryPost,
                 IsShow = true
             };
             await this.PostReposetry.Add(newPost);

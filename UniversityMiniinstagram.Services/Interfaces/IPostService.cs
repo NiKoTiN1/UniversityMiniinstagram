@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Views;
@@ -7,7 +8,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
 {
     public interface IPostService
     {
-        public Task<Post> AddPost(CreatePostViewModel vm, string rootPath, string userId);
+        public Task<Post> AddPost(IFormFile file, string rootPath, string userId, string description, Category categoryPost);
         public Task<Comment> AddComment(SendCommentViewModel vm, string userId);
         public Task DeletePost(string postId, Post post = null);
         public Task<Like> AddLike(string postId, string userId);

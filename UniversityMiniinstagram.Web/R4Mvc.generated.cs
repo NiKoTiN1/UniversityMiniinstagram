@@ -85,10 +85,11 @@ public static partial class Links
         public const string UrlPath = "~/Images";
         public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
         public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
-        public static readonly string _6d7efdfb_57cf_4776_b217_bc1ba9b6ec2b_jpg = Url("6d7efdfb-57cf-4776-b217-bc1ba9b6ec2b.jpg");
         public static readonly string _8623d1d6_af8d_4755_bab2_7edfa0f30786_jpg = Url("8623d1d6-af8d-4755-bab2-7edfa0f30786.jpg");
         public static readonly string add_png = Url("add.png");
+        public static readonly string b9b47a6d_8b7c_4b18_a4bf_b33a2d77befe_jpg = Url("b9b47a6d-8b7c-4b18-a4bf-b33a2d77befe.jpg");
         public static readonly string btn_google_signin_light_normal_web_png = Url("btn_google_signin_light_normal_web.png");
+        public static readonly string d2baf609_d7cb_4c66_b594_1bff56c3794f_jpg = Url("d2baf609-d7cb-4c66-b594-1bff56c3794f.jpg");
         public static readonly string noPhoto_png = Url("noPhoto.png");
     }
 

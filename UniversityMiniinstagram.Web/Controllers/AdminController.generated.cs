@@ -202,13 +202,15 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [NonAction]
-        partial void SendReportOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.SendReportViewModel vm);
+        partial void SendReportOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string userId, string postId, string commentId);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult> SendReport(UniversityMiniinstagram.Views.SendReportViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.ActionResult> SendReport(string userId, string postId, string commentId)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.SendReport);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            SendReportOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "userId", userId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "postId", postId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "commentId", commentId);
+            SendReportOverride(callInfo, userId, postId, commentId);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.ActionResult>(callInfo);
         }
 
@@ -275,24 +277,32 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [NonAction]
-        partial void PostReportDecisionOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.AdminPostReportDecisionViewModel vm);
+        partial void PostReportDecisionOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string reportId, bool isBanUser, bool isDeletePost, bool isHidePost);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> PostReportDecision(UniversityMiniinstagram.Views.AdminPostReportDecisionViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> PostReportDecision(string reportId, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.PostReportDecision);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            PostReportDecisionOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "reportId", reportId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isBanUser", isBanUser);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isDeletePost", isDeletePost);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isHidePost", isHidePost);
+            PostReportDecisionOverride(callInfo, reportId, isBanUser, isDeletePost, isHidePost);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
         [NonAction]
-        partial void CommentReportDecisionOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.AdminCommentReportDecisionViewModel vm);
+        partial void CommentReportDecisionOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string reportId, bool isHideComment, bool isDeleteComment, bool isBanUser, bool isDeletePost, bool isHidePost);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> CommentReportDecision(UniversityMiniinstagram.Views.AdminCommentReportDecisionViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> CommentReportDecision(string reportId, bool isHideComment, bool isDeleteComment, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.CommentReportDecision);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            CommentReportDecisionOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "reportId", reportId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isHideComment", isHideComment);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isDeleteComment", isDeleteComment);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isBanUser", isBanUser);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isDeletePost", isDeletePost);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "isHidePost", isHidePost);
+            CommentReportDecisionOverride(callInfo, reportId, isHideComment, isDeleteComment, isBanUser, isDeletePost, isHidePost);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 

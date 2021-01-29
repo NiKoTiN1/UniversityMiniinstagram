@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Services
 {
@@ -21,18 +21,18 @@ namespace UniversityMiniinstagram.Services
         private readonly IImageRepository ImageReposetry;
         private IConfiguration Configuration { get; }
 
-        public async Task<Image> Add(ImageViewModel vm, string rootPath)
+        public async Task<Image> Add(IFormFile file, string rootPath)
         {
-            if (vm.File == null)
+            if (file == null)
             {
                 return null;
             }
             var imageGuid = Guid.NewGuid().ToString();
-            var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + vm.File.FileName.Split(".").Last();
+            var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + file.FileName.Split(".").Last();
 
             using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
             {
-                await vm.File.CopyToAsync(fileStream);
+                await file.CopyToAsync(fileStream);
             }
             var image = new Image()
             {

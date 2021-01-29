@@ -1,17 +1,14 @@
-﻿@model LoginViewModel;
-@inject IViewLocalizer VLocalizer
-
+﻿@inject IViewLocalizer VLocalizer
 
 @{
     Layout = MVC.Shared.Views._Layout;
     ViewBag.Title = R4MvcExtensions.LoginTitle;
-    var vm = new LoginViewModel();
 }
 
 <div class="centered">
     <div class="container">
         <div class="row" style="justify-content: center;">
-            <form class="form-signin text-center" asp-controller="Account" asp-action="LoginPost" method="post">
+            <form class="form-signin text-center" mvc-action="@MVC.Account.LoginPost()" method="post">
                 <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["LoginLbl"]</h1>
 
                 <input type="email" name="Email" id="inputEmail" class="form-control mb-2" placeholder="@VLocalizer["Email"]" required="" autofocus="">

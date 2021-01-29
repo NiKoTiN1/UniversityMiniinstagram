@@ -296,35 +296,45 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [NonAction]
-        partial void RegistrationPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.RegisterViewModel model);
+        partial void RegistrationPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string email, string username, string password, string description);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> RegistrationPost(UniversityMiniinstagram.Views.RegisterViewModel model)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> RegistrationPost(string email, string username, string password, string description)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.RegistrationPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
-            RegistrationPostOverride(callInfo, model);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "email", email);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "username", username);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "description", description);
+            RegistrationPostOverride(callInfo, email, username, password, description);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
         [NonAction]
-        partial void LoginPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.LoginViewModel vm);
+        partial void LoginPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string email, string password, string returnUrl);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginPost(UniversityMiniinstagram.Views.LoginViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginPost(string email, string password, string returnUrl)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.LoginPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            LoginPostOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "email", email);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "returnUrl", returnUrl);
+            LoginPostOverride(callInfo, email, password, returnUrl);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
         [NonAction]
-        partial void EditProfilePostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.EditProfileViewModel vm);
+        partial void EditProfilePostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string username, string userId, string description, string password, string oldPassword, Microsoft.AspNetCore.Http.IFormFile file);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> EditProfilePost(UniversityMiniinstagram.Views.EditProfileViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> EditProfilePost(string username, string userId, string description, string password, string oldPassword, Microsoft.AspNetCore.Http.IFormFile file)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.EditProfilePost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            EditProfilePostOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "username", username);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "userId", userId);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "description", description);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "oldPassword", oldPassword);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "file", file);
+            EditProfilePostOverride(callInfo, username, userId, description, password, oldPassword, file);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 

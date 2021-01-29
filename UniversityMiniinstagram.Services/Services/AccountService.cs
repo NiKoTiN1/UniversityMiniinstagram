@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Services
 {
@@ -24,14 +24,14 @@ namespace UniversityMiniinstagram.Services
         private readonly IAccountRepository AccountReposetry;
         private readonly IImageService ImageService;
 
-        public async Task<bool> Register(RegisterViewModel vm)
+        public async Task<bool> Register(string email, string description, string username, string password)
         {
-            if (!await this.AccountReposetry.IsExist(vm.Email))
+            if (!await this.AccountReposetry.IsExist(email))
             {
                 return false;
             }
-            var user = new ApplicationUser { Email = vm.Email, Avatar = vm.Avatar, Description = vm.Description, UserName = vm.Username, AvatarId = new Guid().ToString() };
-            if (!await this.AccountReposetry.CreateUser(user, vm.Password))
+            var user = new ApplicationUser { Email = email, Description = description, UserName = username, AvatarId = new Guid().ToString() };
+            if (!await this.AccountReposetry.CreateUser(user, password))
             {
                 return false;
             }
@@ -91,9 +91,9 @@ namespace UniversityMiniinstagram.Services
             ApplicationUser user = await this.AccountReposetry.GetUser(userId);
             return await this.AccountReposetry.UnBanUser(user);
         }
-        public async Task<bool> Login(LoginViewModel vm)
+        public async Task<bool> Login(string email, string password)
         {
-            return await this.AccountReposetry.Login(vm.Email, vm.Password);
+            return await this.AccountReposetry.Login(email, password);
         }
         public AuthenticationProperties GoogleLogin(string url)
         {
@@ -132,27 +132,27 @@ namespace UniversityMiniinstagram.Services
             return await this.AccountReposetry.GetUser(userId);
         }
 
-        public async Task<bool> EditProfile(EditProfileViewModel vm)
+        public async Task<bool> EditProfile(string username, string description, string password, string userId, string oldPassword, IFormFile file, string webRootPath)
         {
             Image image = null;
-            ApplicationUser Ouser = await this.AccountReposetry.GetUser(vm.UserId);
-            if (vm.Password != null)
+            ApplicationUser Ouser = await this.AccountReposetry.GetUser(userId);
+            if (password != null)
             {
-                if (!await this.AccountReposetry.ChangePassword(Ouser, vm.OldPassword, vm.Password))
+                if (!await this.AccountReposetry.ChangePassword(Ouser, oldPassword, password))
                 {
                     return false;
                 }
             }
-            if (vm.File != null)
+            if (file != null)
             {
-                image = await this.ImageService.Add(vm, vm.WebRootPath);
+                image = await this.ImageService.Add(file, webRootPath);
             }
             var user = new ApplicationUser()
             {
-                Id = vm.UserId,
+                Id = userId,
                 Avatar = image,
-                Description = vm.Description,
-                UserName = vm.Username
+                Description = description,
+                UserName = username
             };
             return await this.AccountReposetry.UpdateUser(Ouser, user);
         }

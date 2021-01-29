@@ -196,13 +196,15 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [NonAction]
-        partial void AddPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.CreatePostViewModel vm);
+        partial void AddPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, Microsoft.AspNetCore.Http.IFormFile file, UniversityMiniinstagram.Database.Models.Category categoryPost, string description);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> AddPost(UniversityMiniinstagram.Views.CreatePostViewModel vm)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> AddPost(Microsoft.AspNetCore.Http.IFormFile file, UniversityMiniinstagram.Database.Models.Category categoryPost, string description)
         {
             var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.AddPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "vm", vm);
-            AddPostOverride(callInfo, vm);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "file", file);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "categoryPost", categoryPost);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "description", description);
+            AddPostOverride(callInfo, file, categoryPost, description);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
