@@ -27,13 +27,8 @@ namespace UniversityMiniinstagram.Web.Hubs
             {
                 return;
             }
-            var vm = new SendCommentViewModel()
-            {
-                PostId = postId,
-                Text = text
-            };
             Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            Comment commresult = await this.PostService.AddComment(vm, userIdClaim.Value);
+            Comment commresult = await this.PostService.AddComment(postId, text, userIdClaim.Value);
             if (commresult == null)
             {
                 return;

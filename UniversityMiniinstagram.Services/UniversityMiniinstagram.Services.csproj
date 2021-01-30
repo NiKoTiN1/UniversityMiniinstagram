@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniversityMiniinstagram.Database\UniversityMiniinstagram.Database.csproj" />
-    <ProjectReference Include="..\UniversityMiniinstagram.View\UniversityMiniinstagram.Views.csproj" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,6 @@
         dataType: "html",
         data: { 'postId': postId },
         success: function (data) {
-            var post = data;
             $('#ModalBody').append(data);
             $('#ModalBtn').click();
 

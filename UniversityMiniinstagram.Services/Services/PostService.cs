@@ -7,7 +7,6 @@ using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Interfaces;
 using UniversityMiniinstagram.Database.Models;
 using UniversityMiniinstagram.Services.Interfaces;
-using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Services
 {
@@ -59,7 +58,7 @@ namespace UniversityMiniinstagram.Services
             return newPost;
         }
 
-        public async Task<Comment> AddComment(SendCommentViewModel vm, string userId)
+        public async Task<Comment> AddComment(string postId, string text, string userId)
         {
             ApplicationUser user = await this.AccountService.GetUser(userId);
             if (user == null)
@@ -69,9 +68,9 @@ namespace UniversityMiniinstagram.Services
             var newComment = new Comment()
             {
                 Id = Guid.NewGuid().ToString(),
-                Text = vm.Text,
+                Text = text,
                 UserId = userId,
-                PostId = vm.PostId,
+                PostId = postId,
                 User = user,
                 IsShow = true,
                 Date = DateTime.UtcNow
@@ -99,33 +98,9 @@ namespace UniversityMiniinstagram.Services
             Like like = (await this.likeReposetry.Get(li => li.PostId == postId && li.UserId == userId)).SingleOrDefault();
             await this.likeReposetry.Remove(like);
         }
-
-        public async Task<List<PostsViewModel>> GetAllPosts(string userId)
+        public async Task<List<Post>> GetAllPosts(string userId)
         {
-            IEnumerable<Post> posts = (await this.PostReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" })).OrderBy(post => post.UploadDate);
-            var postsVM = new List<PostsViewModel>();
-            foreach (Post post in posts)
-            {
-                var postVM = new PostsViewModel()
-                {
-                    Post = post,
-                    IsDeleteAllowed = await IsDeleteAllowed(post.User, userId),
-                    IsReportAllowed = await IsReportAllowed(post.UserId, userId, post.Id),
-                    CommentVM = new List<CommentViewModel>()
-                };
-                foreach (Comment comment in post.Comments.OrderBy(comment => comment.Date))
-                {
-                    postVM.CommentVM.Add(new CommentViewModel()
-                    {
-                        Comment = comment,
-                        IsDeleteAllowed = await IsDeleteAllowed(comment.User, userId),
-                        IsReportAllowed = await IsReportAllowed(comment.UserId, userId, comment.Id),
-                        ShowReportColor = false
-                    });
-                }
-                postsVM.Add(postVM);
-            }
-            return postsVM;
+            return (await this.PostReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" })).OrderBy(post => post.UploadDate).ToList();
         }
 
         public async Task DeletePost(string postId, Post post = null)
@@ -154,33 +129,9 @@ namespace UniversityMiniinstagram.Services
             post.Comments = post.Comments.OrderBy(comment => comment.Date).ToList();
             return post;
         }
-
-        public async Task<PostsViewModel> GetProfilePost(string postId)
+        public async Task<Post> GetProfilePost(string postId)
         {
-            Post post = await GetPost(postId);
-            var postVm = new PostsViewModel()
-            {
-                Post = post,
-                IsReportAllowed = false,
-                IsDeleteAllowed = false,
-                CommentVM = new List<CommentViewModel>()
-            };
-            foreach (Comment comment in post.Comments)
-            {
-                if (!comment.IsShow)
-                {
-                    continue;
-                }
-                var commVm = new CommentViewModel()
-                {
-                    Comment = comment,
-                    IsDeleteAllowed = await IsDeleteAllowed(comment.User, post.UserId),
-                    IsReportAllowed = await IsReportAllowed(comment.UserId, post.UserId, commentId: comment.Id),
-                    ShowReportColor = false
-                };
-                postVm.CommentVM.Add(commVm);
-            }
-            return postVm;
+            return await GetPost(postId);
         }
 
         public async Task<string> RemoveComment(string commentId)
