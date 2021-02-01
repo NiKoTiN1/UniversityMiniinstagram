@@ -1,22 +1,28 @@
-﻿@inject IViewLocalizer VLocalizer
+﻿@model RegistrationViewModel
+@inject IViewLocalizer VLocalizer
 
 @{
     Layout = MVC.Shared.Views._Layout;
 }
 
 <div class="centered">
-    <form class="form-signin text-center" mvc-action="@MVC.Account.RegistrationPost()" method="post">
+    <form class="form-signin" mvc-action="@MVC.Account.Registration()" method="post">
         <h1 class="h3 mb-3 font-weight-normal">@VLocalizer["RegisterLbl"]</h1>
         <input type="email" name="Email" id="Email" class="form-control mb-2" placeholder="@VLocalizer["Email"]">
+        <span style="color: red;" asp-validation-for="Email"></span>
 
         <input type="text" name="Username" id="Username" class="form-control mb-2" placeholder="@VLocalizer["Username"]">
+        <span style="color: red;" asp-validation-for="Username"></span>
 
         <textarea type="text" name="Description" id="Description" class="form-control mb-2" placeholder="@VLocalizer["Description"]"></textarea>
 
         <input type="password" name="Password" id="Password" class="form-control" placeholder="@VLocalizer["Password"]">
+        <span style="color: red;" asp-validation-for="Password"></span>
+
         <input type="text" name="returnUrl" hidden="hidden" value="@ViewBag.ReturnUrlParameter" />
 
         <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">@VLocalizer["RegisterBtn"]</button>
-        <a class="text-center" mvc-action="@MVC.Account.Login()">@VLocalizer["LoginRedir"]</a>
+        <a style="justify-content: center; display: flex;" mvc-action="@MVC.Account.Login()">@VLocalizer["LoginRedir"]</a>
     </form>
 </div>
+<partial name="_ValidationScriptsPartial" />

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Constants;
-using UniversityMiniinstagram.Services.Attrebutes;
+using UniversityMiniinstagram.Services.Attributes;
 using UniversityMiniinstagram.Services.Interfaces;
 using UniversityMiniinstagram.Views;
 

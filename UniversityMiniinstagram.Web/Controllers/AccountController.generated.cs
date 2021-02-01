@@ -92,27 +92,6 @@ namespace UniversityMiniinstagram.Web.Controllers
 
         [NonAction]
         [GeneratedCode("R4Mvc", "1.0"), DebuggerNonUserCode]
-        public virtual IActionResult RegistrationPost()
-        {
-            return new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.RegistrationPost);
-        }
-
-        [NonAction]
-        [GeneratedCode("R4Mvc", "1.0"), DebuggerNonUserCode]
-        public virtual IActionResult LoginPost()
-        {
-            return new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.LoginPost);
-        }
-
-        [NonAction]
-        [GeneratedCode("R4Mvc", "1.0"), DebuggerNonUserCode]
-        public virtual IActionResult EditProfilePost()
-        {
-            return new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.EditProfilePost);
-        }
-
-        [NonAction]
-        [GeneratedCode("R4Mvc", "1.0"), DebuggerNonUserCode]
         public virtual IActionResult BanUser()
         {
             return new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.BanUser);
@@ -148,9 +127,6 @@ namespace UniversityMiniinstagram.Web.Controllers
             public readonly string Registration = "Registration";
             public readonly string Logout = "Logout";
             public readonly string SetLanguage = "SetLanguage";
-            public readonly string RegistrationPost = "RegistrationPost";
-            public readonly string LoginPost = "LoginPost";
-            public readonly string EditProfilePost = "EditProfilePost";
             public readonly string AccessDenied = "AccessDenied";
             public readonly string BanPage = "BanPage";
             public readonly string BanUser = "BanUser";
@@ -168,9 +144,6 @@ namespace UniversityMiniinstagram.Web.Controllers
             public const string Registration = "Registration";
             public const string Logout = "Logout";
             public const string SetLanguage = "SetLanguage";
-            public const string RegistrationPost = "RegistrationPost";
-            public const string LoginPost = "LoginPost";
-            public const string EditProfilePost = "EditProfilePost";
             public const string AccessDenied = "AccessDenied";
             public const string BanPage = "BanPage";
             public const string BanUser = "BanUser";
@@ -296,45 +269,35 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [NonAction]
-        partial void RegistrationPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string email, string username, string password, string description);
+        partial void RegistrationOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.RegistrationViewModel model);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> RegistrationPost(string email, string username, string password, string description)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> Registration(UniversityMiniinstagram.Views.RegistrationViewModel model)
         {
-            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.RegistrationPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "email", email);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "username", username);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "description", description);
-            RegistrationPostOverride(callInfo, email, username, password, description);
+            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.Registration);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
+            RegistrationOverride(callInfo, model);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
         [NonAction]
-        partial void LoginPostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string email, string password, string returnUrl);
+        partial void LoginOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.LoginViewModel model);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginPost(string email, string password, string returnUrl)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> Login(UniversityMiniinstagram.Views.LoginViewModel model)
         {
-            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.LoginPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "email", email);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "returnUrl", returnUrl);
-            LoginPostOverride(callInfo, email, password, returnUrl);
+            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.Login);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
+            LoginOverride(callInfo, model);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 
         [NonAction]
-        partial void EditProfilePostOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, string username, string userId, string description, string password, string oldPassword, Microsoft.AspNetCore.Http.IFormFile file);
+        partial void EditProfileOverride(R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult callInfo, UniversityMiniinstagram.Views.EditProfileViewModel model);
         [NonAction]
-        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> EditProfilePost(string username, string userId, string description, string password, string oldPassword, Microsoft.AspNetCore.Http.IFormFile file)
+        public override System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> EditProfile(UniversityMiniinstagram.Views.EditProfileViewModel model)
         {
-            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.EditProfilePost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "username", username);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "userId", userId);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "description", description);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "password", password);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "oldPassword", oldPassword);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "file", file);
-            EditProfilePostOverride(callInfo, username, userId, description, password, oldPassword, file);
+            var callInfo = new R4Mvc_Microsoft_AspNetCore_Mvc_ActionResult(Area, Name, ActionNames.EditProfile);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "model", model);
+            EditProfileOverride(callInfo, model);
             return System.Threading.Tasks.Task.FromResult<Microsoft.AspNetCore.Mvc.IActionResult>(callInfo);
         }
 

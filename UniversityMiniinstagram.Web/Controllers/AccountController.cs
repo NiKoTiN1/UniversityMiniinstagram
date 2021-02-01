@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -11,24 +12,27 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityMiniinstagram.Database.Constants;
 using UniversityMiniinstagram.Database.Models;
-using UniversityMiniinstagram.Services.Attrebutes;
+using UniversityMiniinstagram.Services.Attributes;
 using UniversityMiniinstagram.Services.Interfaces;
+using UniversityMiniinstagram.Views;
 
 namespace UniversityMiniinstagram.Web.Controllers
 {
     [Route("account")]
     public partial class AccountController : Controller
     {
-        public AccountController(IAccountService accountService, IPostService postService, IWebHostEnvironment appEnvironment)
+        public AccountController(IAccountService accountService, IPostService postService, IWebHostEnvironment appEnvironment, IMapper mapper)
         {
             this.AccountService = accountService;
             this.PostService = postService;
             this.AppEnvironment = appEnvironment;
+            this.mapper = mapper;
         }
 
         private readonly IAccountService AccountService;
         private readonly IPostService PostService;
         private readonly IWebHostEnvironment AppEnvironment;
+        private readonly IMapper mapper;
 
         [HttpGet]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
@@ -53,8 +57,8 @@ namespace UniversityMiniinstagram.Web.Controllers
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim != null)
             {
-                ApplicationUser user = await this.AccountService.GetUser(userIdClaim.Value);
-                return View(user);
+                EditProfileViewModel model = this.mapper.Map<EditProfileViewModel>(await this.AccountService.GetUser(userIdClaim.Value));
+                return View(model);
             }
             return View();
         }
@@ -115,51 +119,53 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Route("registered")]
-        public virtual async Task<IActionResult> RegistrationPost(string email, string username, string password, string description = null)
+        [Route("registration")]
+        public virtual async Task<IActionResult> Registration(RegistrationViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (await this.AccountService.Register(email, description, username, password))
-                {
-                    return RedirectToAction(MVC.Account.Login());
-                }
+                return View(model);
             }
-            return RedirectToAction("Registration");
-        }
-
-        [HttpPost]
-        [Route("authorized")]
-        public virtual async Task<IActionResult> LoginPost(string email, string password, string returnUrl = null)
-        {
-            if (ModelState.IsValid && email != null && password != null)
+            if (!await this.AccountService.Register(model.Email, model.Description, model.Username, model.Password))
             {
-                if (await this.AccountService.Login(email, password))
-                {
-                    return returnUrl != null ? Redirect(returnUrl) : (IActionResult)RedirectToAction(MVC.Account.Profile());
-                }
+                return View();
             }
             return RedirectToAction(MVC.Account.Login());
         }
 
         [HttpPost]
+        [Route("authorized")]
+        public virtual async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await this.AccountService.Login(model.Email, model.Password))
+                {
+                    return model.ReturnUrl != null ? Redirect(model.ReturnUrl) : (IActionResult)RedirectToAction(MVC.Account.Profile());
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
         [AuthorizeEnum(Roles.Admin, Roles.Moderator, Roles.User)]
-        [Route("profile/edited")]
-        public virtual async Task<IActionResult> EditProfilePost([FromForm] string username, string userId, string description = null, string password = null, string oldPassword = null, IFormFile file = null)
+        [Route("profile/edit")]
+        public virtual async Task<IActionResult> EditProfile([FromForm] EditProfileViewModel model)
         {
             var webRootPath = this.AppEnvironment.WebRootPath;
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            userId = userIdClaim.Value;
-            if (ModelState.IsValid && username != null)
+            model.UserId = userIdClaim.Value;
+            if (!ModelState.IsValid)
             {
-                if (password != null && oldPassword == null)
-                {
-                    return RedirectToAction(MVC.Account.EditProfile());
-                }
-                if (await this.AccountService.EditProfile(username, description, password, userId, oldPassword, file, webRootPath))
-                {
-                    return RedirectToAction(MVC.Account.Profile());
-                }
+                return View(model);
+            }
+            if (model.Password != null && model.OldPassword == null)
+            {
+                return RedirectToAction(MVC.Account.EditProfile());
+            }
+            if (await this.AccountService.EditProfile(model.Username, model.Description, model.Password, model.UserId, model.OldPassword, model.File, webRootPath))
+            {
+                return RedirectToAction(MVC.Account.Profile());
             }
             return RedirectToAction(MVC.Account.EditProfile());
         }

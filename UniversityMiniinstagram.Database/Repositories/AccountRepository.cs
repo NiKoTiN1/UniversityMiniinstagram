@@ -138,7 +138,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         public async Task<bool> IsExist(string mail)
         {
             ApplicationUser result = await this.UserManager.FindByEmailAsync(mail);
-            return result == null;
+            return result != null;
         }
 
         public async Task<bool> IsInRole(ApplicationUser user, string role)

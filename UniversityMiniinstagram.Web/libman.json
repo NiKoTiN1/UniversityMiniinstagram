@@ -9,6 +9,20 @@
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-validation-unobtrusive@3.2.11",
+      "destination": "wwwroot/js/validation/jquery-validation-unobtrusive/"
+    },
+    {
+      "library": "jquery-validation@1.19.3",
+      "destination": "wwwroot/js/validation/jquery-validation/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery.json2html@1.2.0",
+      "destination": "wwwroot/js/validation/jquery.json2html/"
     }
   ]
 }

@@ -54,11 +54,13 @@ namespace R4Mvc
                 public readonly string _CommentBlock = "_CommentBlock";
                 public readonly string _Layout = "_Layout";
                 public readonly string _ProfilePost = "_ProfilePost";
+                public readonly string _ValidationScriptsPartial = "_ValidationScriptsPartial";
             }
 
             public readonly string _CommentBlock = "~/Views/Shared/_CommentBlock.cshtml";
             public readonly string _Layout = "~/Views/Shared/_Layout.cshtml";
             public readonly string _ProfilePost = "~/Views/Shared/_ProfilePost.cshtml";
+            public readonly string _ValidationScriptsPartial = "~/Views/Shared/_ValidationScriptsPartial.cshtml";
         }
 
         static readonly ViewsClass s_Views = new ViewsClass();
@@ -85,11 +87,8 @@ public static partial class Links
         public const string UrlPath = "~/Images";
         public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
         public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
-        public static readonly string _8623d1d6_af8d_4755_bab2_7edfa0f30786_jpg = Url("8623d1d6-af8d-4755-bab2-7edfa0f30786.jpg");
         public static readonly string add_png = Url("add.png");
-        public static readonly string b9b47a6d_8b7c_4b18_a4bf_b33a2d77befe_jpg = Url("b9b47a6d-8b7c-4b18-a4bf-b33a2d77befe.jpg");
         public static readonly string btn_google_signin_light_normal_web_png = Url("btn_google_signin_light_normal_web.png");
-        public static readonly string d2baf609_d7cb_4c66_b594_1bff56c3794f_jpg = Url("d2baf609-d7cb-4c66-b594-1bff56c3794f.jpg");
         public static readonly string noPhoto_png = Url("noPhoto.png");
     }
 
@@ -116,6 +115,183 @@ public static partial class Links
                     public static readonly string signalr_js = Url("signalr.js");
                     public static readonly string signalr_min_js = Url("signalr.min.js");
                 }
+            }
+        }
+
+        public static partial class validation
+        {
+            public const string UrlPath = "~/js/validation";
+            public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+            public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+            public static partial class jquery_validation
+            {
+                public const string UrlPath = "~/js/validation/jquery-validation";
+                public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+                public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+                public static partial class dist
+                {
+                    public const string UrlPath = "~/js/validation/jquery-validation/dist";
+                    public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+                    public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+                    public static partial class localization
+                    {
+                        public const string UrlPath = "~/js/validation/jquery-validation/dist/localization";
+                        public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+                        public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+                        public static readonly string messages_ar_js = Url("messages_ar.js");
+                        public static readonly string messages_ar_min_js = Url("messages_ar.min.js");
+                        public static readonly string messages_az_js = Url("messages_az.js");
+                        public static readonly string messages_az_min_js = Url("messages_az.min.js");
+                        public static readonly string messages_bg_js = Url("messages_bg.js");
+                        public static readonly string messages_bg_min_js = Url("messages_bg.min.js");
+                        public static readonly string messages_bn_BD_js = Url("messages_bn_BD.js");
+                        public static readonly string messages_bn_BD_min_js = Url("messages_bn_BD.min.js");
+                        public static readonly string messages_ca_js = Url("messages_ca.js");
+                        public static readonly string messages_ca_min_js = Url("messages_ca.min.js");
+                        public static readonly string messages_cs_js = Url("messages_cs.js");
+                        public static readonly string messages_cs_min_js = Url("messages_cs.min.js");
+                        public static readonly string messages_da_js = Url("messages_da.js");
+                        public static readonly string messages_da_min_js = Url("messages_da.min.js");
+                        public static readonly string messages_de_js = Url("messages_de.js");
+                        public static readonly string messages_de_min_js = Url("messages_de.min.js");
+                        public static readonly string messages_el_js = Url("messages_el.js");
+                        public static readonly string messages_el_min_js = Url("messages_el.min.js");
+                        public static readonly string messages_es_js = Url("messages_es.js");
+                        public static readonly string messages_es_min_js = Url("messages_es.min.js");
+                        public static readonly string messages_es_AR_js = Url("messages_es_AR.js");
+                        public static readonly string messages_es_AR_min_js = Url("messages_es_AR.min.js");
+                        public static readonly string messages_es_PE_js = Url("messages_es_PE.js");
+                        public static readonly string messages_es_PE_min_js = Url("messages_es_PE.min.js");
+                        public static readonly string messages_et_js = Url("messages_et.js");
+                        public static readonly string messages_et_min_js = Url("messages_et.min.js");
+                        public static readonly string messages_eu_js = Url("messages_eu.js");
+                        public static readonly string messages_eu_min_js = Url("messages_eu.min.js");
+                        public static readonly string messages_fa_js = Url("messages_fa.js");
+                        public static readonly string messages_fa_min_js = Url("messages_fa.min.js");
+                        public static readonly string messages_fi_js = Url("messages_fi.js");
+                        public static readonly string messages_fi_min_js = Url("messages_fi.min.js");
+                        public static readonly string messages_fr_js = Url("messages_fr.js");
+                        public static readonly string messages_fr_min_js = Url("messages_fr.min.js");
+                        public static readonly string messages_ge_js = Url("messages_ge.js");
+                        public static readonly string messages_ge_min_js = Url("messages_ge.min.js");
+                        public static readonly string messages_gl_js = Url("messages_gl.js");
+                        public static readonly string messages_gl_min_js = Url("messages_gl.min.js");
+                        public static readonly string messages_he_js = Url("messages_he.js");
+                        public static readonly string messages_he_min_js = Url("messages_he.min.js");
+                        public static readonly string messages_hr_js = Url("messages_hr.js");
+                        public static readonly string messages_hr_min_js = Url("messages_hr.min.js");
+                        public static readonly string messages_hu_js = Url("messages_hu.js");
+                        public static readonly string messages_hu_min_js = Url("messages_hu.min.js");
+                        public static readonly string messages_hy_AM_js = Url("messages_hy_AM.js");
+                        public static readonly string messages_hy_AM_min_js = Url("messages_hy_AM.min.js");
+                        public static readonly string messages_id_js = Url("messages_id.js");
+                        public static readonly string messages_id_min_js = Url("messages_id.min.js");
+                        public static readonly string messages_is_js = Url("messages_is.js");
+                        public static readonly string messages_is_min_js = Url("messages_is.min.js");
+                        public static readonly string messages_it_js = Url("messages_it.js");
+                        public static readonly string messages_it_min_js = Url("messages_it.min.js");
+                        public static readonly string messages_ja_js = Url("messages_ja.js");
+                        public static readonly string messages_ja_min_js = Url("messages_ja.min.js");
+                        public static readonly string messages_ka_js = Url("messages_ka.js");
+                        public static readonly string messages_ka_min_js = Url("messages_ka.min.js");
+                        public static readonly string messages_kk_js = Url("messages_kk.js");
+                        public static readonly string messages_kk_min_js = Url("messages_kk.min.js");
+                        public static readonly string messages_ko_js = Url("messages_ko.js");
+                        public static readonly string messages_ko_min_js = Url("messages_ko.min.js");
+                        public static readonly string messages_lt_js = Url("messages_lt.js");
+                        public static readonly string messages_lt_min_js = Url("messages_lt.min.js");
+                        public static readonly string messages_lv_js = Url("messages_lv.js");
+                        public static readonly string messages_lv_min_js = Url("messages_lv.min.js");
+                        public static readonly string messages_mk_js = Url("messages_mk.js");
+                        public static readonly string messages_mk_min_js = Url("messages_mk.min.js");
+                        public static readonly string messages_my_js = Url("messages_my.js");
+                        public static readonly string messages_my_min_js = Url("messages_my.min.js");
+                        public static readonly string messages_nl_js = Url("messages_nl.js");
+                        public static readonly string messages_nl_min_js = Url("messages_nl.min.js");
+                        public static readonly string messages_no_js = Url("messages_no.js");
+                        public static readonly string messages_no_min_js = Url("messages_no.min.js");
+                        public static readonly string messages_pl_js = Url("messages_pl.js");
+                        public static readonly string messages_pl_min_js = Url("messages_pl.min.js");
+                        public static readonly string messages_pt_BR_js = Url("messages_pt_BR.js");
+                        public static readonly string messages_pt_BR_min_js = Url("messages_pt_BR.min.js");
+                        public static readonly string messages_pt_PT_js = Url("messages_pt_PT.js");
+                        public static readonly string messages_pt_PT_min_js = Url("messages_pt_PT.min.js");
+                        public static readonly string messages_ro_js = Url("messages_ro.js");
+                        public static readonly string messages_ro_min_js = Url("messages_ro.min.js");
+                        public static readonly string messages_ru_js = Url("messages_ru.js");
+                        public static readonly string messages_ru_min_js = Url("messages_ru.min.js");
+                        public static readonly string messages_sd_js = Url("messages_sd.js");
+                        public static readonly string messages_sd_min_js = Url("messages_sd.min.js");
+                        public static readonly string messages_si_js = Url("messages_si.js");
+                        public static readonly string messages_si_min_js = Url("messages_si.min.js");
+                        public static readonly string messages_sk_js = Url("messages_sk.js");
+                        public static readonly string messages_sk_min_js = Url("messages_sk.min.js");
+                        public static readonly string messages_sl_js = Url("messages_sl.js");
+                        public static readonly string messages_sl_min_js = Url("messages_sl.min.js");
+                        public static readonly string messages_sr_js = Url("messages_sr.js");
+                        public static readonly string messages_sr_min_js = Url("messages_sr.min.js");
+                        public static readonly string messages_sr_lat_js = Url("messages_sr_lat.js");
+                        public static readonly string messages_sr_lat_min_js = Url("messages_sr_lat.min.js");
+                        public static readonly string messages_sv_js = Url("messages_sv.js");
+                        public static readonly string messages_sv_min_js = Url("messages_sv.min.js");
+                        public static readonly string messages_th_js = Url("messages_th.js");
+                        public static readonly string messages_th_min_js = Url("messages_th.min.js");
+                        public static readonly string messages_tj_js = Url("messages_tj.js");
+                        public static readonly string messages_tj_min_js = Url("messages_tj.min.js");
+                        public static readonly string messages_tr_js = Url("messages_tr.js");
+                        public static readonly string messages_tr_min_js = Url("messages_tr.min.js");
+                        public static readonly string messages_uk_js = Url("messages_uk.js");
+                        public static readonly string messages_uk_min_js = Url("messages_uk.min.js");
+                        public static readonly string messages_ur_js = Url("messages_ur.js");
+                        public static readonly string messages_ur_min_js = Url("messages_ur.min.js");
+                        public static readonly string messages_vi_js = Url("messages_vi.js");
+                        public static readonly string messages_vi_min_js = Url("messages_vi.min.js");
+                        public static readonly string messages_zh_js = Url("messages_zh.js");
+                        public static readonly string messages_zh_min_js = Url("messages_zh.min.js");
+                        public static readonly string messages_zh_TW_js = Url("messages_zh_TW.js");
+                        public static readonly string messages_zh_TW_min_js = Url("messages_zh_TW.min.js");
+                        public static readonly string methods_de_js = Url("methods_de.js");
+                        public static readonly string methods_de_min_js = Url("methods_de.min.js");
+                        public static readonly string methods_es_CL_js = Url("methods_es_CL.js");
+                        public static readonly string methods_es_CL_min_js = Url("methods_es_CL.min.js");
+                        public static readonly string methods_fi_js = Url("methods_fi.js");
+                        public static readonly string methods_fi_min_js = Url("methods_fi.min.js");
+                        public static readonly string methods_it_js = Url("methods_it.js");
+                        public static readonly string methods_it_min_js = Url("methods_it.min.js");
+                        public static readonly string methods_nl_js = Url("methods_nl.js");
+                        public static readonly string methods_nl_min_js = Url("methods_nl.min.js");
+                        public static readonly string methods_pt_js = Url("methods_pt.js");
+                        public static readonly string methods_pt_min_js = Url("methods_pt.min.js");
+                    }
+
+                    public static readonly string additional_methods_js = Url("additional-methods.js");
+                    public static readonly string additional_methods_min_js = Url("additional-methods.min.js");
+                    public static readonly string jquery_validate_js = Url("jquery.validate.js");
+                    public static readonly string jquery_validate_min_js = Url("jquery.validate.min.js");
+                }
+
+                public static partial class unobtrusive
+                {
+                    public const string UrlPath = "~/js/validation/jquery-validation-unobtrusive";
+                    public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+                    public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+                    public static readonly string jquery_validate_unobtrusive_js = Url("jquery.validate.unobtrusive.js");
+                    public static readonly string jquery_validate_unobtrusive_min_js = Url("jquery.validate.unobtrusive.min.js");
+                }
+
+                public static readonly string changelog_md = Url("changelog.md");
+                public static readonly string LICENSE_md = Url("LICENSE.md");
+                public static readonly string package_json = Url("package.json");
+                public static readonly string README_md = Url("README.md");
+            }
+
+            public static partial class jquery_validation_unobtrusive
+            {
+                public const string UrlPath = "~/js/validation/jquery-validation-unobtrusive";
+                public static string Url() => R4MvcHelpers.ProcessVirtualPath(UrlPath);
+                public static string Url(string fileName) => R4MvcHelpers.ProcessVirtualPath(UrlPath + "/" + fileName);
+                public static readonly string jquery_validate_unobtrusive_js = Url("jquery.validate.unobtrusive.js");
+                public static readonly string jquery_validate_unobtrusive_min_js = Url("jquery.validate.unobtrusive.min.js");
             }
         }
 

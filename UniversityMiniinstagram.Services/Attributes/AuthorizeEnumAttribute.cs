@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace UniversityMiniinstagram.Services.Attrebutes
+namespace UniversityMiniinstagram.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
     public class AuthorizeEnumAttribute : AuthorizeAttribute

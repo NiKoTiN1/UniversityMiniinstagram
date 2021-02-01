@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>aspnet-UniversityMiniinstagram-CB088101-5C74-4659-AB7C-39F5D054B24F</UserSecretsId>
 	<MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+	<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
+	  <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Localization.AspNetCore.TagHelpers" Version="0.6.0" />
@@ -43,6 +44,10 @@
     <ProjectReference Include="..\UniversityMiniinstagram.Database\UniversityMiniinstagram.Database.csproj" />
     <ProjectReference Include="..\UniversityMiniinstagram.Services\UniversityMiniinstagram.Services.csproj" />
     <ProjectReference Include="..\UniversityMiniinstagram.View\UniversityMiniinstagram.Views.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\validation\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

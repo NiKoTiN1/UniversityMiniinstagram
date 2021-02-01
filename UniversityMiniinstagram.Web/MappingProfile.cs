@@ -25,6 +25,8 @@ namespace UniversityMiniinstagram.Web
             CreateMap<Post, PostsViewModel>()
                 .ForMember(dest => dest.Post, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.CommentVM, opt => opt.MapFrom(src => src.Comments));
+            CreateMap<ApplicationUser, EditProfileViewModel>()
+                .ForMember(dest => dest.HasPassword, opt => opt.MapFrom(src => src.PasswordHash != null));
         }
     }
 }

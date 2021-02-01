@@ -26,7 +26,7 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> Register(string email, string description, string username, string password)
         {
-            if (!await this.AccountReposetry.IsExist(email))
+            if (await this.AccountReposetry.IsExist(email))
             {
                 return false;
             }

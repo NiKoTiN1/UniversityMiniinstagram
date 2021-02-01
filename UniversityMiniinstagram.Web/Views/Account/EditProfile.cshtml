@@ -1,14 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Localization
+@model EditProfileViewModel
 @inject IViewLocalizer VLocalizer
 
-@model ApplicationUser
 @{
     Layout = MVC.Shared.Views._Layout;
-    ViewBag.Title = Model.UserName + R4MvcExtensions.EditPofileTitle;
+    ViewBag.Title = Model.Username + R4MvcExtensions.EditPofileTitle;
 }
 
 <div class="centeredSt" style="margin-top:100px;">
-    <form mvc-action="@MVC.Account.EditProfilePost()" method="post" enctype="multipart/form-data">
+    <form mvc-action="@MVC.Account.EditProfile()" method="post" enctype="multipart/form-data">
         <div class="row mb-5 mx-auto" style=" width: 200px; height: 200px;">
             <label class="mx-auto">
                 <img src="@Model.Avatar.Path" id="Image" class="mx-auto img-fluid rounded-circle mb-2 border border-dark" style="
@@ -24,10 +24,12 @@
         </div>
         <div class="mb-3">
             <label for="username">@VLocalizer["Username"]</label>
+            <span asp-validation-for="Username"></span>
             <div class="input-group">
                 <div class="input-group-prepend">
                 </div>
-                <input type="text" class="form-control" id="Username" name="Username" placeholder="@VLocalizer["Username"]" value="@Model.UserName" required="">
+                <input type="text" class="form-control" id="Username" name="Username" placeholder="@VLocalizer["Username"]" value="@Model.Username" required="">
+                <span asp-validation-for="Username"></span>
                 <div class="invalid-feedback" style="width: 100%;">
                     @VLocalizer["InvalidFeedbackUserName"]
                 </div>
@@ -38,7 +40,7 @@
             <label for="Description">@VLocalizer["Description"]</label>
             <textarea type="text" name="Description" id="Description" class="form-control mb-2" style="resize: none;" placeholder="@VLocalizer["Description"]">@Model.Description</textarea>
         </div>
-        @if (Model.PasswordHash != null)
+        @if (Model.HasPassword)
         {
             <div class="mb-3">
                 <label for="OldPassword">@VLocalizer["OldPassword"]</label>
