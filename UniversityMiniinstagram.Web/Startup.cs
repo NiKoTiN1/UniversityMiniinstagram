@@ -58,10 +58,9 @@ namespace UniversityMiniinstagram
                 .AddCookie()
                 .AddGoogle(options =>
                 {
-                    IConfigurationSection googleAuthNSection =
-                        Configuration.GetSection("Authentication:Google");
                     options.ClientId = Configuration["Authentication:Google:ClientId"];
                     options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                    options.SignInScheme = IdentityConstants.ExternalScheme;
                 });
 
             var mapperConfig = new MapperConfiguration(mc =>

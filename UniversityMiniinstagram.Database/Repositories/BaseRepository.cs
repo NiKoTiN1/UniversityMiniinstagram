@@ -21,7 +21,7 @@ namespace UniversityMiniinstagram.Database.Repositories
         public async Task Add(T item)
         {
             Set.Add(item);
-            await this.Context.SaveChangesAsync();
+            await this.Context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<ICollection<T>> Get(Expression<Func<T, bool>> filter, string[] children = null)
@@ -36,7 +36,7 @@ namespace UniversityMiniinstagram.Database.Repositories
                         query = query.Include(entity);
                     }
                 }
-                return await query.Where(filter).ToListAsync();
+                return await query.Where(filter).ToListAsync().ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -47,13 +47,13 @@ namespace UniversityMiniinstagram.Database.Repositories
         public async Task Remove(T item)
         {
             this.Context.Remove(item);
-            await this.Context.SaveChangesAsync();
+            await this.Context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task Update(T item)
         {
             this.Context.Update(item);
-            await this.Context.SaveChangesAsync();
+            await this.Context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

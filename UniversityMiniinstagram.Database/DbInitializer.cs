@@ -15,10 +15,10 @@ namespace UniversityMiniinstagram.Database
             {
                 return;
             }
-            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Admin)));
-            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.User)));
-            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Moderator)));
-            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Banned)));
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Admin))).ConfigureAwait(false);
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.User))).ConfigureAwait(false);
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Moderator))).ConfigureAwait(false);
+            await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Banned))).ConfigureAwait(false);
         }
         public static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
         {
@@ -33,10 +33,10 @@ namespace UniversityMiniinstagram.Database
                 UserName = "Admin",
                 AvatarId = new Guid().ToString()
             };
-            await userManager.CreateAsync(admin, "Admin_1");
-            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Admin));
-            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Moderator));
-            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.User));
+            await userManager.CreateAsync(admin, "Admin_1").ConfigureAwait(false);
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false);
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.Moderator)).ConfigureAwait(false);
+            await userManager.AddToRoleAsync(admin, Enum.GetName(typeof(Roles), Roles.User)).ConfigureAwait(false);
         }
     }
 }

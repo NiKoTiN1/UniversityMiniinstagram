@@ -25,43 +25,43 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<bool> CreateUser(ApplicationUser user, string password)
         {
-            IdentityResult result = await this.UserManager.CreateAsync(user, password);
+            IdentityResult result = await this.UserManager.CreateAsync(user, password).ConfigureAwait(false);
             return result.Succeeded;
         }
         public async Task<bool> CreateUser(ApplicationUser user)
         {
-            IdentityResult result = await this.UserManager.CreateAsync(user);
+            IdentityResult result = await this.UserManager.CreateAsync(user).ConfigureAwait(false);
             return result.Succeeded;
         }
         public async Task<bool> AddLoginToUser(ApplicationUser user, ExternalLoginInfo info)
         {
-            IdentityResult result = await this.UserManager.AddLoginAsync(user, info);
+            IdentityResult result = await this.UserManager.AddLoginAsync(user, info).ConfigureAwait(false);
             return result.Succeeded;
         }
 
         public async Task<bool> AddRoleToUser(ApplicationUser user, string role)
         {
-            IdentityResult result = await this.UserManager.AddToRoleAsync(user, role);
-            await this.UserManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.AddToRoleAsync(user, role).ConfigureAwait(false);
+            await this.UserManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
             return result.Succeeded;
         }
 
         public async Task<bool> RemoveUser(string id)
         {
-            ApplicationUser user = await this.UserManager.FindByIdAsync(id.ToString());
-            IdentityResult result = await this.UserManager.DeleteAsync(user);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id.ToString()).ConfigureAwait(false);
+            IdentityResult result = await this.UserManager.DeleteAsync(user).ConfigureAwait(false);
             return result.Succeeded;
         }
 
         public async Task<bool> ChangePassword(ApplicationUser user, string oldPass, string newPass)
         {
-            IdentityResult result = await this.UserManager.ChangePasswordAsync(user, oldPass, newPass);
+            IdentityResult result = await this.UserManager.ChangePasswordAsync(user, oldPass, newPass).ConfigureAwait(false);
             return result.Succeeded;
         }
 
         public async Task<bool> Login(string email, string password)
         {
-            ApplicationUser user = await this.UserManager.FindByEmailAsync(email);
+            ApplicationUser user = await this.UserManager.FindByEmailAsync(email).ConfigureAwait(false);
             if (user == null)
             {
                 return false;
@@ -71,17 +71,17 @@ namespace UniversityMiniinstagram.Database.Repositories
             {
                 return false;
             }
-            await this.SignInManager.SignInAsync(user, false);
+            await this.SignInManager.SignInAsync(user, false).ConfigureAwait(false);
             return true;
         }
         public async Task Login(ApplicationUser user)
         {
-            await this.SignInManager.SignInAsync(user, false);
+            await this.SignInManager.SignInAsync(user, false).ConfigureAwait(false);
         }
 
         public async Task Logout()
         {
-            await this.SignInManager.SignOutAsync();
+            await this.SignInManager.SignOutAsync().ConfigureAwait(false);
         }
         public AuthenticationProperties GoogleLogin(string url)
         {
@@ -89,36 +89,36 @@ namespace UniversityMiniinstagram.Database.Repositories
         }
         public async Task<bool> ExternalLogin(ExternalLoginInfo info)
         {
-            SignInResult result = await this.SignInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false);
+            SignInResult result = await this.SignInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: false).ConfigureAwait(true);
             return result.Succeeded;
         }
 
         public async Task<ApplicationUser> GetUser(string id)
         {
-            ApplicationUser user = await this.UserManager.FindByIdAsync(id);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(id).ConfigureAwait(false);
             return user;
         }
 
         public async Task<ApplicationUser> GetUserByEmail(string email)
         {
-            ApplicationUser user = await this.UserManager.FindByEmailAsync(email);
+            ApplicationUser user = await this.UserManager.FindByEmailAsync(email).ConfigureAwait(false);
             return user;
         }
 
         public async Task<bool> AddRole(string name)
         {
-            IdentityResult result = await this.RoleManager.CreateAsync(new IdentityRole(name));
+            IdentityResult result = await this.RoleManager.CreateAsync(new IdentityRole(name)).ConfigureAwait(false);
             return result.Succeeded;
         }
         public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
         {
-            return await this.SignInManager.GetExternalLoginInfoAsync();
+            return await this.SignInManager.GetExternalLoginInfoAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> RemoveRolesFromUser(ApplicationUser user, ICollection<string> roles)
         {
-            IdentityResult result = await this.UserManager.RemoveFromRolesAsync(user, roles);
-            await this.UserManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.RemoveFromRolesAsync(user, roles).ConfigureAwait(false);
+            await this.UserManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
             return result.Succeeded;
         }
 
@@ -131,24 +131,24 @@ namespace UniversityMiniinstagram.Database.Repositories
             }
             Ouser.UserName = user.UserName;
             Ouser.Description = user.Description;
-            IdentityResult result = await this.UserManager.UpdateAsync(Ouser);
+            IdentityResult result = await this.UserManager.UpdateAsync(Ouser).ConfigureAwait(false);
             return result.Succeeded;
         }
 
         public async Task<bool> IsExist(string mail)
         {
-            ApplicationUser result = await this.UserManager.FindByEmailAsync(mail);
+            ApplicationUser result = await this.UserManager.FindByEmailAsync(mail).ConfigureAwait(false);
             return result != null;
         }
 
         public async Task<bool> IsInRole(ApplicationUser user, string role)
         {
-            return await this.UserManager.IsInRoleAsync(user, role);
+            return await this.UserManager.IsInRoleAsync(user, role).ConfigureAwait(false);
         }
 
         public async Task<IList<string>> GetRoleList(ApplicationUser user)
         {
-            return await this.UserManager.GetRolesAsync(user);
+            return await this.UserManager.GetRolesAsync(user).ConfigureAwait(false);
         }
 
         public IList<ApplicationUser> GetAllUsers()
@@ -158,9 +158,9 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task<bool> UnBanUser(ApplicationUser user)
         {
-            IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Banned));
-            await this.UserManager.AddToRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Admin));
-            await this.UserManager.UpdateSecurityStampAsync(user);
+            IdentityResult result = await this.UserManager.RemoveFromRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Banned)).ConfigureAwait(false);
+            await this.UserManager.AddToRoleAsync(user, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false);
+            await this.UserManager.UpdateSecurityStampAsync(user).ConfigureAwait(false);
             return result.Succeeded;
         }
     }

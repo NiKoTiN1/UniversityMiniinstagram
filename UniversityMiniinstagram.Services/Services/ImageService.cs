@@ -32,7 +32,7 @@ namespace UniversityMiniinstagram.Services
 
             using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
             {
-                await file.CopyToAsync(fileStream);
+                await file.CopyToAsync(fileStream).ConfigureAwait(false);
             }
             var image = new Image()
             {
@@ -40,7 +40,7 @@ namespace UniversityMiniinstagram.Services
                 Path = path,
                 UploadDate = DateTime.Now,
             };
-            await this.ImageReposetry.Add(image);
+            await this.ImageReposetry.Add(image).ConfigureAwait(false);
             return image;
         }
 

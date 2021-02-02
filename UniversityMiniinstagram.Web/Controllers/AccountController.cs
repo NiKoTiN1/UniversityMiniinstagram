@@ -28,7 +28,6 @@ namespace UniversityMiniinstagram.Web.Controllers
             this.AppEnvironment = appEnvironment;
             this.mapper = mapper;
         }
-
         private readonly IAccountService AccountService;
         private readonly IPostService PostService;
         private readonly IWebHostEnvironment AppEnvironment;
@@ -76,7 +75,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         public virtual IActionResult GoogleLogin()
         {
             AuthenticationProperties proptities = this.AccountService.GoogleLogin(Url.Action("GoogleResponse"));
-            return new ChallengeResult("Google", proptities);
+            return Challenge(proptities, "Google");
         }
 
         [Route("google-response")]
@@ -134,7 +133,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         }
 
         [HttpPost]
-        [Route("authorized")]
+        [Route("login")]
         public virtual async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
