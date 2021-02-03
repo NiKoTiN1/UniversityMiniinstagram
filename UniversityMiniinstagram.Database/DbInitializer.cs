@@ -20,6 +20,7 @@ namespace UniversityMiniinstagram.Database
             await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Moderator))).ConfigureAwait(false);
             await roleManager.CreateAsync(new IdentityRole(Enum.GetName(typeof(Roles), Roles.Banned))).ConfigureAwait(false);
         }
+
         public static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
         {
             if (userManager.Users.Any())

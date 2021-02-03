@@ -16,15 +16,15 @@ namespace UniversityMiniinstagram.Services
             IAccountService accountService,
             ICommentReportReposetory commentReportReposetory)
         {
-            this.AdminReposetry = adminReposetry;
-            this.PostService = postService;
-            this.AccountService = accountService;
+            this.adminReposetry = adminReposetry;
+            this.postService = postService;
+            this.accountService = accountService;
             this.commentReportReposetory = commentReportReposetory;
         }
 
-        private readonly IAdminRepository AdminReposetry;
-        private readonly IPostService PostService;
-        private readonly IAccountService AccountService;
+        private readonly IAdminRepository adminReposetry;
+        private readonly IPostService postService;
+        private readonly IAccountService accountService;
         private readonly ICommentReportReposetory commentReportReposetory;
 
         public async Task ReportComment(string userId, string commentId)
@@ -34,22 +34,22 @@ namespace UniversityMiniinstagram.Services
 
         public async Task ReportPost(string postId, string userId)
         {
-            await this.AdminReposetry.Add(new PostReport() { Id = Guid.NewGuid().ToString(), PostId = postId, UserId = userId, Date = DateTime.UtcNow }).ConfigureAwait(false);
+            await this.adminReposetry.Add(new PostReport() { Id = Guid.NewGuid().ToString(), PostId = postId, UserId = userId, Date = DateTime.UtcNow }).ConfigureAwait(false);
         }
 
         public async Task<ICollection<PostReport>> GetPostReports(string userId)
         {
-            return (await this.AdminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" }).ConfigureAwait(false)).OrderBy(report => report.Date).ToList();
+            return (await this.adminReposetry.Get(report => true, new string[] { "Post.Comments.User", "Post.Likes" }).ConfigureAwait(false)).OrderBy(report => report.Date).ToList();
         }
 
         public async Task<List<CommentReport>> GetCommentReports(string userId)
         {
-            var isCurUserModerator = await this.AccountService.IsInRole(userId, Enum.GetName(typeof(Roles), Roles.Moderator)).ConfigureAwait(false);
+            bool isCurUserModerator = await this.accountService.IsInRole(userId, Enum.GetName(typeof(Roles), Roles.Moderator)).ConfigureAwait(false);
             var commentReports = (await this.commentReportReposetory.Get(rep => (rep.Comment.UserId != userId), new string[] { "Comment.Post.Comments", "User", "Comment.User" }).ConfigureAwait(false)).OrderBy(report => report.Date).ToList();
             var notAllowedCommentReports = new List<CommentReport>();
             foreach (CommentReport report in commentReports)
             {
-                var isRepUserModerator = await this.AccountService.IsInRole(report.Comment.User.Id, Enum.GetName(typeof(Roles), Roles.Moderator), report.Comment.User).ConfigureAwait(false);
+                bool isRepUserModerator = await this.accountService.IsInRole(report.Comment.User.Id, Enum.GetName(typeof(Roles), Roles.Moderator), report.Comment.User).ConfigureAwait(false);
                 if (isCurUserModerator && isRepUserModerator)
                 {
                     notAllowedCommentReports.Add(report);
@@ -60,12 +60,12 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> RemovePostReport(string reportId)
         {
-            PostReport report = (await this.AdminReposetry.Get(report => report.Id == reportId).ConfigureAwait(false)).SingleOrDefault();
+            PostReport report = (await this.adminReposetry.Get(report => report.Id == reportId).ConfigureAwait(false)).SingleOrDefault();
             if (report == null)
             {
                 return false;
             }
-            await this.AdminReposetry.Remove(report).ConfigureAwait(false);
+            await this.adminReposetry.Remove(report).ConfigureAwait(false);
             return true;
         }
 
@@ -82,14 +82,14 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<bool> PostReportDecision(string reportId, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
-            PostReport report = (await this.AdminReposetry.Get(report => report.Id == reportId, new string[] { "Post.User" }).ConfigureAwait(false)).SingleOrDefault();
+            PostReport report = (await this.adminReposetry.Get(report => report.Id == reportId, new string[] { "Post.User" }).ConfigureAwait(false)).SingleOrDefault();
             if (report == null || report.Post == null)
             {
                 return false;
             }
             if (isBanUser)
             {
-                var result = await this.AccountService.SetBanRole(report.Post.UserId, report.Post.User).ConfigureAwait(false);
+                bool result = await this.accountService.SetBanRole(report.Post.UserId, report.Post.User).ConfigureAwait(false);
                 if (!result)
                 {
                     return false;
@@ -97,12 +97,12 @@ namespace UniversityMiniinstagram.Services
             }
             if (isDeletePost)
             {
-                await this.PostService.DeletePost(report.PostId, report.Post).ConfigureAwait(false);
+                await this.postService.DeletePost(report.PostId, report.Post).ConfigureAwait(false);
                 return true;
             }
             if (isHidePost)
             {
-                var result = await this.PostService.HidePost(report.Post.Id).ConfigureAwait(false);
+                bool result = await this.postService.HidePost(report.Post.Id).ConfigureAwait(false);
                 if (!result)
                 {
                     return false;
@@ -110,6 +110,7 @@ namespace UniversityMiniinstagram.Services
             }
             return true;
         }
+
         public async Task<bool> CommentReportDecision(string reportId, bool isHideComment, bool isDeleteComment, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
             CommentReport report = (await this.commentReportReposetory.Get(report => report.Id == reportId, new string[] { "Comment", "Comment.Post" }).ConfigureAwait(false)).SingleOrDefault();
@@ -119,7 +120,7 @@ namespace UniversityMiniinstagram.Services
             }
             if (isBanUser)
             {
-                var result = await this.AccountService.SetBanRole(report.Comment.UserId).ConfigureAwait(false);
+                bool result = await this.accountService.SetBanRole(report.Comment.UserId).ConfigureAwait(false);
                 if (!result)
                 {
                     return false;
@@ -127,12 +128,12 @@ namespace UniversityMiniinstagram.Services
             }
             if (isDeletePost)
             {
-                await this.PostService.DeletePost(report.Comment.Post.Id, report.Comment.Post).ConfigureAwait(false);
+                await this.postService.DeletePost(report.Comment.Post.Id, report.Comment.Post).ConfigureAwait(false);
                 return true;
             }
             if (isHidePost)
             {
-                var result = await this.PostService.HidePost(report.Comment.Post.Id).ConfigureAwait(false);
+                bool result = await this.postService.HidePost(report.Comment.Post.Id).ConfigureAwait(false);
                 if (!result)
                 {
                     return false;
@@ -140,12 +141,12 @@ namespace UniversityMiniinstagram.Services
             }
             if (isDeleteComment)
             {
-                await this.PostService.RemoveComment(report.CommentId).ConfigureAwait(false);
+                await this.postService.RemoveComment(report.CommentId).ConfigureAwait(false);
                 return true;
             }
             if (isHideComment)
             {
-                var result = await this.PostService.HideComment(report.CommentId).ConfigureAwait(false);
+                bool result = await this.postService.HideComment(report.CommentId).ConfigureAwait(false);
                 if (!result)
                 {
                     return false;
@@ -156,32 +157,33 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<ICollection<string>> GetUserRoles(ApplicationUser user)
         {
-            return await this.AccountService.GetUserRoles(user).ConfigureAwait(false);
+            return await this.accountService.GetUserRoles(user).ConfigureAwait(false);
         }
 
         public async Task<List<ApplicationUser>> GetUsersAndRoles()
         {
-            IList<ApplicationUser> allUsers = this.AccountService.GetAllUsers();
+            IList<ApplicationUser> allUsers = this.accountService.GetAllUsers();
             IList<ApplicationUser> adminUser = new List<ApplicationUser>();
             foreach (ApplicationUser user in allUsers)
             {
-                if (await this.AccountService.IsInRole(user.Id, Enum.GetName(typeof(Roles), Roles.Admin), user).ConfigureAwait(false))
+                if (await this.accountService.IsInRole(user.Id, Enum.GetName(typeof(Roles), Roles.Admin), user).ConfigureAwait(false))
                 {
                     adminUser.Add(user);
                 }
             }
             return allUsers.Except(adminUser).ToList();
         }
+
         public async Task<bool> AddModeratorRoots(string userId)
         {
-            ApplicationUser user = await this.AccountService.GetUser(userId).ConfigureAwait(false);
-            return user == null ? false : await this.AccountService.SetModerator(user).ConfigureAwait(false);
+            ApplicationUser user = await this.accountService.GetUser(userId).ConfigureAwait(false);
+            return user == null ? false : await this.accountService.SetModerator(user).ConfigureAwait(false);
         }
 
         public async Task<bool> RemoveModeratorRoots(string userId)
         {
-            ApplicationUser user = await this.AccountService.GetUser(userId).ConfigureAwait(false);
-            return user == null ? false : await this.AccountService.SetNonModerator(user).ConfigureAwait(false);
+            ApplicationUser user = await this.accountService.GetUser(userId).ConfigureAwait(false);
+            return user == null ? false : await this.accountService.SetNonModerator(user).ConfigureAwait(false);
         }
     }
 }

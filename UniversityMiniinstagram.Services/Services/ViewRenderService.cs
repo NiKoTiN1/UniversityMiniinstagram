@@ -19,22 +19,22 @@ namespace UniversityMiniinstagram.Services
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider)
         {
-            this.RazorViewEngine = razorViewEngine;
-            this.TempDataProvider = tempDataProvider;
-            this.ServiceProvider = serviceProvider;
+            this.razorViewEngine = razorViewEngine;
+            this.tempDataProvider = tempDataProvider;
+            this.serviceProvider = serviceProvider;
         }
 
-        private readonly IRazorViewEngine RazorViewEngine;
-        private readonly ITempDataProvider TempDataProvider;
-        private readonly IServiceProvider ServiceProvider;
+        private readonly IRazorViewEngine razorViewEngine;
+        private readonly ITempDataProvider tempDataProvider;
+        private readonly IServiceProvider serviceProvider;
 
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
-            var httpContext = new DefaultHttpContext { RequestServices = ServiceProvider };
+            var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
             using var sw = new StringWriter();
-            Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult viewResult = this.RazorViewEngine.FindView(actionContext, viewName, false);
+            Microsoft.AspNetCore.Mvc.ViewEngines.ViewEngineResult viewResult = this.razorViewEngine.FindView(actionContext, viewName, false);
 
             if (viewResult.View == null)
             {
@@ -50,7 +50,7 @@ namespace UniversityMiniinstagram.Services
                 actionContext,
                 viewResult.View,
                 viewDictionary,
-                new TempDataDictionary(actionContext.HttpContext, this.TempDataProvider),
+                new TempDataDictionary(actionContext.HttpContext, this.tempDataProvider),
                 sw,
                 new HtmlHelperOptions()
             );

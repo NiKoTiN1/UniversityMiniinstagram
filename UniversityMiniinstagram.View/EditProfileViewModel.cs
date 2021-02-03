@@ -8,12 +8,19 @@ namespace UniversityMiniinstagram.Views
     {
         [Required(ErrorMessage = "Username is required")]
         public string Username { get; set; }
+
         public string UserId { get; set; }
+
         public string Description { get; set; }
+
         public string Password { get; set; }
+
         public string OldPassword { get; set; }
+
         public IFormFile File { get; set; }
+
         public Image Avatar { get; set; }
+
         public bool HasPassword { get; set; }
     }
 }

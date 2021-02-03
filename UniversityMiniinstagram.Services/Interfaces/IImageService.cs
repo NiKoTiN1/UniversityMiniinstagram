@@ -7,6 +7,7 @@ namespace UniversityMiniinstagram.Services.Interfaces
     public interface IImageService
     {
         public Task<Image> Add(IFormFile file, string rootPath);
+
         public void RemoveImage(Image image);
     }
 }

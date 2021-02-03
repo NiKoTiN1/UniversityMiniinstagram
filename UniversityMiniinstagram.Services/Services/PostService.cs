@@ -20,18 +20,18 @@ namespace UniversityMiniinstagram.Services
             IAdminRepository adminRepository,
             ICommentReportReposetory commentReportReposetory)
         {
-            this.ImageServices = imageServices;
-            this.PostReposetry = postReposetry;
-            this.AccountService = accountService;
+            this.imageServices = imageServices;
+            this.postReposetry = postReposetry;
+            this.accountService = accountService;
             this.commentReposetry = commentReposetry;
             this.likeReposetry = likeReposetry;
             this.adminRepository = adminRepository;
             this.commentReportReposetory = commentReportReposetory;
         }
 
-        private readonly IImageService ImageServices;
-        private readonly IPostRepository PostReposetry;
-        private readonly IAccountService AccountService;
+        private readonly IImageService imageServices;
+        private readonly IPostRepository postReposetry;
+        private readonly IAccountService accountService;
         private readonly ICommentRepository commentReposetry;
         private readonly ILikeRepository likeReposetry;
         private readonly IAdminRepository adminRepository;
@@ -39,7 +39,7 @@ namespace UniversityMiniinstagram.Services
 
         public async Task<Post> AddPost(IFormFile file, string rootPath, string userId, string description, Category categoryPost)
         {
-            Image image = await this.ImageServices.Add(file, rootPath).ConfigureAwait(false);
+            Image image = await this.imageServices.Add(file, rootPath).ConfigureAwait(false);
             if (image == null)
             {
                 return null;
@@ -54,13 +54,13 @@ namespace UniversityMiniinstagram.Services
                 CategoryPost = categoryPost,
                 IsShow = true
             };
-            await this.PostReposetry.Add(newPost).ConfigureAwait(false);
+            await this.postReposetry.Add(newPost).ConfigureAwait(false);
             return newPost;
         }
 
         public async Task<Comment> AddComment(string postId, string text, string userId)
         {
-            ApplicationUser user = await this.AccountService.GetUser(userId).ConfigureAwait(false);
+            ApplicationUser user = await this.accountService.GetUser(userId).ConfigureAwait(false);
             if (user == null)
             {
                 return null;
@@ -78,6 +78,7 @@ namespace UniversityMiniinstagram.Services
             await this.commentReposetry.Add(newComment).ConfigureAwait(false);
             return newComment;
         }
+
         public async Task<Like> AddLike(string postId, string userId)
         {
             var newLike = new Like()
@@ -89,18 +90,21 @@ namespace UniversityMiniinstagram.Services
             await this.likeReposetry.Add(newLike).ConfigureAwait(false);
             return newLike;
         }
+
         public async Task<bool> IsLiked(string postId, string userId)
         {
             return (await this.likeReposetry.Get(like => like.PostId == postId && like.UserId == userId).ConfigureAwait(false)).Any();
         }
+
         public async Task RemoveLike(string postId, string userId)
         {
             Like like = (await this.likeReposetry.Get(li => li.PostId == postId && li.UserId == userId).ConfigureAwait(false)).SingleOrDefault();
             await this.likeReposetry.Remove(like).ConfigureAwait(false);
         }
+
         public async Task<List<Post>> GetAllPosts(string userId)
         {
-            return (await this.PostReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" }).ConfigureAwait(false)).OrderBy(post => post.UploadDate).ToList();
+            return (await this.postReposetry.Get(post => true, new string[] { "Comments.User", "Likes", "User" }).ConfigureAwait(false)).OrderBy(post => post.UploadDate).ToList();
         }
 
         public async Task DeletePost(string postId, Post post = null)
@@ -109,26 +113,27 @@ namespace UniversityMiniinstagram.Services
             {
                 post = await GetPost(postId).ConfigureAwait(false);
             }
-            this.ImageServices.RemoveImage(post.Image);
+            this.imageServices.RemoveImage(post.Image);
             if (post != null)
             {
-                await this.PostReposetry.Remove(post).ConfigureAwait(false);
+                await this.postReposetry.Remove(post).ConfigureAwait(false);
             }
         }
 
         public async Task<ApplicationUser> GetUserPosts(string userId)
         {
-            ApplicationUser user = await this.AccountService.GetUser(userId).ConfigureAwait(false);
-            user.Posts = (await this.PostReposetry.Get(post => post.UserId == userId).ConfigureAwait(false)).OrderBy(post => post.UploadDate).ToList();
+            ApplicationUser user = await this.accountService.GetUser(userId).ConfigureAwait(false);
+            user.Posts = (await this.postReposetry.Get(post => post.UserId == userId).ConfigureAwait(false)).OrderBy(post => post.UploadDate).ToList();
             return user;
         }
 
         public async Task<Post> GetPost(string postId)
         {
-            Post post = (await this.PostReposetry.Get(post => post.Id == postId, new string[] { "Comments.User", "Likes" }).ConfigureAwait(false)).SingleOrDefault();
+            Post post = (await this.postReposetry.Get(post => post.Id == postId, new string[] { "Comments.User", "Likes" }).ConfigureAwait(false)).SingleOrDefault();
             post.Comments = post.Comments.OrderBy(comment => comment.Date).ToList();
             return post;
         }
+
         public async Task<Post> GetProfilePost(string postId)
         {
             return await GetPost(postId).ConfigureAwait(false);
@@ -144,18 +149,20 @@ namespace UniversityMiniinstagram.Services
             await this.commentReposetry.Remove(comment).ConfigureAwait(false);
             return comment.PostId;
         }
+
         public async Task<bool> IsDeleteAllowed(ApplicationUser postHolder, string guestId)
         {
             if (postHolder.Id == guestId)
             {
                 return true;
             }
-            return await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false)
+            return await this.accountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false)
                 ? true
-                : await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Moderator)).ConfigureAwait(false)
-                ? !await this.AccountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false)
+                : await this.accountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Moderator)).ConfigureAwait(false)
+                ? !await this.accountService.IsInRole(guestId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false)
                 : false;
         }
+
         public async Task<bool> IsReportAllowed(string postHolderId, string guestId, string postId = null, string commentId = null)
         {
             if (postHolderId == guestId)
@@ -176,18 +183,18 @@ namespace UniversityMiniinstagram.Services
                     return false;
                 }
             }
-            return !await this.AccountService.IsInRole(postHolderId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false);
+            return !await this.accountService.IsInRole(postHolderId, Enum.GetName(typeof(Roles), Roles.Admin)).ConfigureAwait(false);
         }
 
         public async Task<bool> HidePost(string postId)
         {
-            Post post = (await this.PostReposetry.Get(post => post.Id == postId)).SingleOrDefault();
+            Post post = (await this.postReposetry.Get(post => post.Id == postId)).SingleOrDefault();
             if (post == null)
             {
                 return false;
             }
             post.IsShow = false;
-            await this.PostReposetry.Update(post);
+            await this.postReposetry.Update(post);
             return true;
         }
 

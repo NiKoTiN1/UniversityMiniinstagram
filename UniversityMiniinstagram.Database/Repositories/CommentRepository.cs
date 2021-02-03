@@ -7,8 +7,6 @@ namespace UniversityMiniinstagram.Database.Repositories
     {
         public CommentRepository(DatabaseContext context)
             : base(context)
-        {
-
-        }
+        { }
     }
 }

@@ -12,16 +12,17 @@ namespace UniversityMiniinstagram.Database.Repositories
     {
         public BaseRepository(DatabaseContext context)
         {
-            this.Context = context;
+            this.context = context;
         }
 
-        private DbSet<T> Set => this.Context.Set<T>();
+        private DbSet<T> Set => this.context.Set<T>();
 
-        private readonly DatabaseContext Context;
+        private readonly DatabaseContext context;
+
         public async Task Add(T item)
         {
             Set.Add(item);
-            await this.Context.SaveChangesAsync().ConfigureAwait(false);
+            await this.context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<ICollection<T>> Get(Expression<Func<T, bool>> filter, string[] children = null)
@@ -31,7 +32,7 @@ namespace UniversityMiniinstagram.Database.Repositories
                 IQueryable<T> query = Set;
                 if (children != null)
                 {
-                    foreach (var entity in children)
+                    foreach (string entity in children)
                     {
                         query = query.Include(entity);
                     }
@@ -46,14 +47,14 @@ namespace UniversityMiniinstagram.Database.Repositories
 
         public async Task Remove(T item)
         {
-            this.Context.Remove(item);
-            await this.Context.SaveChangesAsync().ConfigureAwait(false);
+            this.context.Remove(item);
+            await this.context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task Update(T item)
         {
-            this.Context.Update(item);
-            await this.Context.SaveChangesAsync().ConfigureAwait(false);
+            this.context.Update(item);
+            await this.context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

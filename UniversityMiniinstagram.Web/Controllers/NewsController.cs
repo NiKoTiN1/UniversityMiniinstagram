@@ -22,13 +22,14 @@ namespace UniversityMiniinstagram.Web.Controllers
         public NewsController(IPostService postServices, IWebHostEnvironment appEnvironment, IMapper mapper)
         {
             this.postService = postServices;
-            this.AppEnvironment = appEnvironment;
+            this.appEnvironment = appEnvironment;
             this.mapper = mapper;
         }
 
         private readonly IPostService postService;
-        private readonly IWebHostEnvironment AppEnvironment;
+        private readonly IWebHostEnvironment appEnvironment;
         private readonly IMapper mapper;
+
         [HttpGet]
         [Route("all")]
         public virtual async Task<IActionResult> GetAllPosts()
@@ -74,7 +75,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 return Unauthorized();
             }
-            if (await this.postService.AddPost(file, this.AppEnvironment.WebRootPath, userIdClaim.Value, description, categoryPost) == null)
+            if (await this.postService.AddPost(file, this.appEnvironment.WebRootPath, userIdClaim.Value, description, categoryPost) == null)
             {
                 return BadRequest();
             }
@@ -108,7 +109,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 return BadRequest();
             }
-            var postId = await this.postService.RemoveComment(commentId);
+            string postId = await this.postService.RemoveComment(commentId);
             if (postId == null)
             {
                 return BadRequest();
@@ -129,7 +130,7 @@ namespace UniversityMiniinstagram.Web.Controllers
             {
                 return Unauthorized();
             }
-            var isLiked = await this.postService.IsLiked(postId, userIdClaim.Value);
+            bool isLiked = await this.postService.IsLiked(postId, userIdClaim.Value);
             if (isLiked)
             {
                 return BadRequest();

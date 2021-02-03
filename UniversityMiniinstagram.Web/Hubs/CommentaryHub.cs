@@ -14,12 +14,12 @@ namespace UniversityMiniinstagram.Web.Hubs
     {
         public CommentaryHub(IPostService postService, IViewRenderService renderService)
         {
-            this.PostService = postService;
-            this.RenderService = renderService;
+            this.postService = postService;
+            this.renderService = renderService;
         }
 
-        private readonly IViewRenderService RenderService;
-        private readonly IPostService PostService;
+        private readonly IViewRenderService renderService;
+        private readonly IPostService postService;
 
         public async Task SendMessage(string postId, string text)
         {
@@ -28,7 +28,7 @@ namespace UniversityMiniinstagram.Web.Hubs
                 return;
             }
             Claim userIdClaim = Context.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
-            Comment commresult = await this.PostService.AddComment(postId, text, userIdClaim.Value);
+            Comment commresult = await this.postService.AddComment(postId, text, userIdClaim.Value);
             if (commresult == null)
             {
                 return;
@@ -36,11 +36,11 @@ namespace UniversityMiniinstagram.Web.Hubs
             var commentViewModel = new CommentViewModel()
             {
                 Comment = commresult,
-                IsDeleteAllowed = await this.PostService.IsDeleteAllowed(commresult.User, userIdClaim.Value),
-                IsReportAllowed = await this.PostService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
+                IsDeleteAllowed = await this.postService.IsDeleteAllowed(commresult.User, userIdClaim.Value),
+                IsReportAllowed = await this.postService.IsReportAllowed(commresult.UserId, userIdClaim.Value, commentId: commresult.Id),
                 ShowReportColor = false
             };
-            var res = await this.RenderService.RenderToStringAsync(R4MvcExtensions._CommentBlock, commentViewModel);
+            string res = await this.renderService.RenderToStringAsync(R4MvcExtensions._CommentBlock, commentViewModel);
             await Clients.All.SendAsync(R4MvcExtensions.SendCommentHub, res, postId, commentViewModel.Comment.Id.ToString());
         }
     }

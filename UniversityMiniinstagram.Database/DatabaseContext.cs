@@ -8,10 +8,15 @@ namespace UniversityMiniinstagram.Database
     public class DatabaseContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Image> Images { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
+
         public DbSet<Post> Posts { get; set; }
+
         public DbSet<Like> Likes { get; set; }
+
         public DbSet<PostReport> PostReports { get; set; }
+
         public DbSet<CommentReport> CommentReports { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
@@ -19,6 +24,7 @@ namespace UniversityMiniinstagram.Database
         {
             Database.EnsureCreated();
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -17,13 +17,13 @@ namespace UniversityMiniinstagram.Web.Controllers
     {
         public AdminController(IAdminService adminService, IPostService postService, IMapper mapper)
         {
-            this.AdminService = adminService;
-            this.PostService = postService;
+            this.adminService = adminService;
+            this.postService = postService;
             this.mapper = mapper;
         }
 
-        private readonly IAdminService AdminService;
-        private readonly IPostService PostService;
+        private readonly IAdminService adminService;
+        private readonly IPostService postService;
         private readonly IMapper mapper;
 
         [HttpPost]
@@ -42,10 +42,10 @@ namespace UniversityMiniinstagram.Web.Controllers
             userId = userIdClaim.Value;
             if (commentId != null)
             {
-                await this.AdminService.ReportComment(userId, commentId);
+                await this.adminService.ReportComment(userId, commentId);
                 return Ok();
             }
-            await this.AdminService.ReportPost(postId, userId);
+            await this.adminService.ReportPost(postId, userId);
             return Ok();
         }
 
@@ -56,7 +56,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            return View(new List<AdminPostReportsVeiwModel>(this.mapper.Map<ICollection<AdminPostReportsVeiwModel>>(await this.AdminService.GetPostReports(userIdClaim.Value))));
+            return View(new List<AdminPostReportsVeiwModel>(this.mapper.Map<ICollection<AdminPostReportsVeiwModel>>(await this.adminService.GetPostReports(userIdClaim.Value))));
         }
 
         [HttpGet]
@@ -66,7 +66,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         {
             Claim userIdClaim = HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
             ViewBag.UserId = userIdClaim.Value;
-            ICollection<AdminCommentReportsVeiwModel> reportsVM = this.mapper.Map<ICollection<AdminCommentReportsVeiwModel>>(await this.AdminService.GetCommentReports(userIdClaim.Value));
+            ICollection<AdminCommentReportsVeiwModel> reportsVM = this.mapper.Map<ICollection<AdminCommentReportsVeiwModel>>(await this.adminService.GetCommentReports(userIdClaim.Value));
             foreach(AdminCommentReportsVeiwModel reportVM in reportsVM)
             {
                 reportVM.CommentViewModel.First(commentVM => reportVM.Report.CommentId == reportVM.Report.CommentId).ShowReportColor = true;
@@ -79,10 +79,10 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("roles")]
         public virtual async Task<ActionResult> SetDeleteRoles()
         {
-            ICollection<UserRolesViewModel> usersVM = this.mapper.Map<ICollection<UserRolesViewModel>>(await this.AdminService.GetUsersAndRoles());
+            ICollection<UserRolesViewModel> usersVM = this.mapper.Map<ICollection<UserRolesViewModel>>(await this.adminService.GetUsersAndRoles());
             foreach(UserRolesViewModel userVM in usersVM)
             {
-                userVM.UserRoles = await this.AdminService.GetUserRoles(userVM.User);
+                userVM.UserRoles = await this.adminService.GetUserRoles(userVM.User);
             }
             return View(usersVM);
         }
@@ -100,7 +100,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("pardon/post")]
         public virtual async Task<IActionResult> PardonPost(string reportId)
         {
-            return await this.AdminService.RemovePostReport(reportId) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.RemovePostReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -108,7 +108,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("pardon/comment")]
         public virtual async Task<IActionResult> PardonComment(string reportId)
         {
-            return await this.AdminService.RemoveCommentReport(reportId) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.RemoveCommentReport(reportId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -116,7 +116,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("post/decision")]
         public virtual async Task<IActionResult> PostReportDecision(string reportId, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
-            return await this.AdminService.PostReportDecision(reportId, isBanUser, isDeletePost, isHidePost) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.PostReportDecision(reportId, isBanUser, isDeletePost, isHidePost) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -124,7 +124,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("comment/decision")]
         public virtual async Task<IActionResult> CommentReportDecision(string reportId, bool isHideComment, bool isDeleteComment, bool isBanUser, bool isDeletePost, bool isHidePost)
         {
-            return await this.AdminService.CommentReportDecision(reportId, isHideComment, isDeleteComment, isBanUser, isDeletePost, isHidePost) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.CommentReportDecision(reportId, isHideComment, isDeleteComment, isBanUser, isDeletePost, isHidePost) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -132,7 +132,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("set-moder-roots")]
         public virtual async Task<IActionResult> AddModerator(string userId)
         {
-            return await this.AdminService.AddModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.AddModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }
 
         [HttpPost]
@@ -140,7 +140,7 @@ namespace UniversityMiniinstagram.Web.Controllers
         [Route("set-user-roots")]
         public virtual async Task<IActionResult> RemoveModerator(string userId)
         {
-            return await this.AdminService.RemoveModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
+            return await this.adminService.RemoveModeratorRoots(userId) ? Ok() : (IActionResult)BadRequest();
         }
     }
 }

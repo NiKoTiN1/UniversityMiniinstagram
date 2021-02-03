@@ -9,6 +9,7 @@ namespace UniversityMiniinstagram.Database.Models
     {
 
         public ApplicationUser() { }
+
         public ApplicationUser(ILazyLoader lazyLoader)
         {
             this.lazyLoader = lazyLoader;
@@ -19,13 +20,16 @@ namespace UniversityMiniinstagram.Database.Models
         public string Description { get; set; }
 
         private Image avatar;
+
         public Image Avatar
         {
             get => this.lazyLoader.Load(this, ref this.avatar);
             set => this.avatar = value;
         }
+
     #nullable enable
         public string? AvatarId { get; set; }
+
         public ICollection<Post> Posts { get; set; }
     }
 }

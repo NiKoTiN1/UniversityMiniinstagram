@@ -13,6 +13,7 @@ namespace UniversityMiniinstagram.Views
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
+
         public string Description { get; set; }
     }
 }

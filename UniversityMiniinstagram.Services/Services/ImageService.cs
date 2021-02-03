@@ -14,12 +14,13 @@ namespace UniversityMiniinstagram.Services
     {
         public ImageService(IImageRepository imageReposetry, IConfiguration configuration)
         {
-            this.ImageReposetry = imageReposetry;
-            Configuration = configuration;
+            this.imageReposetry = imageReposetry;
+            this.configuration = configuration;
         }
 
-        private readonly IImageRepository ImageReposetry;
-        private IConfiguration Configuration { get; }
+        private readonly IImageRepository imageReposetry;
+
+        private IConfiguration configuration { get; }
 
         public async Task<Image> Add(IFormFile file, string rootPath)
         {
@@ -27,8 +28,8 @@ namespace UniversityMiniinstagram.Services
             {
                 return null;
             }
-            var imageGuid = Guid.NewGuid().ToString();
-            var path = Configuration["Storage:Folder:Images"] + imageGuid + '.' + file.FileName.Split(".").Last();
+            string imageGuid = Guid.NewGuid().ToString();
+            string path = configuration["Storage:Folder:Images"] + imageGuid + '.' + file.FileName.Split(".").Last();
 
             using (var fileStream = new FileStream(rootPath + path, FileMode.Create, FileAccess.Write))
             {
@@ -40,13 +41,13 @@ namespace UniversityMiniinstagram.Services
                 Path = path,
                 UploadDate = DateTime.Now,
             };
-            await this.ImageReposetry.Add(image).ConfigureAwait(false);
+            await this.imageReposetry.Add(image).ConfigureAwait(false);
             return image;
         }
 
         public void RemoveImage(Image image)
         {
-            var path = "wwwroot/" + image.Path;
+            string path = "wwwroot/" + image.Path;
             if (!File.Exists(path))
             {
                 return;
